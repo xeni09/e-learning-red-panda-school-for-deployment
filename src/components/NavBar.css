@@ -7,7 +7,7 @@
 .navbar-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -37,7 +37,7 @@
   list-style: none;
   gap: 1rem;
   margin: 0;
-  padding: 0;
+  padding-bottom: 1rem;
 }
 
 .navbar-links {
@@ -50,9 +50,18 @@
   text-decoration: none;
 }
 
+.navbar-link a.active {
+  font-weight: bold;
+  border-bottom: 2px solid white;
+  padding-bottom: 10px;
+}
+
 .navbar-link a:hover,
 .navbar-brand:hover {
-  color: #a0aec0;
+  font-weight: bold;
+  color: white;
+  border-bottom: 2px solid white;
+  padding-bottom: 10px;
 }
 
 .navbar-toggle {
@@ -65,6 +74,43 @@
 .navbar-toggle svg {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.navbar-login-container {
+  position: relative;
+}
+.navbar-login-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.user-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.navbar-login-dropdown {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: white;
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.navbar-login-dropdown a {
+  display: block;
+  padding: 10px 20px;
+  color: #333;
+  text-decoration: none;
+}
+
+.navbar-login-dropdown a:hover {
+  background-color: #f0f0f0;
 }
 
 @media (min-width: 768px) {
