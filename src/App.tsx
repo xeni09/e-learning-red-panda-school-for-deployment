@@ -1,32 +1,25 @@
 import "./App.css";
-import NavBar from "./components/NavBar.tsx";
-import Section from "./components/Section";
-import heroBanner from "./assets/hero-banner.png";
-import Footer from "./components/Footer.tsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Courses from "./pages/Courses";
+import Contact from "./pages/Contact";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <>
-      <NavBar></NavBar>
-      <Section
-        color="#C1510E"
-        image={heroBanner}
-        text="This is a blue section"
-        title={"Holi"}
-        imagePosition={"left"}
-        imageSize={200}
-      />
-      <Section
-        color="#fff"
-        image={heroBanner}
-        text="This is a red section"
-        title={"Holi"}
-        imagePosition={"right"}
-        imageSize={200}
-      />
-      <Footer></Footer>
-    </>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+      <Footer />
+    </Router>
   );
-}
+};
 
 export default App;

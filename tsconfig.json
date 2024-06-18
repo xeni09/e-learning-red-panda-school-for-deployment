@@ -1,30 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+    "target": "ES2020",  // Target ECMAScript 2020
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],  // Include necessary libraries
+    "module": "ESNext",  // Specify module system
+    "useDefineForClassFields": true,  // Enable class field declarations
+    "jsx": "react-jsx",  // Enable JSX parsing
+    "moduleResolution": "node",  // Use Node.js module resolution
+    "resolveJsonModule": true,  // Allow importing JSON modules
+    "skipLibCheck": true,  // Skip type checking of imported libraries
+    "noEmit": true,  // Do not emit output files
+    "isolatedModules": true,  // Ensure each file is treated as a separate module
+    "strict": true,  // Enable all strict type-checking options
+    "noUnusedLocals": true,  // Report unused variables
+    "noUnusedParameters": true,  // Report unused parameters
+    "noFallthroughCasesInSwitch": true,  // Report fallthrough cases in switch statements
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "baseUrl": "./src",
+    /* Paths */
+    "baseUrl": "./src",  // Base directory for module resolution
     "paths": {
-      "@components": ["./src/components"]
-    }
+      "@components/*": ["components/*"]  // Example path mapping for components
+    },
+    "allowSyntheticDefaultImports": true 
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/**/*"],  // Files to include in compilation
+  "references": [
+    { "path": "./tsconfig.node.json" }  // Reference to another tsconfig file if needed
+  ]
 }

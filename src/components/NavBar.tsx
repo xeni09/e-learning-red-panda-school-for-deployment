@@ -3,6 +3,7 @@ import "./NavBar.css";
 import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
 import { NavItem } from "./types";
+import { Link } from "react-router-dom";
 
 const navItems: NavItem[] = [
   { name: "Home", href: "/" },
