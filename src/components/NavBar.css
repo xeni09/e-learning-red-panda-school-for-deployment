@@ -1,27 +1,43 @@
 .navbar {
   width: 100%;
   background-color: #c1510e;
-  padding: 2rem;
+  padding: 1rem 1rem;
+  position: relative;
+  z-index: 100;
+  transition: top 0.3s, background-color 0.3s;
+}
+
+.navbar-hidden {
+  top: 0px; /* Adjust this value based on your navbar height */
+}
+
+.navbar-fixed {
+  position: fixed;
+  top: 0;
+}
+
+.navbar-transparent {
+  background-color: rgba(193, 80, 14, 0.827);
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0rem 1rem;
 }
 
 .navbar-brand-container {
   display: flex;
   align-items: center;
-  max-width: 1000px;
-  margin: 0;
+  padding-right: 1rem;
 }
 
 .navbar-logo {
   width: 5rem;
-  height: 5rem;
+  height: auto;
   margin-right: 1rem;
 }
 
@@ -29,31 +45,31 @@
   color: white;
   font-size: 1rem;
   font-weight: bold;
-  text-decoration: none;
+  line-height: 1.2;
 }
 
 .navbar-menu {
-  display: none;
+  display: flex;
   list-style: none;
   gap: 1rem;
   margin: 0;
-  padding-bottom: 1rem;
+  padding: 0;
 }
 
-.navbar-links {
-  display: flex;
-  align-items: center;
+.navbar-link {
+  margin-right: 1rem;
 }
 
 .navbar-link a {
   color: white;
   text-decoration: none;
+  display: inline-block;
+  padding-bottom: 5px;
 }
 
 .navbar-link a.active {
   font-weight: bold;
   border-bottom: 2px solid white;
-  padding-bottom: 10px;
 }
 
 .navbar-link a:hover,
@@ -61,28 +77,21 @@
   font-weight: bold;
   color: white;
   border-bottom: 2px solid white;
-  padding-bottom: 10px;
-}
-
-.navbar-toggle {
-  display: block;
-  background: none;
-  border: none;
-  color: white;
-}
-
-.navbar-toggle svg {
-  width: 1.5rem;
-  height: 1.5rem;
 }
 
 .navbar-login-container {
-  position: relative;
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: center; /* Center items horizontally */
+  margin-top: 1rem; /* Adjust margin as needed */
 }
+
 .navbar-login-icon {
   background: none;
   border: none;
   cursor: pointer;
+  /* margin-left: 1rem;
+  margin-right: 1rem; */ /* Adjust these margins as needed */
 }
 
 .user-icon {
@@ -91,11 +100,16 @@
 }
 
 .navbar-login-dropdown {
-  position: absolute;
+  position: relative; /* Use relative positioning */
+  top: 100%; /* Start dropdown just below the login icon */
   right: 0;
-  top: 40px;
-  background: white;
-
+  width: 120px;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Adjust the alpha value (0.9) for transparency */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
@@ -113,12 +127,70 @@
   background-color: #f0f0f0;
 }
 
-@media (min-width: 768px) {
-  .navbar-menu {
-    display: flex;
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
   }
 
-  .navbar-toggle {
-    display: none;
+  .navbar-brand-container {
+    padding: 1rem 0;
+  }
+
+  .navbar-brand {
+    text-align: left;
+    font-size: 0.7rem;
+  }
+
+  .navbar-logo {
+    width: 3rem;
+    height: auto;
+  }
+
+  .navbar-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0rem;
+    margin-top: 1rem;
+  }
+
+  .navbar-link {
+    margin-right: 1rem;
+  }
+
+  .navbar-link a {
+    padding: 0.5rem 1rem;
+    width: auto;
+  }
+
+  .navbar-login-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-login-icon {
+    margin-right: 1rem;
+  }
+
+  .navbar-login-dropdown {
+    position: absolute; /* Switch to absolute positioning on mobile for proper alignment */
+    top: calc(100% + 10px); /* Places the dropdown just below the login icon */
+    right: 0;
+  }
+
+  .navbar-login-dropdown a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .navbar-login-dropdown a:hover {
+    background-color: #f0f0f0;
   }
 }
