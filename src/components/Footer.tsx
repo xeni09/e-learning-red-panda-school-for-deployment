@@ -6,24 +6,19 @@ import instagram from "../assets/socials-instagram.png";
 import facebook from "../assets/socials-facebook.png";
 
 const Footer: React.FC = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Aquí puedes agregar la lógica para enviar el formulario (por ejemplo, una llamada a una API o enviar por correo electrónico)
-    console.log("Formulario enviado:", { name, email, message });
-    // Aquí puedes añadir más lógica según tus necesidades (por ejemplo, limpiar el formulario, mostrar un mensaje de éxito, etc.)
-    setName("");
+    console.log("Form submitted:", { email });
     setEmail("");
-    setMessage("");
   };
 
   return (
     <footer className="footer">
       <div className="footer-content">
-        <div className="footer-section footer-socials-container">
+        {/* Brand and socials section */}
+        <div className="footer-section">
           <div className="brand-container">
             <img src={logo} alt="logo" className="footer-logo" />
             <a href="/" className="footer-brand">
@@ -34,9 +29,7 @@ const Footer: React.FC = () => {
               School
             </a>
           </div>
-
           <p className="footer-text">We are your new high-quality school.</p>
-
           <div className="footer-socials">
             <a href="">
               <img className="footer-socials-img" src={youtube} alt="" />
@@ -50,6 +43,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Popular courses section */}
         <div className="footer-section">
           <h3>Popular courses</h3>
           <ul>
@@ -64,6 +58,8 @@ const Footer: React.FC = () => {
             </li>
           </ul>
         </div>
+
+        {/* Support section */}
         <div className="footer-section">
           <h3>Need support?</h3>
           <p>
@@ -73,6 +69,8 @@ const Footer: React.FC = () => {
             </a>
           </p>
         </div>
+
+        {/* Newsletter subscription section */}
         <div className="footer-section">
           <h3>Subscribe our newsletter</h3>
           <form onSubmit={handleSubmit} className="contact-form">
@@ -87,7 +85,13 @@ const Footer: React.FC = () => {
           </form>
         </div>
       </div>
+
+      {/* Legal section */}
       <div className="legal">
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
         <p>&copy; 2024 RedPandaSchool. Inesdi</p>
       </div>
     </footer>

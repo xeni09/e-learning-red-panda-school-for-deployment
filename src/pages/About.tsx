@@ -2,7 +2,7 @@ import React from 'react';
 
 const About: React.FC = () => {
   return (
-    <div>
+    <div className="container">
       <h1>About Us</h1>
       <p>
         Red Panda School is a place to learn and grow. We offer a variety of
