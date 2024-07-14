@@ -100,16 +100,12 @@
 }
 
 .navbar-login-dropdown {
-  position: relative; /* Use relative positioning */
-  top: 100%; /* Start dropdown just below the login icon */
-  right: 0;
+  position: absolute;
+  top: 80%; /* Start dropdown just below the login icon */
+  right: auto;
+  margin-right: 80px;
   width: 120px;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.9
-  ); /* Adjust the alpha value (0.9) for transparency */
+  background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
@@ -178,9 +174,10 @@
   }
 
   .navbar-login-dropdown {
-    position: absolute; /* Switch to absolute positioning on mobile for proper alignment */
-    top: calc(100% + 10px); /* Places the dropdown just below the login icon */
+    position: absolute;
+    top: calc(100% + 10px);
     right: 0;
+    margin-right: 0;
   }
 
   .navbar-login-dropdown a {

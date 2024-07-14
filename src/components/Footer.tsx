@@ -15,29 +15,29 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="footer">
-      <div className="footer-content">
+    <footer className="footer pt-16 bg-primary text-light mt-auto">
+      <div className="footer-content pb-10">
         {/* Brand and socials section */}
         <div className="footer-section">
           <div className="brand-container">
             <img src={logo} alt="logo" className="footer-logo" />
-            <a href="/" className="footer-brand">
+            <div className="footer-brand">
               Red
               <br />
               Panda
               <br />
               School
-            </a>
+            </div>
           </div>
-          <p className="footer-text">We are your new high-quality school.</p>
+          <p className="footer-text py-4">We are your new high-quality school.</p>
           <div className="footer-socials">
-            <a href="">
+            <a href="#">
               <img className="footer-socials-img" src={youtube} alt="" />
             </a>
-            <a href="">
+            <a href="#">
               <img className="footer-socials-img" src={instagram} alt="" />
             </a>
-            <a href="">
+            <a href="#">
               <img className="footer-socials-img" src={facebook} alt="" />
             </a>
           </div>
@@ -62,12 +62,8 @@ const Footer: React.FC = () => {
         {/* Support section */}
         <div className="footer-section">
           <h3>Need support?</h3>
-          <p>
-            Contact us at{" "}
-            <a href="mailto:support@redpandaschool.com">
-              support@redpandaschool.com
-            </a>
-          </p>
+          <p>Contact us at </p>
+          <a href="mailto:support@redpandaschool.com">support@redpandaschool.com</a>
         </div>
 
         {/* Newsletter subscription section */}
@@ -75,19 +71,20 @@ const Footer: React.FC = () => {
           <h3>Subscribe our newsletter</h3>
           <form onSubmit={handleSubmit} className="contact-form">
             <input
+              className="block w-full  rounded-md border-0 py-1.5 mb-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email..."
               required
             />
-            <button type="submit">Submit</button>
+            <button className="btn-fullwidth" type="submit">Submit</button>
           </form>
         </div>
       </div>
 
       {/* Legal section */}
-      <div className="legal">
+      <div className="legal py-8">
         <ul>
           <li><a href="#">Terms of Service</a></li>
           <li><a href="#">Privacy Policy</a></li>
