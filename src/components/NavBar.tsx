@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
@@ -14,9 +14,9 @@ const navItems: NavItem[] = [
 
 const NavBar: React.FC = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [activeItem, setActiveItem] = useState<string>(navItems[0].name);
   const [navbarFixed, setNavbarFixed] = useState(false);
   const [navbarTransparent, setNavbarTransparent] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,11 +35,6 @@ const NavBar: React.FC = () => {
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
-  };
-
-  const handleItemClick = (itemName: string) => {
-    setActiveItem(itemName);
-    setDropdownVisible(false); // Close dropdown on item click (if open)
   };
 
   return (
@@ -61,8 +56,7 @@ const NavBar: React.FC = () => {
             <li key={item.name} className="navbar-link">
               <Link
                 to={item.href}
-                className={activeItem === item.name ? "active" : ""}
-                onClick={() => handleItemClick(item.name)}
+                className={location.pathname === item.href ? "active" : ""}
               >
                 {item.name}
               </Link>
@@ -76,8 +70,8 @@ const NavBar: React.FC = () => {
           </button>
           {dropdownVisible && (
             <div className="navbar-login-dropdown">
-              <a href="/login">Log In</a>
-              <a href="/signup">Sign Up</a>
+              <Link to="/login">Log In</Link>
+              <Link to="/signup">Sign Up</Link>
             </div>
           )}
         </div>
