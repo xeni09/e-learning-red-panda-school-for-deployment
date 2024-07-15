@@ -31,13 +31,13 @@ const Footer: React.FC = () => {
           </div>
           <p className="footer-text py-4">We are your new high-quality school.</p>
           <div className="footer-socials">
-            <a href="#">
+            <a href="not-created">
               <img className="footer-socials-img" src={youtube} alt="" />
             </a>
-            <a href="#">
+            <a href="not-created">
               <img className="footer-socials-img" src={instagram} alt="" />
             </a>
-            <a href="#">
+            <a href="not-created">
               <img className="footer-socials-img" src={facebook} alt="" />
             </a>
           </div>
@@ -48,13 +48,13 @@ const Footer: React.FC = () => {
           <h3>Popular courses</h3>
           <ul>
             <li>
-              <a href="#">Advanced design</a>
+              <a href="not-created">Advanced design</a>
             </li>
             <li>
-              <a href="#">Web development</a>
+              <a href="not-created">Web development</a>
             </li>
             <li>
-              <a href="#">Data visualization</a>
+              <a href="not-created">Data visualization</a>
             </li>
           </ul>
         </div>
@@ -86,8 +86,8 @@ const Footer: React.FC = () => {
       {/* Legal section */}
       <div className="legal py-8">
         <ul>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="terms-of-service">Terms of Service</a></li>
+          <li><a href="privacy-policy">Privacy Policy</a></li>
         </ul>
         <p>&copy; 2024 RedPandaSchool. Inesdi</p>
       </div>

@@ -1,23 +1,13 @@
 /* Base styles */
+
 .footer {
-}
-
-@media (max-width: 1200px) {
-  .footer {
-    padding: 3rem 2rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .footer {
-    padding: 3rem 1rem;
-  }
+  padding: 0 2rem;
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  grid-template-columns: 2fr 1.2fr 1.8fr 1.5fr;
+  gap: 0.5rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -29,6 +19,9 @@
 }
 .footer-brand {
   font-weight: bold;
+}
+.footer-section {
+  padding-right: 20px;
 }
 
 .footer-section ul {
@@ -74,13 +67,15 @@
 
 /* Media queries for responsiveness */
 /* Tablet horizontal */
+
 @media (max-width: 1024px) {
   .footer-content {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 }
 /* Tablet vertical */
-@media (max-width: 768px) {
+@media (max-width: 868px) {
   .footer-content {
     grid-template-columns: repeat(2, 1fr);
   }

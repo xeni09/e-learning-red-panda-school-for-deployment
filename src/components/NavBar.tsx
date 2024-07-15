@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import logo from "../assets/logo.svg";
@@ -17,6 +17,7 @@ const NavBar: React.FC = () => {
   const [navbarFixed, setNavbarFixed] = useState(false);
   const [navbarTransparent, setNavbarTransparent] = useState(false);
   const location = useLocation();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,8 +34,30 @@ const NavBar: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownVisible(false);
+      }
+    };
+
+    if (dropdownVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownVisible]);
+
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleLinkClick = () => {
+    setDropdownVisible(false);
   };
 
   return (
@@ -50,7 +73,7 @@ const NavBar: React.FC = () => {
             School
           </div>
         </div>
-
+        
         <ul className="navbar-menu">
           {navItems.map((item) => (
             <li key={item.name} className="navbar-link">
@@ -64,14 +87,14 @@ const NavBar: React.FC = () => {
           ))}
         </ul>
 
-        <div className="navbar-login-container">
+        <div className="navbar-login-container" ref={dropdownRef}>
           <button className="navbar-login-icon" onClick={toggleDropdown}>
             <img src={userIcon} alt="User Icon" className="user-icon" />
           </button>
           {dropdownVisible && (
             <div className="navbar-login-dropdown">
-              <Link to="/login">Log In</Link>
-              <Link to="/signup">Sign Up</Link>
+              <Link to="/login" onClick={handleLinkClick}>Log In</Link>
+              <Link to="/signup" onClick={handleLinkClick}>Sign Up</Link>
             </div>
           )}
         </div>
