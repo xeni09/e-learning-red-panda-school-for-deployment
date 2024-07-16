@@ -1,29 +1,25 @@
 {
   "compilerOptions": {
-    "target": "ES2020",  // Target ECMAScript 2020
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],  // Include necessary libraries
-    "module": "ESNext",  // Specify module system
-    "useDefineForClassFields": true,  // Enable class field declarations
-    "jsx": "react-jsx",  // Enable JSX parsing
-    "moduleResolution": "node",  // Use Node.js module resolution
-    "resolveJsonModule": true,  // Allow importing JSON modules
-    "skipLibCheck": true,  // Skip type checking of imported libraries
-    "noEmit": true,  // Do not emit output files
-    "isolatedModules": true,  // Ensure each file is treated as a separate module
-    "strict": true,  // Enable all strict type-checking options
-    "noUnusedLocals": true,  // Report unused variables
-    "noUnusedParameters": true,  // Report unused parameters
-    "noFallthroughCasesInSwitch": true,  // Report fallthrough cases in switch statements
-
-    /* Paths */
-    "baseUrl": "./src",  // Base directory for module resolution
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "useDefineForClassFields": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./src",
     "paths": {
-      "@components/*": ["components/*"]  // Example path mapping for components
+      "@components/*": ["components/*"]
     },
-    "allowSyntheticDefaultImports": true 
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],  // Files to include in compilation
-  "references": [
-    { "path": "./tsconfig.node.json" }  // Reference to another tsconfig file if needed
-  ]
+  "include": ["src/**/*"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
