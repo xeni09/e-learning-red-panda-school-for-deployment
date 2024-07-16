@@ -1,6 +1,6 @@
 import logo from '../assets/logo.png';
 
-export default function Example() {
+export default function Login() {
   return (
     <>
      
