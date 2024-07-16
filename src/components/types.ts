@@ -9,4 +9,5 @@ export interface SectionProps {
   imagePosition?: "left" | "right";
   imageSize?: number;
   text: string;
+  text2?: string;
 }

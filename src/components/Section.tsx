@@ -1,5 +1,4 @@
 import React from "react";
-import "./Section.css";
 import { SectionProps } from "./types";
 
 const Section: React.FC<SectionProps> = ({
@@ -9,35 +8,39 @@ const Section: React.FC<SectionProps> = ({
   imagePosition,
   imageSize,
   text,
+  text2,
 }) => {
   const imageClass =
-    imagePosition === "left" ? "section-image-left" : "section-image-right";
-  const textColor = color === "#fff" ? "black" : "white";
+    imagePosition === "left" ? "order-first" : "order-last";
+  const textColorClass = color === "#fff" ? "text-black" : "text-white";
 
   return (
-    <div className="section" style={{ backgroundColor: color }}>
-      <div className="section-content">
+    <div className={`py-12 px-6`} style={{ backgroundColor: color }}>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-6 max-w-6xl mx-auto">
         {imagePosition === "left" && (
           <img
             src={image}
             alt="section"
-            className={`section-image ${imageClass}`}
+            className={`rounded-full ${imageClass}`}
             style={{ width: imageSize, height: imageSize }}
           />
         )}
-        <div className="section-text-content">
-          <h2 className="section-title" style={{ color: textColor }}>
+        <div className="flex-1 text-center md:text-left">
+          <h1 className={`text-3xl font-bold tracking-tight  ${textColorClass}`}>
             {title}
-          </h2>
-          <p className="section-text" style={{ color: textColor }}>
+          </h1>
+          <h2 className={`text-2xl ${textColorClass}`}>
             {text}
+          </h2>
+          <p className={` max-w-lg ${textColorClass}`}>
+            {text2}
           </p>
         </div>
         {imagePosition === "right" && (
           <img
             src={image}
             alt="section"
-            className={`section-image ${imageClass}`}
+            className={`rounded-full ${imageClass}`}
             style={{ width: imageSize, height: imageSize }}
           />
         )}
