@@ -1,6 +1,6 @@
 import logo from '../assets/logo.png';
 
-export default function Example() {
+const Login = () => {
   return (
     <>
      
@@ -79,3 +79,4 @@ export default function Example() {
     </>
   )
 }
+export default Login;

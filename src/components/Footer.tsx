@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
               School
             </div>
           </div>
-          <p className="footer-text py-4">We are your new high-quality school.</p>
+          <p className="footer-text py-4 text-left">We are your new high-quality school.</p>
           <div className="footer-socials">
             <a href="not-created">
               <img className="footer-socials-img" src={youtube} alt="" />
