@@ -12,7 +12,7 @@ const Login = () => {
             className="mx-auto mt-6 h-28 w-auto"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-dark-900">
-            Sign in to your account
+            Log in to your account
           </h2>
         </div>
 
