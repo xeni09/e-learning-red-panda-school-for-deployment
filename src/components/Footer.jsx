@@ -5,10 +5,10 @@ import youtube from "../assets/socials-youtube.png";
 import instagram from "../assets/socials-instagram.png";
 import facebook from "../assets/socials-facebook.png";
 
-const Footer: React.FC = () => {
+const Footer = () => {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form submitted:", { email });
     setEmail("");

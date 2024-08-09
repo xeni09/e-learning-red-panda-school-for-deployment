@@ -1,7 +1,6 @@
 import React from "react";
-import { SectionProps } from "./types";
 
-const Section: React.FC<SectionProps> = ({
+const Section = ({
   color,
   title,
   image,
@@ -10,8 +9,7 @@ const Section: React.FC<SectionProps> = ({
   text,
   text2,
 }) => {
-  const imageClass =
-    imagePosition === "left" ? "order-first" : "order-last";
+  const imageClass = imagePosition === "left" ? "order-first" : "order-last";
   const textColorClass = color === "#fff" ? "text-black" : "text-white";
 
   return (
@@ -26,13 +24,13 @@ const Section: React.FC<SectionProps> = ({
           />
         )}
         <div className="flex-1 text-center md:text-left">
-          <h1 className={`text-3xl font-bold tracking-tight  ${textColorClass}`}>
+          <h1 className={`text-3xl font-bold tracking-tight ${textColorClass}`}>
             {title}
           </h1>
           <h2 className={`text-2xl ${textColorClass}`}>
             {text}
           </h2>
-          <p className={` max-w-lg ${textColorClass}`}>
+          <p className={`max-w-lg ${textColorClass}`}>
             {text2}
           </p>
         </div>

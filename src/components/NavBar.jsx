@@ -3,21 +3,20 @@ import { Link, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
-import { NavItem } from "./types";
 
-const navItems: NavItem[] = [
+const navItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Courses", href: "/courses" },
   { name: "Contact", href: "/contact" },
 ];
 
-const NavBar: React.FC = () => {
+const NavBar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [navbarFixed, setNavbarFixed] = useState(false);
   const [navbarTransparent, setNavbarTransparent] = useState(false);
   const location = useLocation();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,8 +34,8 @@ const NavBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownVisible(false);
       }
     };
@@ -63,16 +62,18 @@ const NavBar: React.FC = () => {
   return (
     <nav className={`navbar ${navbarFixed ? "navbar-fixed" : ""} ${navbarTransparent ? "navbar-transparent" : ""}`}>
       <div className="navbar-container">
-        <div className="navbar-brand-container">
-          <img src={logo} alt="logo" className="navbar-logo" />
-          <div className="navbar-brand">
-            Red
-            <br />
-            Panda
-            <br />
-            School
+        <Link to="/" className="navbar-brand-link">
+          <div className="navbar-brand-container">
+            <img src={logo} alt="logo" className="navbar-logo" />
+            <div className="navbar-brand">
+              Red
+              <br />
+              Panda
+              <br />
+              School
+            </div>
           </div>
-        </div>
+        </Link>
         
         <ul className="navbar-menu">
           {navItems.map((item) => (

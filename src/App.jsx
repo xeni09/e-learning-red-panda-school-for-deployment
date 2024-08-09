@@ -13,7 +13,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotCreated from "./pages/NotCreated";
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Router>
       <div className="app-container">

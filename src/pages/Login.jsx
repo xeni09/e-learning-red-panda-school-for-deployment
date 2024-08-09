@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import logo from '../assets/logo.png';
 
-const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle forgot password logic here
-    console.log('Forgot password for:', email);
-  };
-
+const Login = () => {
   return (
     <>
       <div className="flex flex-1 flex-col justify-center py-12 px-12">
@@ -20,12 +12,12 @@ const ForgotPassword: React.FC = () => {
             className="mx-auto mt-6 h-28 w-auto"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-dark-900">
-            Reset your password
+            Log in to your account
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form action="#" method="POST" className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -38,8 +30,29 @@ const ForgotPassword: React.FC = () => {
                   required
                   autoComplete="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                  Password
+                </label>
+                <div className="text-sm">
+                  <a href="forgot-password" className="font-semibold text-secondary hover:text-primary">
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+              <div className="mt-2">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -49,15 +62,15 @@ const ForgotPassword: React.FC = () => {
                 type="submit"
                 className="btn-fullwidth"
               >
-                Reset Password
+                Sign in
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Remembered your password?{' '}
-            <a href="login" className="font-semibold leading-6 text-secondary hover:text-primary">
-              Sign in
+            Not a member?{' '}
+            <a href="Signup" className="font-semibold leading-6 text-secondary hover:text-primary">
+              Create a free Account
             </a>
           </p>
         </div>
@@ -66,4 +79,4 @@ const ForgotPassword: React.FC = () => {
   );
 };
 
-export default ForgotPassword;
+export default Login;

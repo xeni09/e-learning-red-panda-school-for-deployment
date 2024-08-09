@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../assets/logo.png';
 
-const PrivacyPolicy: React.FC = () => {
+const PrivacyPolicy = () => {
   return (
     <>
       <div className="flex flex-col justify-center py-12 px-12 w-full max-w-screen-md mx-auto">

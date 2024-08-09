@@ -1,10 +1,10 @@
-// Courses.tsx
+// Courses.jsx
 import React from "react";
 // import { Course } from "../types"; 
 
-const Courses: React.FC = () => {
+const Courses = () => {
   // Aquí podrías usar estado o simplemente renderizar elementos estáticos
-  // const courses: Course[] = [
+  // const courses = [
   //   { id: 1, title: "Course 1", description: "Description of Course 1" },
   //   { id: 2, title: "Course 2", description: "Description of Course 2" },
   //   { id: 3, title: "Course 3", description: "Description of Course 3" },
