@@ -1,19 +1,53 @@
-# React + TypeScript + Vite
-## Installing Application
+## Instalación
+Antes de desarrollar, es necesario tener instalado:
 
- Install the dependencies: `npm install`
+* [NodeJS y NPM](https://nodejs.org/)
+### Configuración de entornos
 
-## Using the Application
+Antes de ejecutar la aplicación, es recomendable revisar las variables de entorno para la correcta configuración del proyecto, estas se pueden revisar aquí:
 
-To use the Application, follow these steps:
+```.env
+********* ui/.env *********
+REACT_APP_LOCALE=es-ES
+REACT_APP_BASE_URI=
+REACT_APP_API_URI=http://localhost:4000
+SECRET=e89f987sdfs9d879f8798dsf78978
+```
 
-1. Start the development server: `npm run dev`
-2. Open your web browser and visit `http://localhost:5173`
+* `REACT_APP_LOCALE` configura el idioma local del proyecto.
+* `REACT_APP_API_URI` configura la url a la que la API apuntará.
+* `REACT_APP_BASE_URI` configura un path extra para la uri si fuera necesario (si se configura con por ejemplo `/extra` la url final será `http://localhost:4000/extra/...`)
+* `SECRET` configura el secreto del JWT (para verificación, actualmente no tiene uso)
 
+```.env
+********* api/.env *********
+#can be 'development' or 'production'
+NODE_ENV=development
 
+#your app port
+PORT=4000
 
-If i want to use in a component icons from this heroic place
+SECRET=e89f987sdfs9d879f8798dsf78978
+```
 
-add this to the file:
+* `NODE_ENV` configura el entorno para desarrollo o producción
+* `PORT` configura el puerto de la aplicación
+* `SECRET` configura el secreto del JWT para verificación
 
-import { ArrowRightIcon } from '@heroicons/react/solid'
+### Instalación dependencias
+
+Instalar las dependencias de ambos proyectos, puedes seguir este script
+
+```bash
+cd api
+npm install
+cd ../ui
+npm install
+```
+
+### Ejecución Makefile
+
+Para la ejecución, usamos un **Makefile** con las instrucciones para las dos infraestructuras. Aquí puedes consultar el uso de los [Phony Targets](https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html).
+
+* Para ejecución del backend `make dev-api`
+* Para ejecución del frontend `make dev-ui`
