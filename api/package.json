@@ -1,0 +1,31 @@
+{
+  "name": "red-panda-school-backend",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.2",
+    "module-alias": "^2.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "_moduleAliases": {
+    "@": "src/",
+    "@config": "src/config",
+    "@routes": "src/routes",
+    "@middleware": "src/middleware",
+    "@models": "src/models"
+  }
+}

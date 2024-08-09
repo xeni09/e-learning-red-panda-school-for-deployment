@@ -1,16 +1,19 @@
 // vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 
 export default defineConfig({
+  root: ".",
   plugins: [react()],
   css: {
-    postcss: './postcss.config.js',
+    postcss: "./postcss.config.js",
   },
   resolve: {
     alias: {
-      "@components": path.resolve(__dirname, "src/components"),
+      "@components": "./src/components",
     },
+  },
+  build: {
+    outDir: "dist",
   },
 });
