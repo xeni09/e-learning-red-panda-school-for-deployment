@@ -1,50 +1,42 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Section from "../components/Section";
-import heroBanner from "../assets/hero-banner.png";
+import heroBanner from "../assets/hero-banner2.png";
+import Feedback from '../components/Feedback';
+import CallToAction from "../components/CallToAction";
+import FeaturedCourses from '../components/FeaturedCourses';
 
 const Home = () => {
   return (
     <>
       <Section
-        color="#C1510E"
+        backgroundColor="orange"
+        titleColor="white"
+        textColor="white"
         image={heroBanner}
-        text="This is a blue section"
-        title="Holi"
-        imagePosition="left"
-        imageSize={200}
-      />
-      <Section
-        color="#fff"
-        image={heroBanner}
-        text="This is a red section"
-        title="Holi"
+        title="The Best Online Platform for Education."
+        text={<>
+          Online courses from the world's leading experts.
+          <br />
+          Join 17 million learners today.
+        </>}
         imagePosition="right"
-        imageSize={200}
+        imageSize={500}
+        buttonBgColor={"yellow"}
+        buttonTextColor={"white"}
+        buttonText={"Let's Get Started"}
+        buttonLink="/courses"
+        showStatsSection={true}
       />
-      <Section
-        color="#C1510E"
-        image={heroBanner}
-        text="This is a blue section"
-        title="Holi"
-        imagePosition="left"
-        imageSize={200}
+      <FeaturedCourses 
+        title="Featured Courses" 
+        subText="Ready to learn with us?"
+        buttonText="Explore all courses" 
+        buttonLink="/courses" 
       />
-      <Section
-        color="#fff"
-        image={heroBanner}
-        text="This is a red section"
-        title="Holi"
-        imagePosition="right"
-        imageSize={200}
-      />
-      <Section
-        color="#C1510E"
-        image={heroBanner}
-        text="This is a blue section"
-        title="Holi"
-        imagePosition="left"
-        imageSize={200}
-      />
+      
+      <Feedback />
+      <CallToAction />
     </>
   );
 };

@@ -1,4 +1,5 @@
-import "./App.css";
+
+import "./index.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
@@ -12,10 +13,14 @@ import ForgotPassword from "./pages/ForgotPassword";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotCreated from "./pages/NotCreated";
+import CoursePage from "./pages/CoursePage";
+import ScrollToTop from './components/ScrollToTop';
+import CheckoutPage from './pages/CheckoutPage';
 
 const App = () => {
   return (
     <Router>
+      <ScrollToTop>
       <div className="app-container">
         <NavBar />
         <div className="main-content">
@@ -30,10 +35,14 @@ const App = () => {
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/not-created" element={<NotCreated />} />
+            <Route path="/course/:courseId" element={<CoursePage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+       
           </Routes>
         </div>
         <Footer />
       </div>
+      </ScrollToTop>
     </Router>
   );
 };
