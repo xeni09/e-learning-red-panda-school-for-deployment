@@ -7,6 +7,7 @@ import CallToAction from "../components/CallToAction";
 import FeaturedCourses from '../components/FeaturedCourses';
 
 const Home = () => {
+  const selectedCourseIds = [1, 2, 5];
   return (
     <>
       <Section
@@ -31,6 +32,7 @@ const Home = () => {
       <FeaturedCourses 
         title="Featured Courses" 
         subText="Ready to learn with us?"
+        selectedCourseIds={selectedCourseIds} 
         buttonText="Explore all courses" 
         buttonLink="/courses" 
       />

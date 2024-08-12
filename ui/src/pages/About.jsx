@@ -1,6 +1,8 @@
 import React from 'react';
 import Section from "../components/Section";
 import heroBanner from "../assets/hero-banner2.png";
+import Feedback from "../components/Feedback";
+import CallToAction from "../components/CallToAction";
 import '../index.css';
 
 
@@ -117,7 +119,11 @@ const About = () => {
             ))}
           </ul>
         </div>
+        
       </div>
+      <Feedback />
+      <CallToAction buttonText="All Courses"
+      buttonLink={"/courses"} />
     </>
   );
 };
