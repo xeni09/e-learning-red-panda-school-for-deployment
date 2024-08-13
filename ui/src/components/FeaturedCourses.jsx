@@ -47,11 +47,13 @@ const courses = [
   },
 ];
 
-const FeaturedCourses = ({ title, buttonText, buttonLink, subText }) => {
+const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCourseIds, titleFontSize = 'font-6xl' }) => {
+  const filteredCourses = courses.filter(course => selectedCourseIds.includes(course.id));
+
   return (
     <div className="container mx-auto p-4 py-20">
-      <h1 className="font-bold text-[var(--color-black)] text-center pb-16">{title}</h1>
-      <CourseCardGrid courses={courses} />
+      <p className={`font-bold text-[var(--color-black)] text-center pb-10 ${titleFontSize}`}>{title}</p>
+      <CourseCardGrid courses={filteredCourses} />
       
       <h2 className="font-bold text-center pt-16">{subText}</h2>
 

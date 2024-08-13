@@ -41,10 +41,12 @@ const CourseCard = ({ id, category, teacher, name, description, imageSrc, imageA
 
 const CourseCardGrid = ({ courses }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-2 sm:px-5">
-      {courses.map((course, index) => (
-        <CourseCard key={index} id={course.id} {...course} />
-      ))}
+    <div className="flex justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-2 sm:px-5">
+        {courses.map((course, index) => (
+          <CourseCard key={index} id={course.id} {...course} />
+        ))}
+      </div>
     </div>
   );
 };

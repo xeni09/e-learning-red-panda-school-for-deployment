@@ -2,11 +2,11 @@ import React from 'react';
 import { FaStar, FaUserGraduate, FaClock, FaFileAlt, FaGlobe, FaMobileAlt, FaVolumeUp, FaLevelUpAlt, FaInfinity } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-const CourseSummary = ({ courseName, price, teacherName, description }) => {
+const CourseSummary = ({ courseName, price, teacherName, description, posterUrl }) => {
   const navigate = useNavigate();
 
   const handleBuyNowClick = () => {
-    const course = { name: courseName, price, teacherName, description };
+    const course = { name: courseName, price, teacherName, description, posterUrl };
     navigate('/checkout', { state: { course } });
   };
 
@@ -18,6 +18,7 @@ const CourseSummary = ({ courseName, price, teacherName, description }) => {
     <div className="p-6 border rounded shadow bg-[var(--color-white)]">
       <p className="text-2xl font-bold">{courseName}</p>
       <p className="text-lg text-[var(--color-grey)]">{teacherName}</p> 
+      {posterUrl && <img src={posterUrl} alt={courseName} />}
       
       <div className="my-4 text-sm text-[var(--color-grey)] space-y-2">
         <div className="flex items-start"><FaStar className="mr-2 mt-1" /> 95% positive ratings</div>

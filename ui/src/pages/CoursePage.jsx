@@ -15,6 +15,7 @@ const CoursePage = () => {
     posterUrl: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
     price: "99 €"
   };
+  const selectedCourseIds = [2, 5];
 
   return (
     <div className="container my-16 p-4">
@@ -44,8 +45,9 @@ const CoursePage = () => {
           </div>
           {/* Featured Courses */}
       <FeaturedCourses 
-    
         title="Related Courses" 
+        selectedCourseIds={selectedCourseIds} 
+        titleFontSize="text-4xl"
     
       />
         </div>
@@ -53,7 +55,11 @@ const CoursePage = () => {
         <div className="order-4 md:order-4 col-span-1">
           {/* Course Summary */}
           <div className="sticky top-40">
-            <CourseSummary courseName={course.title} price={course.price} teacherName={course.instructor} />
+            <CourseSummary 
+                  courseName={course.title}
+                  price={course.price} 
+                  teacherName={course.instructor} 
+                  posterUrl={course.posterUrl} />
           </div>
         </div>
 

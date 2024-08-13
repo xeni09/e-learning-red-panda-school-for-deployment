@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../assets/logo-transparente.png';
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = { email, password };
+    
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        window.location.href = '/admin';
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-1 flex-col justify-center py-12 px-12">
@@ -16,8 +42,8 @@ const Login = () => {
           </h2>
         </div>
 
-        <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
                 Email address
@@ -29,7 +55,9 @@ const Login = () => {
                   type="email"
                   required
                   autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-[var(--color-black)] shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
+                  className="field"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -52,7 +80,9 @@ const Login = () => {
                   type="password"
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-[var(--color-black)] shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
+                  className="field"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
