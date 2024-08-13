@@ -1,50 +1,46 @@
 require("module-alias/register");
+const http = require("http");
+const app = require("./app");
+const Logger = require("@/utils/Logger");
 
-const express = require("express");
-const mongoose = require("mongoose");
-const path = require("path");
-const config = require("@config/env");
-const initRoutes = require("@routes/initRoutes");
-const { configure, initErrorHandler } = require("@middleware/middleware");
-const { auth } = require("@middleware/jwtAuth");
+const port = process.env.PORT || 3000;
+app.set("port", port);
 
-const app = express();
+const server = http.createServer(app);
 
-// Configurar middlewares
-configure(app);
-
-// Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(__dirname, "public")));
-
-// Redirigir la ruta raíz a /login
-app.get("/", (req, res) => {
-  res.redirect("/login");
-});
-
-// Ruta para la página de inicio de sesión
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "login.html"));
-});
-
-// Ruta protegida solo para administradores
-app.get("/admin", auth, (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).send({ error: "Access denied. Admins only." });
-  }
-  res.send("Welcome Admin");
-});
-
-mongoose
-  .connect(config.mongodbUri)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Could not connect to MongoDB", err));
-
-initRoutes(app);
-
-// Inicializar el manejador de errores
-initErrorHandler(app);
-
-const port = config.port || 3000;
-app.listen(port, () => {
+/**
+ * Binds and listens for connections on the specified host
+ */
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+/**
+ * Server Events
+ */
+server.on("error", (error) => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
+
+  switch (error.code) {
+    case "EACCES":
+      Logger.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      Logger.error(`${bind} is already in use`);
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+});
+
+server.on("listening", () => {
+  const addr = server.address();
+  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
+  Logger.info(`Listening on ${bind}`);
 });
