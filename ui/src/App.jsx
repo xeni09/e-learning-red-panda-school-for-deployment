@@ -16,6 +16,7 @@ import CoursePage from "./pages/CoursePage";
 import ScrollToTop from './components/ScrollToTop';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
+import Admin from './pages/Admin';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/course/:courseId" element={<CoursePage />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </div>
           <Footer />
