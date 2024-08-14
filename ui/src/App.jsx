@@ -26,6 +26,9 @@ import Settings from './pages/authenticated/Settings';
 
 
 const App = () => {
+
+
+
   return (
     <Router>
       <ScrollToTop>

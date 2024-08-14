@@ -1,11 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { login, verifyToken } = require("../controllers/authController");
+const {
+  register,
+  login,
+  verifyToken,
+} = require("../controllers/authController");
 
+router.post("/register", register);
 router.post("/login", login);
+router.get("/verifyToken", verifyToken);
 
 // Ruta protegida solo para administradores
 router.get("/admin", verifyToken, (req, res) => {
+  // Verificar si el usuario tiene el rol de administrador
   if (req.user.role !== "admin") {
     return res.status(403).send({ error: "Access denied. Admins only." });
   }

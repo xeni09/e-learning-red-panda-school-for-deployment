@@ -1,23 +1,20 @@
-require("module-alias/register");
 const http = require("http");
+const Logger = require("./utils/Logger");
 const app = require("./app");
-const Logger = require("@/utils/Logger");
 
+// Configurar puerto
 const port = process.env.PORT || 3000;
 app.set("port", port);
 
+// Crear servidor HTTP
 const server = http.createServer(app);
 
-/**
- * Binds and listens for connections on the specified host
- */
+// Iniciar servidor
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-/**
- * Server Events
- */
+// Manejar eventos del servidor
 server.on("error", (error) => {
   if (error.syscall !== "listen") {
     throw error;

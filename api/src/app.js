@@ -1,13 +1,15 @@
-const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const express = require("express");
 const session = require("express-session");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
+
 const { configure, initErrorHandler } = require("./middleware/middleware");
-const authRouter = require("./routes/AuthRouter");
-const User = require("./models/User");
+const { auth } = require("./middleware/jwtAuth");
+
 const app = express();
+const connectDB = require("./config/db");
+const initRoutes = require("./routes/initRoutes");
 
 // Verify required environment variables
 if (
@@ -19,20 +21,17 @@ if (
   throw new Error("Missing required environment variables");
 }
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Error connecting to MongoDB:", err));
+// Conectar a MongoDB
+connectDB();
 
-// Configure middlewares
+// Configurar middlewares
 configure(app);
 
-// Middleware to handle JSON and form data
+// Middleware para manejar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configure sessions
+// Configurar sesiones
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -42,62 +41,22 @@ app.use(
   })
 );
 
-// Simple authentication middleware
-function isAuthenticated(req, res, next) {
-  if (req.session && req.session.user === "admin") {
-    return next();
-  } else {
-    res.status(401).send("Unauthorized");
-  }
-}
-
-// Login route
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-
-  if (user && (await bcrypt.compare(password, user.password))) {
-    req.session.user = "admin";
-    req.session.userId = user._id;
-    res.redirect("/admin");
-  } else {
-    res.status(401).send("Invalid credentials");
-  }
-});
-
-// Register route
-app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).send("All fields are required");
-  }
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-    res.status(201).send("User created successfully");
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).send("Internal server error");
-  }
-});
-
-// Admin route
-app.get("/admin", isAuthenticated, (req, res) => {
-  res.send("Welcome, admin");
-});
-
-// Root route
+// Ruta raíz
 app.get("/", (req, res) => {
   res.send("Welcome to the API");
 });
 
-// Configure routes
-app.use("/api/auth", authRouter);
+// Importar y usar rutas
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
 
-// Initialize error handler
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+
+// Inicializar rutas adicionales
+initRoutes(app);
+
+// Inicializar el manejador de errores
 initErrorHandler(app);
 
 module.exports = app;

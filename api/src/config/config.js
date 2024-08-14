@@ -1,26 +1,7 @@
-// db.js content
-const mongoose = require("mongoose");
-require("dotenv").config();
-
-const MONGODB_URI = process.env.MONGODB_URI;
-
-const connectDB = async () => {
-  try {
-    console.log("Attempting to connect to MongoDB...");
-    await mongoose.connect(MONGODB_URI);
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("Could not connect to MongoDB", err);
-    process.exit(1);
-  }
-};
-
-// env.js content
-const envConfig = {
-  jwtSecret: "defaultsecretkey",
-  mongodbUri: "mongodb://localhost:27017/yourdbname",
-  port: 3000,
-};
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../../.env") });
+const connectDB = require("./db");
+const envConfig = require("./envConfig");
 
 // error.js content
 class AppError extends Error {
