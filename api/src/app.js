@@ -65,9 +65,23 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Serve login form
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "login.html"));
+// Register route
+app.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).send("All fields are required");
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, password: hashedPassword });
+    await newUser.save();
+    res.status(201).send("User created successfully");
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 // Admin route

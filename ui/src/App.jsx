@@ -7,7 +7,7 @@ import About from "./pages/About";
 import Courses from "./pages/Courses";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import Signup from './pages/Signup';
+import Register from './pages/Register';
 import ForgotPassword from "./pages/ForgotPassword";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -17,6 +17,13 @@ import ScrollToTop from './components/ScrollToTop';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
 import Admin from './pages/Admin';
+
+//authenticated
+
+import DashboardHome from './pages/authenticated/DashboardHome';
+import Profile from './pages/authenticated/Profile';
+import Settings from './pages/authenticated/Settings';
+
 
 const App = () => {
   return (
@@ -31,7 +38,7 @@ const App = () => {
               <Route path="/courses" element={<Courses />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -40,6 +47,15 @@ const App = () => {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/admin" element={<Admin />} />
+
+              {/* //authenticated */}
+                
+                <Route path="/dashboard" element={<DashboardHome />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+
+
+
             </Routes>
           </div>
           <Footer />

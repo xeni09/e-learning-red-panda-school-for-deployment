@@ -92,14 +92,14 @@ const Login = () => {
                 type="submit"
                 className="btn-fullwidth"
               >
-                Sign in
+                Log in
               </button>
             </div>
           </form>
 
           <p className="mt-2 text-left text-[var(--color-grey)]">
             Not a member?{' '}
-            <a href="Signup" className="font-semibold leading-6 text-secondary hover:text-primary">
+            <a href="Register" className="font-semibold leading-6 text-secondary hover:text-primary">
               Create a free Account
             </a>
           </p>

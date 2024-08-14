@@ -1,18 +1,45 @@
 import React, { useState } from 'react';
 import logo from '../assets/logo-transparente.png';
 
-export default function Signup() {
+export default function Register() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== repeatPassword) {
       setError('Passwords do not match');
+      setSuccess('');
       return;
     }
-    // Proceed with form submission
+
+    try {
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to create user');
+        setSuccess('');
+        return;
+      }
+
+      const data = await response.json();
+      setSuccess('User created successfully');
+      setError('');
+    } catch (error) {
+      setError('An unexpected error occurred');
+      setSuccess('');
+    }
   };
 
   return (
@@ -43,6 +70,8 @@ export default function Signup() {
                   required
                   autoComplete="name"
                   className="field"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
             </div>
@@ -59,6 +88,8 @@ export default function Signup() {
                   required
                   autoComplete="email"
                   className="field"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -98,10 +129,11 @@ export default function Signup() {
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
 
             <div>
               <button type="submit" className="btn-fullwidth">
-                Sign Up
+                Register
               </button>
             </div>
           </form>

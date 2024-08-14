@@ -106,7 +106,7 @@ const NavBar = ({ cartItemCount }) => {
           {dropdownVisible && (
             <div className="navbar-login-dropdown">
               <Link to="/login" onClick={handleLinkClick}>Log In</Link>
-              <Link to="/signup" onClick={handleLinkClick}>Sign Up</Link>
+              <Link to="/register" onClick={handleLinkClick}>Register</Link>
             </div>
           )}
         </div>
