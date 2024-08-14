@@ -144,8 +144,8 @@ const Courses = () => {
         titleColor="white"
         textColor="white"
         image={heroBanner}
-        imagePosition={"left"}
-        imageSize={300}
+        imagePosition={"right"}
+        imageSize={400}
         title="Best Courses and Tutorials"
         text={
           <>

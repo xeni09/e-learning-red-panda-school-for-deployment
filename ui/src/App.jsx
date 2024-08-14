@@ -19,13 +19,12 @@ import Checkout from './pages/Checkout';
 import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 import Admin from './pages/Admin';
 
-
-
 //authenticated
-
 import DashboardHome from './pages/authenticated/DashboardHome';
 import Profile from './pages/authenticated/Profile';
 import Settings from './pages/authenticated/Settings';
+
+import { AuthProvider } from './context/AuthContext';
 
 
 const App = () => {
@@ -33,6 +32,7 @@ const App = () => {
 
 
   return (
+    <AuthProvider>
     <Router>
       <ScrollToTop>
         <div className="app-container">
@@ -69,6 +69,7 @@ const App = () => {
         </div>
       </ScrollToTop>
     </Router>
+    </AuthProvider>
   );
 };
 

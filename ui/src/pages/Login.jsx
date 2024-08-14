@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import useFetch from "../hooks/useFetch";
+import { useAuth } from '../context/AuthContext'; 
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const { data, loading, error: fetchError, execute } = useFetch('http://localhost:3000/api/auth/login', {
     method: 'POST',
@@ -17,22 +19,23 @@ export default function Login() {
     },
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    await execute({ body: { email, password } });
-
-    if (fetchError) {
-      setError(fetchError.message || 'Failed to log in');
-      setSuccess('');
-      return;
-    }
-
+  useEffect(() => {
     if (data) {
-      setSuccess('Logged in successfully');
+      login();
+
       setError('');
       navigate('/dashboard');
     }
+  }, [data, navigate]);
+  useEffect(() => {
+    if (fetchError) {
+      setError(fetchError.message || 'Failed to log in');
+    }
+  }, [fetchError]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await execute({ body: { email, password } });
   };
 
   return (
@@ -42,7 +45,7 @@ export default function Login() {
           <img
             alt="Red Panda School"
             src={logo}
-            class="mx-auto mt-6 h-28 w-auto"
+            className="mx-auto mt-6 h-28 w-auto"
           />
           <h2 className="text-center font-bold my-8">
             Log in to your account
@@ -53,7 +56,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Email address
+                Email address*
               </label>
               <div className="mt-2">
                 <input
@@ -71,7 +74,7 @@ export default function Login() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Password
+                Password*
               </label>
               <div className="mt-2">
                 <input
@@ -87,7 +90,6 @@ export default function Login() {
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
-            {success && <p className="text-green-500">{success}</p>}
             {loading && <p>Loading...</p>}
 
             <div>
@@ -98,7 +100,7 @@ export default function Login() {
           </form>
           <p className="mt-2 text-left text-[var(--color-grey)]">
             Not a member?{' '}
-            <a href="Register" className="font-semibold leading-6 text-secondary hover:text-primary">
+            <a href="register" className="font-semibold leading-6 text-secondary hover:text-primary">
               Register here
             </a>
           </p>

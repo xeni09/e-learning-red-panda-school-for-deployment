@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import useFetch from "../hooks/useFetch";
@@ -17,22 +17,29 @@ export default function RegistrationSuccessful() {
     },
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    await execute({ body: { email, password } });
-
-    if (fetchError) {
-      setError(fetchError.message || 'Failed to log in');
-      setSuccess('');
-      return;
-    }
-
+  useEffect(() => {
     if (data) {
       setSuccess('Logged in successfully');
       setError('');
       navigate('/dashboard');
     }
+  }, [data, navigate]);
+
+  useEffect(() => {
+    if (fetchError) {
+      setError(fetchError.message || 'Failed to log in');
+      setSuccess('');
+    }
+  }, [fetchError]);
+
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    await execute({ body: { email, password } });
+
   };
 
   return (
@@ -44,9 +51,9 @@ export default function RegistrationSuccessful() {
             src={logo}
             class="mx-auto mt-6 h-28 w-auto"
           />
-          <h2 className="text-center font-bold my-8">
-            Your user has been successfully created.
-          </h2>
+          <p className="text-2xl text-center font-bold my-8">
+            Your user has been successfully created!
+          </p>
           <p className="text-center font-medium my-4">
             Please proceed to log in here:
           </p>
@@ -56,7 +63,7 @@ export default function RegistrationSuccessful() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Email address
+                Email address*
               </label>
               <div className="mt-2">
                 <input
@@ -74,7 +81,7 @@ export default function RegistrationSuccessful() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Password
+                Password*
               </label>
               <div className="mt-2">
                 <input

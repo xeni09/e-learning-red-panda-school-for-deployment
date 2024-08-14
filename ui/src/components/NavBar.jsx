@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
 import { FaShoppingCart } from "react-icons/fa"; 
+import { useAuth } from "../context/AuthContext"; 
 import "./NavBar.css";
-
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -17,23 +17,27 @@ const NavBar = ({ cartItemCount }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [navbarFixed, setNavbarFixed] = useState(false);
   const [navbarTransparent, setNavbarTransparent] = useState(false);
+  const { isAuthenticated, login, logout } = useAuth(); 
   const location = useLocation();
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
         setNavbarFixed(true);
-        setNavbarTransparent(true); // add transparency on scroll
+        setNavbarTransparent(true); 
       } else {
         setNavbarFixed(false);
-        setNavbarTransparent(false); // remove transparency at the top
+        setNavbarTransparent(false); 
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,12 +57,19 @@ const NavBar = ({ cartItemCount }) => {
     };
   }, [dropdownVisible]);
 
+
+
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
   const handleLinkClick = () => {
     setDropdownVisible(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/"); 
   };
 
   return (
@@ -105,8 +116,18 @@ const NavBar = ({ cartItemCount }) => {
           </button>
           {dropdownVisible && (
             <div className="navbar-login-dropdown">
-              <Link to="/login" onClick={handleLinkClick}>Log In</Link>
-              <Link to="/register" onClick={handleLinkClick}>Register</Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to="/profile" onClick={handleLinkClick}>Profile</Link>
+                  <Link to="/settings" onClick={handleLinkClick}>Settings</Link>
+                  <Link to="/" onClick={() => { handleLinkClick(); handleLogout(); }}>Logout</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={handleLinkClick}>Log In</Link>
+                  <Link to="/register" onClick={handleLinkClick}>Register</Link>
+                </>
+              )}
             </div>
           )}
         </div>

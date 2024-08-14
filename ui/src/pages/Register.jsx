@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import useFetch from "../hooks/useFetch";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
@@ -19,6 +22,29 @@ export default function Register() {
     },
   });
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleRepeatPasswordVisibility = () => {
+    setShowRepeatPassword(!showRepeatPassword);
+  };
+
+  useEffect(() => {
+    if (data) {
+      setSuccess('User created successfully');
+      setError('');
+      navigate('/registrationsuccessful'); 
+    }
+  }, [data, navigate]);
+
+  useEffect(() => {
+    if (fetchError) {
+      setError(fetchError.message || 'Failed to create user');
+      setSuccess('');
+    }
+  }, [fetchError]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== repeatPassword) {
@@ -27,19 +53,8 @@ export default function Register() {
       return;
     }
 
+    console.log('Executing fetch');
     await execute({ body: { name, email, password } });
-
-    if (fetchError) {
-      setError(fetchError.message || 'Failed to create user');
-      setSuccess('');
-      return;
-    }
-
-    if (data) {
-      setSuccess('User created successfully');
-      setError('');
-      navigate('/registrationsuccessful'); // Redirección
-    }
   };
 
   return (
@@ -57,10 +72,10 @@ export default function Register() {
         </div>
 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label htmlFor="name" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Full Name
+                Full Name*
               </label>
               <div className="mt-2">
                 <input
@@ -78,7 +93,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Email address
+                Email address*
               </label>
               <div className="mt-2">
                 <input
@@ -96,35 +111,53 @@ export default function Register() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Password
-              </label>
-              <div className="mt-2">
+                Password*
+                </label>
+              <div className="relative mt-2">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   className="field"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="focus:outline-none"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </div>
             </div>
 
             <div>
               <label htmlFor="repeatPassword" className="block text-sm font-medium leading-6 text-[var(--color-black)]">
-                Repeat Password
-              </label>
-              <div className="mt-2">
+                Repeat Password*
+                </label>
+              <div className="relative mt-2">
                 <input
                   id="repeatPassword"
                   name="repeatPassword"
-                  type="password"
+                  type={showRepeatPassword ? 'text' : 'password'}
                   required
                   className="field"
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    type="button"
+                    onClick={toggleRepeatPasswordVisibility}
+                    className="focus:outline-none"
+                  >
+                    {showRepeatPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </div>
             </div>
 
