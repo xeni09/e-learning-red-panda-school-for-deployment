@@ -1,15 +1,25 @@
 {
-  "projects": [
+  "builds": [
     {
-      "src": "ui",
+      "src": "ui/package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build"
       }
     },
     {
-      "src": "api",
+      "src": "api/**/*.js",
       "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/ui/$1"
     }
   ]
 }
