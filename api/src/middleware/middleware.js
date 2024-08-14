@@ -24,9 +24,15 @@ function configure(app) {
   app.use(cookieParser());
   // Devuelve el middleware de compresión
   app.use(compression());
+
   // Habilita CORS
-  app.use(cors());
-  // Asegura las aplicaciones configurando varias cabeceras HTTP
+  app.use(
+    cors({
+      origin: "http://localhost:5173", // Reemplaza con el dominio de tu frontend
+      credentials: true,
+    })
+  );
+
   app.use(
     helmet.contentSecurityPolicy({
       directives: {

@@ -40,7 +40,7 @@ const CheckoutSteps = ({ cart }) => {
   };
 
   const handleConfirmOrder = () => {
-    navigate('/confirmation', { state: { cart, formData } });
+    navigate('/confirmationcoursebought', { state: { cart, formData } });
   };
 
   return (

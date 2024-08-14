@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png'; // Adjust the path as necessary
 
-const Confirmation = () => {
+const ConfirmationCourseBought = () => {
   const location = useLocation();
   const { cart = [], formData = {} } = location.state || {};
 
@@ -44,4 +44,4 @@ const Confirmation = () => {
   );
 };
 
-export default Confirmation;
+export default ConfirmationCourseBought;

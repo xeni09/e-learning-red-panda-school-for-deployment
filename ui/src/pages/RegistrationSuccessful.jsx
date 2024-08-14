@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import useFetch from "../hooks/useFetch";
 
-export default function Login() {
+export default function RegistrationSuccessful() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -45,8 +45,11 @@ export default function Login() {
             class="mx-auto mt-6 h-28 w-auto"
           />
           <h2 className="text-center font-bold my-8">
-            Log in to your account
+            Your user has been successfully created.
           </h2>
+          <p className="text-center font-medium my-4">
+            Please proceed to log in here:
+          </p>
         </div>
 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -96,12 +99,6 @@ export default function Login() {
               </button>
             </div>
           </form>
-          <p className="mt-2 text-left text-[var(--color-grey)]">
-            Not a member?{' '}
-            <a href="Register" className="font-semibold leading-6 text-secondary hover:text-primary">
-              Register here
-            </a>
-          </p>
         </div>
       </div>
     </>

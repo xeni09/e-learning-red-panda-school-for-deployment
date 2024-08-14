@@ -8,6 +8,7 @@ import Courses from "./pages/Courses";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from './pages/Register';
+import RegistrationSuccessful from './pages/RegistrationSuccessful';
 import ForgotPassword from "./pages/ForgotPassword";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -15,8 +16,10 @@ import NotCreated from "./pages/NotCreated";
 import CoursePage from "./pages/CoursePage";
 import ScrollToTop from './components/ScrollToTop';
 import Checkout from './pages/Checkout';
-import Confirmation from './pages/Confirmation';
+import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 import Admin from './pages/Admin';
+
+
 
 //authenticated
 
@@ -42,13 +45,14 @@ const App = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/registrationsuccessful" element={<RegistrationSuccessful />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/not-created" element={<NotCreated />} />
               <Route path="/course/:courseId" element={<CoursePage />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="/confirmationcoursebought" element={<ConfirmationCourseBought />} />
               <Route path="/admin" element={<Admin />} />
 
               {/* //authenticated */}

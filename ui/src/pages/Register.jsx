@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
+import useFetch from "../hooks/useFetch";
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -8,6 +10,14 @@ export default function Register() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+
+  const { data, loading, error: fetchError, execute } = useFetch('http://localhost:3000/api/auth/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,28 +27,18 @@ export default function Register() {
       return;
     }
 
-    try {
-      const response = await fetch('/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+    await execute({ body: { name, email, password } });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to create user');
-        setSuccess('');
-        return;
-      }
+    if (fetchError) {
+      setError(fetchError.message || 'Failed to create user');
+      setSuccess('');
+      return;
+    }
 
-      const data = await response.json();
+    if (data) {
       setSuccess('User created successfully');
       setError('');
-    } catch (error) {
-      setError('An unexpected error occurred');
-      setSuccess('');
+      navigate('/registrationsuccessful'); // Redirección
     }
   };
 
@@ -130,6 +130,7 @@ export default function Register() {
 
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
+            {loading && <p>Loading...</p>}
 
             <div>
               <button type="submit" className="btn-fullwidth">
