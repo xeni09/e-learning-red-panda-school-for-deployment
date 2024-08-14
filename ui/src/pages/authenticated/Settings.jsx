@@ -1,13 +1,15 @@
 import React from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from './SubMenu';
 
 const Settings = () => {
   return (
-    <div>
+    <>
       <Sidebar />
+      <div className="container ">
       <h1>Settings</h1>
       <p>Manage your settings here.</p>
     </div>
+    </>
   );
 };
 

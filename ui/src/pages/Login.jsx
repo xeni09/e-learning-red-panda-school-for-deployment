@@ -8,7 +8,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -21,13 +20,13 @@ export default function Login() {
 
   useEffect(() => {
     if (data) {
-      login();
-
+      login(data.token);
       setError('');
       navigate('/dashboard');
     }
   }, [data, navigate]);
-  useEffect(() => {
+
+   useEffect(() => {
     if (fetchError) {
       setError(fetchError.message || 'Failed to log in');
     }

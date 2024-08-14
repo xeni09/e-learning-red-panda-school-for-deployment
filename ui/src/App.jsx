@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./index.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
@@ -20,17 +22,16 @@ import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 import Admin from './pages/Admin';
 
 //authenticated
+import ProtectedRoute from './components/ProtectedRoute';
 import DashboardHome from './pages/authenticated/DashboardHome';
 import Profile from './pages/authenticated/Profile';
 import Settings from './pages/authenticated/Settings';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
 
 
 const App = () => {
-
-
-
   return (
     <AuthProvider>
     <Router>
@@ -57,9 +58,10 @@ const App = () => {
 
               {/* //authenticated */}
                 
-                <Route path="/dashboard" element={<DashboardHome />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardHome /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              
 
 
 

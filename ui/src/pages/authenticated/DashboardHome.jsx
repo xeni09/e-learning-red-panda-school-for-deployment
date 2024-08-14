@@ -1,13 +1,17 @@
 import React from 'react';
-import Sidebar from './Sidebar';
+import SubMenu from './SubMenu';
 
 const DashboardHome = () => {
   return (
-    <div>
-      <Sidebar />
+    <>
+    <SubMenu />
+    
+    <div className="container ">
+      
       <h1>Dashboard Home</h1>
       <p>Welcome to your dashboard!</p>
     </div>
+    </>
   );
 };
 
