@@ -10,7 +10,7 @@ const SubMenu = () => {
       
       <div className="container py-5">
       <NavLink
-        to="/dashboard"
+        to="/my-account"
         className="pr-4 py-2 mb-4 rounded transform transition-transform duration-200 hover:scale-105"
         activeClassName="font-bold border-b-2"
         style={({ isActive }) => ({
@@ -19,11 +19,11 @@ const SubMenu = () => {
           borderColor: isActive ? 'var(--color-primary-dark)' : 'transparent',
         })}
       >
-        Dashboard
+        My Account
       </NavLink>
 
       <NavLink
-        to="/profile"
+        to="/my-courses"
         className="px-4 py-2 mb-4 rounded transform transition-transform duration-200 hover:scale-105"
         activeClassName="font-bold border-b-2"
         style={({ isActive }) => ({
@@ -32,7 +32,7 @@ const SubMenu = () => {
           borderColor: isActive ? 'var(--color-primary-dark)' : 'transparent',
         })}
       >
-        Profile
+        My Courses
       </NavLink>
 
 

@@ -6,7 +6,7 @@ const Settings = () => {
     <>
       <Sidebar />
       <div className="container ">
-      <h1>Settings</h1>
+      <h2>Settings</h2>
       <p>Manage your settings here.</p>
     </div>
     </>

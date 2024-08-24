@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const CheckoutSummary = ({ cart, removeCourse }) => {
   return (
     <div className="md:w-1/3 p-8 bg-white rounded-lg shadow-md">
-      <p className="font-bold text-3xl my-4">Your Courses</p>
+      <p className="font-bold text-3xl my-4">My Courses</p>
       <div>
         <ul>
           {cart.map((course) => (

@@ -118,7 +118,8 @@ const NavBar = ({ cartItemCount }) => {
             <div className="navbar-login-dropdown">
               {isAuthenticated ? (
                 <>
-                  <Link to="/profile" onClick={handleLinkClick}>Profile</Link>
+                  <Link to="/my-account" onClick={handleLinkClick}>My Acccount</Link>
+                  <Link to="/my-courses" onClick={handleLinkClick}>My Courses</Link>
                   <Link to="/settings" onClick={handleLinkClick}>Settings</Link>
                   <Link to="/" onClick={() => { handleLinkClick(); handleLogout(); }}>Logout</Link>
                 </>

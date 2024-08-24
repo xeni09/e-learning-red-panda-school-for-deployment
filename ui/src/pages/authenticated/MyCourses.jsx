@@ -1,18 +1,18 @@
 import React from 'react';
 import Sidebar from './SubMenu';
 
-const Profile = () => {
+const MyCourses = () => {
   return (
     <>
       <Sidebar />
 
    
       <div className="container ">
-      <h1>Profile</h1>
-      <p>This is your profile page.</p>
+      <h2>My Courses</h2>
+      <p>Here you can find all your purchased courses.</p>
     </div>
     </>
   );
 };
 
-export default Profile;
+export default MyCourses;

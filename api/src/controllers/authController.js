@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-// Controlador para el registro de usuarios
+// Controller for user registration
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -23,11 +23,11 @@ const register = async (req, res) => {
   }
 };
 
-// Controlador para el inicio de sesión de usuarios
+// Controller for user login
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Verificar credenciales de prueba
+  // Verify test credentials
   if (
     email === process.env.TEST_USER_EMAIL &&
     password === process.env.TEST_USER_PASSWORD
@@ -41,17 +41,13 @@ const login = async (req, res) => {
   }
 
   try {
-    console.log("Buscando usuario por email:", email);
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("Usuario no encontrado");
       return res.status(401).send({ error: "Invalid credentials" });
     }
 
-    console.log("Usuario encontrado:", user);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log("Contraseña incorrecta");
       return res.status(401).send({ error: "Invalid credentials" });
     }
 
@@ -61,15 +57,15 @@ const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    console.log("Login exitoso, token generado");
     res.json({ token });
   } catch (err) {
-    console.error("Error en el proceso de login:", err.message);
+    console.error("Error during login process:", err.message);
     res.status(500).send("Server error");
   }
 };
-// Controlador para verificar el token JWT
-const verifyToken = (req, res, next) => {
+
+// Controller to verify JWT token
+const verifyToken = (req, res) => {
   const token = req.header("Authorization").replace("Bearer ", "");
 
   if (!token) {
@@ -78,8 +74,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
+    res.send({ message: "Token is valid", user: decoded });
   } catch (ex) {
     res.status(400).send({ error: "Invalid token." });
   }

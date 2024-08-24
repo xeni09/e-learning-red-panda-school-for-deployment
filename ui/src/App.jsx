@@ -23,8 +23,8 @@ import Admin from './pages/Admin';
 
 //authenticated
 import ProtectedRoute from './components/ProtectedRoute';
-import DashboardHome from './pages/authenticated/DashboardHome';
-import Profile from './pages/authenticated/Profile';
+import MyAccount from './pages/authenticated/MyAccount';
+import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -58,8 +58,8 @@ const App = () => {
 
               {/* //authenticated */}
                 
-              <Route path="/dashboard" element={<ProtectedRoute><DashboardHome /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
+              <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               
 

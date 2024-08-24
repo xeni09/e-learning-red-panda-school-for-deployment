@@ -21,7 +21,7 @@ export default function RegistrationSuccessful() {
     if (data) {
       setSuccess('Logged in successfully');
       setError('');
-      navigate('/dashboard');
+      navigate('/my-account');
     }
   }, [data, navigate]);
 

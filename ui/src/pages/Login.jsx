@@ -22,7 +22,7 @@ export default function Login() {
     if (data) {
       login(data.token);
       setError('');
-      navigate('/dashboard');
+      navigate('/my-account');
     }
   }, [data, navigate]);
 
