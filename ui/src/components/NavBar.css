@@ -114,11 +114,25 @@
   z-index: 1000;
 }
 
-.navbar-login-dropdown a {
+.navbar-login-dropdown a,
+.navbar-login-dropdown span,
+.navbar-login-dropdown button {
   display: block;
+  width: 100%;
   padding: 10px 20px;
   color: #333;
   text-decoration: none;
+  text-align: left;
+}
+
+.navbar-login-dropdown a:hover,
+.navbar-login-dropdown button:hover {
+  background-color: #f0f0f0;
+}
+
+.navbar-login-dropdown span {
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 @media (max-width: 768px) {
@@ -206,5 +220,32 @@
     padding: 10px 20px;
     color: #333;
     text-decoration: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-login-icon {
+    margin-right: 1rem;
+  }
+
+  .navbar-login-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    margin-right: 0;
+  }
+
+  .navbar-login-dropdown a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  /* Adjust icon size for mobile */
+  .user-icon,
+  .cart-icon {
+    width: 20px;
+    height: 20px;
   }
 }

@@ -86,7 +86,7 @@ h1 {
 
 h2 {
   font-size: 3rem !important;
-  line-height: 1;
+  line-height: 1 !important;
   padding-bottom: 20px;
 }
 

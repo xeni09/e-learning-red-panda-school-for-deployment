@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import "./index.css";
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./index.css";
+
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -27,7 +27,7 @@ import MyAccount from './pages/authenticated/MyAccount';
 import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
 
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 
 
 

@@ -1,40 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
-import useFetch from "../hooks/useFetch";
-import { useAuth } from '../context/AuthContext'; 
+import { authenticateUser } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const { data, loading, error: fetchError, execute } = useFetch('http://localhost:3000/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  useEffect(() => {
-    if (data) {
-      login(data.token);
-      setError('');
-      navigate('/my-account');
-    }
-  }, [data, navigate]);
-
-   useEffect(() => {
-    if (fetchError) {
-      setError(fetchError.message || 'Failed to log in');
-    }
-  }, [fetchError]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await execute({ body: { email, password } });
+    setLoading(true);
+    setError('');
+    try {
+      const { token, userData } = await authenticateUser({ email, password });
+      login(token, userData); // Asumiendo que login también maneja userData
+      navigate('/my-account');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,7 +82,7 @@ export default function Login() {
             {loading && <p>Loading...</p>}
 
             <div>
-              <button type="submit" className="btn-fullwidth">
+              <button type="submit" className="btn-fullwidth" disabled={loading}>
                 Log in
               </button>
             </div>

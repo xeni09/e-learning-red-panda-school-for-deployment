@@ -1,6 +1,17 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const courseSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,6 +31,7 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  courses: [courseSchema],
 });
 
 // Middleware para hashear la contraseña antes de guardarla

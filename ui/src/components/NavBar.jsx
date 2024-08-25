@@ -4,6 +4,7 @@ import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
 import { FaShoppingCart } from "react-icons/fa"; 
 import { useAuth } from "../context/AuthContext"; 
+import LogoutButton from "./LogoutButton"; // Ajusta la ruta según sea necesario
 import "./NavBar.css";
 
 const navItems = [
@@ -17,7 +18,7 @@ const NavBar = ({ cartItemCount }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [navbarFixed, setNavbarFixed] = useState(false);
   const [navbarTransparent, setNavbarTransparent] = useState(false);
-  const { isAuthenticated, login, logout } = useAuth(); 
+  const { isAuthenticated, user } = useAuth(); 
   const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -37,8 +38,6 @@ const NavBar = ({ cartItemCount }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,19 +56,12 @@ const NavBar = ({ cartItemCount }) => {
     };
   }, [dropdownVisible]);
 
-
-
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
   const handleLinkClick = () => {
     setDropdownVisible(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate("/"); 
   };
 
   return (
@@ -102,12 +94,12 @@ const NavBar = ({ cartItemCount }) => {
         </ul>
 
         <div className="navbar-login-container" ref={dropdownRef}>
-          <Link to="/checkout" className="relative text-white pr-4">
-            <FaShoppingCart className="text-white text-xl" />
-            {cartItemCount > 0 && (
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                {cartItemCount}
-              </span>
+        <Link to="/checkout" className="relative text-white pr-4">
+    <FaShoppingCart className="cart-icon text-white text-xl" />
+    {cartItemCount > 0 && (
+      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+        {cartItemCount}
+      </span>
             )}
           </Link>
 
@@ -118,10 +110,11 @@ const NavBar = ({ cartItemCount }) => {
             <div className="navbar-login-dropdown">
               {isAuthenticated ? (
                 <>
-                  <Link to="/my-account" onClick={handleLinkClick}>My Acccount</Link>
+                  <span>Welcome, {user?.name}</span>
+                  <Link to="/my-account" onClick={handleLinkClick}>My Account</Link>
                   <Link to="/my-courses" onClick={handleLinkClick}>My Courses</Link>
                   <Link to="/settings" onClick={handleLinkClick}>Settings</Link>
-                  <Link to="/" onClick={() => { handleLinkClick(); handleLogout(); }}>Logout</Link>
+                  <LogoutButton onClick={handleLinkClick} />
                 </>
               ) : (
                 <>

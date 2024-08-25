@@ -17,7 +17,7 @@ const getUser = async (req, res) => {
 
 // Controlador para actualizar un usuario por ID
 const updateUser = async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, courses } = req.body;
 
   try {
     let user = await User.findById(req.params.id);
@@ -27,6 +27,7 @@ const updateUser = async (req, res) => {
 
     user.name = name || user.name;
     user.email = email || user.email;
+    user.courses = courses || user.courses;
 
     await user.save();
 

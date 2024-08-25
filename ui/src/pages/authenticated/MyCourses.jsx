@@ -1,15 +1,13 @@
 import React from 'react';
-import Sidebar from './SubMenu';
+import SubMenu from './SubMenu';
 
 const MyCourses = () => {
   return (
     <>
-      <Sidebar />
-
-   
-      <div className="container ">
+      <SubMenu />
+      <div className="container mx-auto p-4 pt-20">
       <h2>My Courses</h2>
-      <p>Here you can find all your purchased courses.</p>
+      <p className="text-xl">Here you can find all your purchased courses.</p>
     </div>
     </>
   );
