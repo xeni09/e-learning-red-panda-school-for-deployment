@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/logo.svg";
 import userIcon from "../assets/user-icon.png";
 import { FaShoppingCart } from "react-icons/fa"; 
-import { useAuth } from "../context/AuthContext"; 
-import LogoutButton from "./LogoutButton"; // Ajusta la ruta según sea necesario
+import { useAuth } from "../context/AuthProvider"; 
+import LogoutButton from "./LogoutButton";
 import "./NavBar.css";
 
 const navItems = [
@@ -20,7 +20,6 @@ const NavBar = ({ cartItemCount }) => {
   const [navbarTransparent, setNavbarTransparent] = useState(false);
   const { isAuthenticated, user } = useAuth(); 
   const location = useLocation();
-  const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -94,12 +93,12 @@ const NavBar = ({ cartItemCount }) => {
         </ul>
 
         <div className="navbar-login-container" ref={dropdownRef}>
-        <Link to="/checkout" className="relative text-white pr-4">
-    <FaShoppingCart className="cart-icon text-white text-xl" />
-    {cartItemCount > 0 && (
-      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-        {cartItemCount}
-      </span>
+          <Link to="/checkout" className="relative text-white pr-4">
+            <FaShoppingCart className="cart-icon text-white text-xl" />
+            {cartItemCount > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                {cartItemCount}
+              </span>
             )}
           </Link>
 
@@ -108,9 +107,10 @@ const NavBar = ({ cartItemCount }) => {
           </button>
           {dropdownVisible && (
             <div className="navbar-login-dropdown">
-              {isAuthenticated ? (
+              {isAuthenticated && user ? (
                 <>
-                  <span>Welcome, {user?.name}</span>
+                  {console.log('User in NavBar:', user)}
+                  <span>Welcome, {user.name}!</span>
                   <Link to="/my-account" onClick={handleLinkClick}>My Account</Link>
                   <Link to="/my-courses" onClick={handleLinkClick}>My Courses</Link>
                   <Link to="/settings" onClick={handleLinkClick}>Settings</Link>

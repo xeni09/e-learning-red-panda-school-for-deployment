@@ -30,19 +30,30 @@ const MyAccount = () => {
           console.error('No token found in localStorage');
           setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     };
 
     fetchUserData();
   }, [user]);
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const displayName = fetchedUser?.user?.name || user?.name || 'User';
 
   return (
     <>
       <SubMenu />
       <div className="container mx-auto p-4 pt-20">
         <h2>Your Account</h2>
-        <p className="mb-6 text-2xl">Welcome to your dashboard, {user?.name}!</p>
+        <p className="mb-6 text-2xl">Welcome to your dashboard, {displayName}!</p>
         
         <div className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-2xl font-semibold mb-4">Account Information</h2>

@@ -27,7 +27,7 @@ import MyAccount from './pages/authenticated/MyAccount';
 import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthProvider';
 
 
 
