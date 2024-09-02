@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-// Controller for user registration
-const register = async (req, res) => {
+// Controlador para registrar un nuevo usuario
+const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
@@ -14,6 +14,9 @@ const register = async (req, res) => {
 
     user = new User({ name, email, password });
 
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
     await user.save();
 
     res.status(201).json({ msg: "User registered successfully" });
@@ -23,11 +26,11 @@ const register = async (req, res) => {
   }
 };
 
-// Controller for user login
+// Controlador para iniciar sesión
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Verify test credentials
+  // Verificar credenciales de prueba
   if (
     email === process.env.TEST_USER_EMAIL &&
     password === process.env.TEST_USER_PASSWORD
@@ -64,7 +67,7 @@ const login = async (req, res) => {
   }
 };
 
-// Controller to verify JWT token
+// Controlador para verificar el token JWT
 const verifyToken = (req, res) => {
   const token = req.header("Authorization").replace("Bearer ", "");
 
@@ -81,7 +84,7 @@ const verifyToken = (req, res) => {
 };
 
 module.exports = {
-  register,
+  registerUser,
   login,
   verifyToken,
 };

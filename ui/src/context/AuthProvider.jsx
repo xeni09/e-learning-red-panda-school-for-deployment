@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from './AuthContext'; // Ensure this is a named import
+import AuthContext from './AuthContext';
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
   });
@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  // Guarda el estado en localStorage cuando cambie
   useEffect(() => {
     localStorage.setItem('isAuthenticated', isAuthenticated);
     if (isAuthenticated && user) {
@@ -19,6 +20,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isAuthenticated, user]);
 
+  // Función de inicio de sesión
   const login = async (token, userData) => {
     const actualUserData = userData.user;
     setIsAuthenticated(true);
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(actualUserData));
   };
 
+  // Función de cierre de sesión
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
@@ -41,4 +44,9 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// Hook personalizado para usar AuthContext
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export default AuthProvider;

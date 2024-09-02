@@ -17,7 +17,7 @@ const getUser = async (req, res) => {
 
 // Controlador para actualizar un usuario por ID
 const updateUser = async (req, res) => {
-  const { name, email, courses } = req.body;
+  const { name, email, courses, password } = req.body;
 
   try {
     let user = await User.findById(req.params.id);
@@ -25,9 +25,16 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
+    // Actualizar campos
     user.name = name || user.name;
     user.email = email || user.email;
     user.courses = courses || user.courses;
+
+    // Si se proporciona una nueva contraseña, encriptarla
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
 
     await user.save();
 
@@ -38,32 +45,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Controlador para registrar un nuevo usuario
-const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ msg: "User already exists" });
-    }
-
-    user = new User({ name, email, password });
-
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
-    await user.save();
-
-    res.status(201).json({ msg: "User registered successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-};
-
 module.exports = {
   getUser,
   updateUser,
-  registerUser,
 };

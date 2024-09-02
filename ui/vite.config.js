@@ -8,11 +8,6 @@ export default defineConfig({
   css: {
     postcss: "./postcss.config.js",
   },
-  resolve: {
-    alias: {
-      "@components": "./src/components",
-    },
-  },
   build: {
     outDir: "dist",
   },
