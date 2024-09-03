@@ -22,13 +22,12 @@ export const authenticateUser = async (credentials) => {
     }
 
     const token = data.token;
-    const userId = data.userId; // Asumiendo que el userId viene en la respuesta
 
     // Almacenar el token en localStorage
     localStorage.setItem("token", token);
 
     // Obtener los datos del usuario
-    const userData = await getUserData(userId, token);
+    const userData = await getUserDataFromToken(token);
 
     return { token, userData };
   } catch (error) {
@@ -36,25 +35,28 @@ export const authenticateUser = async (credentials) => {
   }
 };
 
-// Función para obtener los datos del usuario
-export const getUserData = async (userId, token) => {
+// Función para obtener los datos del usuario a partir del token
+
+export const getUserDataFromToken = async (token) => {
+  console.log("Fetching user data with token:", token);
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/users/user/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:3000/api/auth/verifyToken`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user data");
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch user data: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     const data = await response.json();
+    console.log("Fetched user data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching user data:", error);

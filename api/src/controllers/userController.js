@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 
 // Controlador para obtener un usuario por ID
 const getUser = async (req, res) => {
@@ -10,37 +9,61 @@ const getUser = async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error fetching user:", err.message);
     res.status(500).send("Server error");
   }
 };
 
 // Controlador para actualizar un usuario por ID
 const updateUser = async (req, res) => {
-  const { name, email, courses, password } = req.body;
+  const { name, email, password, courses } = req.body;
 
   try {
+    // Buscar usuario por ID
     let user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (courses) user.courses = courses;
 
-    // Actualizar campos
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.courses = courses || user.courses;
-
-    // Si se proporciona una nueva contraseña, encriptarla
     if (password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      user.password = password; // Se actualizará y se hasheará automáticamente por el middleware
     }
 
     await user.save();
 
-    res.json(user);
+    res.json({
+      msg: "User updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        courses: user.courses,
+        role: user.role,
+      },
+    });
   } catch (err) {
-    console.error(err.message);
+    console.error("Error updating user:", err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// Controlador para eliminar un usuario por ID
+const deleteUser = async (req, res) => {
+  console.log("deleteUser called with ID:", req.params.id);
+
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    await user.deleteOne();
+    res.json({ msg: "User deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting user:", err.message);
     res.status(500).send("Server error");
   }
 };
@@ -48,4 +71,5 @@ const updateUser = async (req, res) => {
 module.exports = {
   getUser,
   updateUser,
+  deleteUser,
 };

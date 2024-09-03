@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { getUserData, updateUserData } from '../../services/authService';
+import { getUserDataFromToken, updateUserData } from '../../services/authService';
 import AuthContext from '../../context/AuthContext';
 import SubMenu from './SubMenu';
 
@@ -18,7 +18,7 @@ const Settings = () => {
         const token = localStorage.getItem('token');
         if (token) {
           try {
-            const data = await getUserData(user.id, token);
+            const data = await getUserDataFromToken(user.id, token);
             setFetchedUser(data);
             setEditedName(data?.user?.name || user?.name || '');
             console.log('Fetched User:', data);

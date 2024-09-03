@@ -11,7 +11,8 @@ const useFetch = (url, options = {}) => {
       setError(null);
 
       try {
-        const response = await fetch(url, {
+        // Merge options and additionalOptions, handling GET requests properly
+        const mergedOptions = {
           ...options,
           ...additionalOptions,
           headers: {
@@ -19,8 +20,21 @@ const useFetch = (url, options = {}) => {
             ...options.headers,
             ...additionalOptions.headers,
           },
-          body: JSON.stringify(additionalOptions.body || options.body),
-        });
+        };
+
+        // Only include body if it's not a GET request
+        if (
+          mergedOptions.method &&
+          mergedOptions.method.toUpperCase() !== "GET"
+        ) {
+          mergedOptions.body = JSON.stringify(
+            additionalOptions.body || options.body
+          );
+        } else {
+          delete mergedOptions.body;
+        }
+
+        const response = await fetch(url, mergedOptions);
 
         if (!response.ok) {
           const errorText = await response.text();

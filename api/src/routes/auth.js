@@ -10,7 +10,9 @@ const { auth } = require("../middleware/jwtAuth");
 
 router.post("/register", registerUser);
 router.post("/login", login);
-router.get("/verifyToken", verifyToken);
+router.get("/verifyToken", verifyToken, (req, res) => {
+  res.send("Token is valid");
+});
 
 // Ruta protegida solo para administradores
 router.get("/admin", auth, (req, res) => {

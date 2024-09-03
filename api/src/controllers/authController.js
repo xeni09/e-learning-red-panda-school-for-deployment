@@ -12,11 +12,10 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ msg: "User already exists" });
     }
 
+    // Crear nuevo usuario
     user = new User({ name, email, password });
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
+    // Guardar el usuario en la base de datos
     await user.save();
 
     res.status(201).json({ msg: "User registered successfully" });
@@ -30,19 +29,6 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Verificar credenciales de prueba
-  if (
-    email === process.env.TEST_USER_EMAIL &&
-    password === process.env.TEST_USER_PASSWORD
-  ) {
-    const token = jwt.sign(
-      { email: process.env.TEST_USER_EMAIL, role: "test" },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    return res.json({ token });
-  }
-
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -54,13 +40,14 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Incorrect password" });
     }
 
+    // Genera un nuevo token
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, name: user.name },
+      { id: user._id, email: user.email, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.json({ token });
+    res.json({ token, userId: user._id });
   } catch (err) {
     console.error("Error during login process:", err.message);
     res.status(500).send("Server error");
@@ -68,18 +55,18 @@ const login = async (req, res) => {
 };
 
 // Controlador para verificar el token JWT
-const verifyToken = (req, res) => {
+const verifyToken = (req, res, next) => {
   const token = req.header("Authorization").replace("Bearer ", "");
 
   if (!token) {
     return res.status(401).send({ error: "Access denied. No token provided." });
   }
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.send({ message: "Token is valid", user: decoded });
+    req.user = decoded; // Adjunta la información del usuario al objeto req
+    next(); // Pasa al siguiente middleware o controlador
   } catch (ex) {
-    res.status(400).send({ error: "Invalid token." });
+    return res.status(400).send({ error: "Invalid token." });
   }
 };
 

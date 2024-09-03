@@ -109,7 +109,6 @@ const NavBar = ({ cartItemCount }) => {
             <div className="navbar-login-dropdown">
               {isAuthenticated && user ? (
                 <>
-                  {console.log('User in NavBar:', user)}
                   <span>Welcome, {user.name}!</span>
                   <Link to="/my-account" onClick={handleLinkClick}>My Account</Link>
                   <Link to="/my-courses" onClick={handleLinkClick}>My Courses</Link>
