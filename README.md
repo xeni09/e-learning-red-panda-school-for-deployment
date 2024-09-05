@@ -1,53 +1,46 @@
 ## Instalación
+
 Antes de desarrollar, es necesario tener instalado:
 
 * [NodeJS y NPM](https://nodejs.org/)
+
 ### Configuración de entornos
 
-Antes de ejecutar la aplicación, es recomendable revisar las variables de entorno para la correcta configuración del proyecto, estas se pueden revisar aquí:
+Antes de ejecutar la aplicación, asegúrate de configurar correctamente las variables de entorno. Aquí hay una guía general para los archivos `.env`:
 
-```.env
-********* ui/.env *********
-REACT_APP_LOCALE=es-ES
-REACT_APP_BASE_URI=
-REACT_APP_API_URI=http://localhost:4000
-SECRET=e89f987sdfs9d879f8798dsf78978
-```
-
-* `REACT_APP_LOCALE` configura el idioma local del proyecto.
-* `REACT_APP_API_URI` configura la url a la que la API apuntará.
-* `REACT_APP_BASE_URI` configura un path extra para la uri si fuera necesario (si se configura con por ejemplo `/extra` la url final será `http://localhost:4000/extra/...`)
-* `SECRET` configura el secreto del JWT (para verificación, actualmente no tiene uso)
-
-```.env
-********* api/.env *********
-#can be 'development' or 'production'
+********* api/.env ********* 
 NODE_ENV=development
+JWT_SECRET=TU_SECRETO_JWT
+SESSION_SECRET=TU_SECRETO_SESION
+MONGODB_URI=mongodb+srv://usuario:contraseña@cluster.mongodb.net/nombre-de-la-base-de-datos?retryWrites=true&w=majority
+PORT=3000
 
-#your app port
-PORT=4000
+Descripción de las variables:
+NODE_ENV: Modo de entorno de la aplicación (development o production).
+JWT_SECRET: Secreto para la firma de tokens JWT.
+SESSION_SECRET: Secreto para la gestión de sesiones de usuario.
+MONGODB_URI: URI para conectarse a la base de datos MongoDB (modifica usuario, contraseña, y nombre-de-la-base-de-datos).
+PORT: Puerto en el que la API se ejecutará (por defecto 3000).
 
-SECRET=e89f987sdfs9d879f8798dsf78978
-```
 
-* `NODE_ENV` configura el entorno para desarrollo o producción
-* `PORT` configura el puerto de la aplicación
-* `SECRET` configura el secreto del JWT para verificación
+### Instalación de dependencias
 
-### Instalación dependencias
-
-Instalar las dependencias de ambos proyectos, puedes seguir este script
+Instalar las dependencias de ambos proyectos siguiendo este script:
 
 ```bash
+
 cd api
 npm install
 cd ../ui
 npm install
+
+```
+### Ejecución
+
+Para testear la aplicación, ejecuta (desde ui y api en diferentes terminales):
+
+```bash
+npm run dev
+
 ```
 
-### Ejecución Makefile
-
-Para la ejecución, usamos un **Makefile** con las instrucciones para las dos infraestructuras. Aquí puedes consultar el uso de los [Phony Targets](https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html).
-
-* Para ejecución del backend `make dev-api`
-* Para ejecución del frontend `make dev-ui`
