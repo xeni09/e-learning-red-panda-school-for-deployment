@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import axios from "../services/axiosConfig"; // Usa la configuración global de Axios
+import axios from "../services/axiosConfig";
 
 const useApi = (url, options = {}) => {
   const [data, setData] = useState(null);

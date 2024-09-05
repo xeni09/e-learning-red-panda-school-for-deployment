@@ -17,12 +17,11 @@ export default function Login() {
     try {
       const { userData } = await authenticateUser({ email, password });
       
-      console.log('Login successful:', userData);
       
-      login(userData);  // No necesitamos `await` aquí
+      login(userData);
   
       // Redirección a la página de mi cuenta
-      console.log('Redirecting to /my-account');
+    
       navigate('/my-account');
     } catch (err) {
       setError(err.message);

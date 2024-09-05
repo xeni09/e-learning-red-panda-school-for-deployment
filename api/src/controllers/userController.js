@@ -24,12 +24,15 @@ const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
+
+    // Actualiza los campos solo si han sido proporcionados
     if (name) user.name = name;
     if (email) user.email = email;
     if (courses) user.courses = courses;
 
-    if (password) {
-      user.password = password; // Se actualizará y se hasheará automáticamente por el middleware
+    // Solo actualiza la contraseña si está presente y no es vacía
+    if (password && password.trim() !== "") {
+      user.password = password; // Esto será hasheado automáticamente por el middleware de bcrypt
     }
 
     await user.save();
