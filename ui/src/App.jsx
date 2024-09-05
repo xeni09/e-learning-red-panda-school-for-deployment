@@ -31,8 +31,9 @@ import AuthProvider from './context/AuthProvider';
 
 const App = () => {
   return (
-    <AuthProvider>
     <Router>
+    <AuthProvider>
+    
       <ScrollToTop>
         <div className="app-container">
           <NavBar />
@@ -68,8 +69,9 @@ const App = () => {
           <Footer />
         </div>
       </ScrollToTop>
-    </Router>
+    
     </AuthProvider>
+    </Router>
   );
 };
 

@@ -49,7 +49,7 @@ export default function RegistrationSuccessful() {
           <img
             alt="Red Panda School"
             src={logo}
-            class="mx-auto mt-6 h-28 w-auto"
+            className="mx-auto mt-6 h-28 w-auto"
           />
           <p className="text-2xl text-center font-bold my-8">
             Your user has been successfully created!

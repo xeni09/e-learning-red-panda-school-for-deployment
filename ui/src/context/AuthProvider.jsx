@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 import { getUserDataFromToken } from '../services/authService'; 
 
@@ -6,6 +7,7 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,34 +20,27 @@ const AuthProvider = ({ children }) => {
             setUser(data.user);
             setIsAuthenticated(true);
           } else {
-            setIsAuthenticated(false);
-            setUser(null);
+            handleInvalidToken();  
           }
         } catch (error) {
           console.error("Failed to load user data:", error);
-          localStorage.removeItem('token');
-          setIsAuthenticated(false);
-          setUser(null);
+          handleInvalidToken();
         }
       } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        handleInvalidToken();
       }
-      setIsLoading(false); // Finaliza la carga en todos los casos
+      setIsLoading(false); 
     };
 
     loadUserData();
   }, []);
 
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('isAuthenticated', 'true');
-    } else {
-      localStorage.removeItem('user');
-      localStorage.removeItem('isAuthenticated');
-    }
-  }, [isAuthenticated, user]);
+  const handleInvalidToken = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    localStorage.removeItem('token');
+    navigate('/login');  
+  };
 
   const login = async (token) => {
     const data = await getUserDataFromToken(token);
@@ -54,8 +49,7 @@ const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       localStorage.setItem('token', token);
     } else {
-      setIsAuthenticated(false);
-      setUser(null);
+      handleInvalidToken();
     }
   };
 
@@ -63,13 +57,23 @@ const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     setUser(null);
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    navigate('/login');
   };
 
-  const updateUser = (updatedUser) => {
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+  const updateUser = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const data = await getUserDataFromToken(token);
+        if (data && data.user) {
+          setUser(data.user);  // Actualiza el estado global con los datos más recientes
+        } else {
+          handleInvalidToken();
+        }
+      } catch (error) {
+        console.error("Failed to update user data:", error);
+      }
+    }
   };
 
   return (
