@@ -36,7 +36,7 @@ export const authenticateUser = async (credentials) => {
 };
 
 // Función para obtener los datos del usuario a partir del token
-
+// Función para obtener los datos del usuario a partir del token
 export const getUserDataFromToken = async (token) => {
   console.log("Fetching user data with token:", token);
   try {
@@ -49,13 +49,13 @@ export const getUserDataFromToken = async (token) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText = await response.text(); // Lee el texto del error
       throw new Error(
         `Failed to fetch user data: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    const data = await response.json();
+    const data = await response.json(); // Parsear directamente la respuesta como JSON
     console.log("Fetched user data:", data);
     return data;
   } catch (error) {
