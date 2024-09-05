@@ -4,8 +4,8 @@ import AuthContext from '../../context/AuthContext';
 import SubMenu from './SubMenu';
 
 const Settings = () => {
-  const { user, updateUser } = useContext(AuthContext);
-  const [editedName, setEditedName] = useState(user?.name || '');
+  const { user, updateUser } = useContext(AuthContext); 
+  const [editedName, setEditedName] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState('');
@@ -18,16 +18,18 @@ const Settings = () => {
 
   const handleSaveClick = async () => {
     setLoading(true);
-    const token = localStorage.getItem('token');
+    setError(null);
+
     try {
       const updatedUserData = { name: editedName };
-      await updateUserData(user.id, updatedUserData, token);
 
-      // Actualiza el estado global del usuario y sincroniza el cambio en la interfaz
-      await updateUser(); // Recarga el usuario desde la base de datos
+      // Actualizamos los datos del usuario en la base de datos
+      await updateUserData(user.id, updatedUserData); // Elimina el token
+
+      // Actualizamos el estado global del usuario en AuthProvider
+      await updateUser();
 
       setSuccess('Account updated successfully');
-      setError(null);
     } catch (err) {
       setError('Failed to update account');
       setSuccess('');

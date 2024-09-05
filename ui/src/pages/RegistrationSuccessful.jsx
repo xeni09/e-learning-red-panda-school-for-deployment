@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
-import useFetch from "../hooks/useFetch";
+import useApi from "../hooks/useApi";
 
 export default function RegistrationSuccessful() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ export default function RegistrationSuccessful() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const { data, loading, error: fetchError, execute } = useFetch('http://localhost:3000/api/auth/login', {
+  const { data, loading, error: fetchError, execute } = useApi('http://localhost:3000/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

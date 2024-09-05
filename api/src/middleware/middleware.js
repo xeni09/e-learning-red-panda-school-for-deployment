@@ -13,32 +13,32 @@ const Logger = require("../utils/Logger");
  * @param {express.Application} app
  */
 function configure(app) {
-  // Middleware de express
-  app.use(
-    bodyParser.urlencoded({
-      extended: false,
-    })
-  );
+  // Middleware para parsear datos del body
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  // Analiza la cabecera Cookie y popula req.cookies con un objeto claveado por los nombres de las cookies.
+
+  // Middleware para analizar las cookies
   app.use(cookieParser());
-  // Devuelve el middleware de compresión
+
+  // Middleware de compresión
   app.use(compression());
 
-  // Habilita CORS
+  // Habilitar CORS para permitir cookies entre frontend y backend
   app.use(
     cors({
-      origin: "http://localhost:5173", // Reemplaza con el dominio de tu frontend
-      credentials: true,
+      origin: "http://localhost:5173", // Reemplaza con el dominio de tu frontend en producción
+      credentials: true, // Permitir el envío de cookies de autenticación
+      methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+      allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
     })
   );
 
+  // Configurar Content Security Policy con Helmet
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "http://localhost:3000"],
-        // Permitir la carga de favicon
         connectSrc: ["'self'", "http://localhost:3000"],
         scriptSrc: ["'self'", "http://localhost:3000"],
         styleSrc: ["'self'", "http://localhost:3000"],
@@ -55,7 +55,6 @@ function configure(app) {
  * @param {express.Application} app
  */
 function initErrorHandler(app) {
-  // Middleware de manejo de errores
   app.use((err, req, res, next) => {
     Logger.error(err);
     if (err instanceof AppError) {
@@ -68,7 +67,7 @@ function initErrorHandler(app) {
       status: "error",
       message: "Internal Server Error",
     });
-    next(err); // Llama a next para pasar el error a cualquier middleware adicional de manejo de errores
+    next(err);
   });
 }
 

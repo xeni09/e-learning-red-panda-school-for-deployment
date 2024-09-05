@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
-
+const cookieParser = require("cookie-parser"); // Requerimos cookie-parser
+const cors = require("cors");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -11,14 +12,14 @@ const app = express();
 const connectDB = require("./config/db");
 const initRoutes = require("./routes/initRoutes");
 
-// Verify required environment variables
+// Verificar variables de entorno requeridas
 if (
   !process.env.SESSION_SECRET ||
   !process.env.ADMIN_EMAIL ||
   !process.env.ADMIN_PASSWORD ||
   !process.env.MONGODB_URI
 ) {
-  throw new Error("Missing required environment variables");
+  throw new Error("Faltan variables de entorno requeridas");
 }
 
 // Conectar a MongoDB
@@ -31,13 +32,24 @@ configure(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Configuración de CORS para permitir cookies
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Ajusta al dominio de tu frontend
+    credentials: true, // Permitir envío de cookies
+  })
+);
+
+// Middleware para analizar cookies
+app.use(cookieParser());
+
 // Configurar sesiones
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" },
+    cookie: { secure: process.env.NODE_ENV === "production" }, // Cookies solo en HTTPS en producción
   })
 );
 

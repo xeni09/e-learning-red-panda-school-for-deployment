@@ -1,35 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
-import { getUserDataFromToken } from '../services/authService'; 
+import { getUserDataFromToken } from '../services/authService';
+import axios from 'axios';  // Asegúrate de importar axios
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    
     const loadUserData = async () => {
-      if (token) {
-        try {
-          const data = await getUserDataFromToken(token);
-          if (data && data.user) {
-            setUser(data.user);
-            setIsAuthenticated(true);
-          } else {
-            handleInvalidToken();  
-          }
-        } catch (error) {
-          console.error("Failed to load user data:", error);
+      try {
+        const userData = await getUserDataFromToken();  // Obtener datos del usuario desde el token en cookies
+        if (userData) {
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else {
           handleInvalidToken();
         }
-      } else {
+      } catch (error) {
+        console.error('Failed to load user data:', error);
         handleInvalidToken();
       }
-      setIsLoading(false); 
+      setIsLoading(false);  // Dejar de cargar después de intentar obtener los datos
     };
 
     loadUserData();
@@ -38,41 +31,35 @@ const AuthProvider = ({ children }) => {
   const handleInvalidToken = () => {
     setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('token');
-    navigate('/login');  
   };
 
-  const login = async (token) => {
-    const data = await getUserDataFromToken(token);
-    if (data && data.user) {
-      setUser(data.user);
-      setIsAuthenticated(true);
-      localStorage.setItem('token', token);
-    } else {
-      handleInvalidToken();
+  const login = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    console.log('User logged in:', userData);  // Verificar si se actualiza el estado global
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post('/api/auth/logout');  // Llama al backend para eliminar la cookie del token
+      setIsAuthenticated(false);
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   const updateUser = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const data = await getUserDataFromToken(token);
-        if (data && data.user) {
-          setUser(data.user);  // Actualiza el estado global con los datos más recientes
-        } else {
-          handleInvalidToken();
-        }
-      } catch (error) {
-        console.error("Failed to update user data:", error);
+    try {
+      const userData = await getUserDataFromToken();  // Obtener datos actualizados del usuario desde el token en las cookies
+      if (userData) {
+        setUser(userData);  // Actualizar el estado global con los datos actualizados
+      } else {
+        handleInvalidToken();
       }
+    } catch (error) {
+      console.error("Failed to update user data:", error);
+      handleInvalidToken();
     }
   };
 
@@ -83,8 +70,6 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 export default AuthProvider;

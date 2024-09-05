@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
-import useFetch from "../hooks/useFetch";
+import useApi from "../hooks/useApi";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Register() {
@@ -15,7 +15,7 @@ export default function Register() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const { data, loading, error: fetchError, execute } = useFetch('http://localhost:3000/api/auth/register', {
+  const { data, loading, error: fetchError, execute } = useApi('http://localhost:3000/api/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

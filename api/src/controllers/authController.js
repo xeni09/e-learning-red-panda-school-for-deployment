@@ -35,19 +35,39 @@ const login = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    // Comparar la contraseña ingresada con la almacenada
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: "Incorrect password" });
     }
 
-    // Genera un nuevo token
+    // Generar el token JWT
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.json({ token, userId: user._id });
+    // Configurar el token en una cookie segura
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // Expira en 1 hora
+    });
+
+    // Regenerar la sesión para prevenir ataques de session fixation
+    req.session.regenerate(() => {
+      res.json({
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          courses: user.courses,
+        },
+      });
+    });
   } catch (err) {
     console.error("Error during login process:", err.message);
     res.status(500).send("Server error");
@@ -55,30 +75,39 @@ const login = async (req, res) => {
 };
 
 // Controlador para verificar el token JWT
-const verifyToken = (req, res, next) => {
-  const token = req.header("Authorization").replace("Bearer ", "");
-
-  if (!token) {
-    return res.status(401).json({ error: "Access denied. No token provided." });
-  }
-
+const verifyToken = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Adjunta la información del usuario al objeto req
+    const token = req.cookies.token; // Obtener el token de las cookies
 
-    // En caso de que desees detener aquí y enviar la respuesta al cliente
-    if (req.originalUrl.includes("/verifyToken")) {
-      return res.json({ user: decoded }); // Devolver la información del usuario como JSON
+    if (!token) {
+      return res.status(401).json({ error: "No token provided" });
     }
 
-    next(); // Pasa al siguiente middleware o controlador
-  } catch (ex) {
-    return res.status(400).json({ error: "Invalid token." });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ user });
+  } catch (err) {
+    console.error("Token verification failed:", err.message);
+    return res.status(401).json({ error: "Invalid token" });
   }
+};
+
+// Controlador para cerrar sesión
+const logout = (req, res) => {
+  res.clearCookie("token");
+  req.session.destroy(() => {
+    res.json({ msg: "Logged out successfully" });
+  });
 };
 
 module.exports = {
   registerUser,
   login,
   verifyToken,
+  logout,
 };
