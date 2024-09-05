@@ -5,11 +5,11 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
-const { verifyToken } = require("../controllers/authController");
+const { auth } = require("../middleware/jwtAuth"); // Usa el middleware `auth` directamente
 
-// Rutas de usuario con ID
-router.get("/user/:id", verifyToken, getUser);
-router.put("/user/:id", verifyToken, updateUser);
-router.delete("/user/:id", verifyToken, deleteUser);
+// Rutas de usuario con ID, protegidas por el middleware `auth`
+router.get("/user/:id", auth, getUser);
+router.put("/user/:id", auth, updateUser);
+router.delete("/user/:id", auth, deleteUser);
 
 module.exports = router;

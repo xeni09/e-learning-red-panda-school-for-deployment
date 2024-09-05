@@ -2,19 +2,18 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const auth = (req, res, next) => {
-  const authHeader = req.header("Authorization");
-  const token = authHeader?.split(" ")[1];
+  const token = req.cookies.token; // Extraer el token de las cookies
 
   if (!token) {
     return res.status(401).send({ error: "Access denied. No token provided." });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (ex) {
-    res.status(400).send({ error: "Invalid token." });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token JWT
+    req.user = decoded; // Adjuntar la información decodificada del usuario al request
+    next(); // Continuar al siguiente middleware o controlador
+  } catch (error) {
+    res.status(401).send({ error: "Invalid token." }); // Cambia a 401
   }
 };
 

@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
@@ -16,12 +15,18 @@ export default function Login() {
     setLoading(true);
     setError('');
     try {
-      const { token, userData } = await authenticateUser({ email, password });
-      await login(token, userData); // Espera a que `login` complete antes de redirigir
-      console.log('Login successful, redirecting to /my-account');
-      navigate('/my-account'); // Redirige después de que el estado se haya actualizado
+      const { userData } = await authenticateUser({ email, password });
+      
+      console.log('Login successful:', userData);
+      
+      login(userData);  // No necesitamos `await` aquí
+  
+      // Redirección a la página de mi cuenta
+      console.log('Redirecting to /my-account');
+      navigate('/my-account');
     } catch (err) {
       setError(err.message);
+      console.error('Error logging in:', err);
     } finally {
       setLoading(false);
     }
