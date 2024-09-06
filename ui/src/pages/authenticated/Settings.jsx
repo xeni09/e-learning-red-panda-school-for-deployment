@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import SubMenu from './SubMenu';
-import EditableField from '../../components/EditableField'; // Componentes reutilizables
-import useSettingsForm from '../../hooks/useSettingsForm';  // Hook personalizado para lógica
+import EditableField from '../../components/EditableField';
+import PasswordField from '../../components/PasswordField';
+import useSettingsForm from '../../hooks/useSettingsForm';
 
 const Settings = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -17,9 +18,10 @@ const Settings = () => {
     <>
       <SubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1>Settings</h1>
-        <p className="text-xl pb-6 pl-6">Edit your account information here.</p>
+        <h1 className="text-2xl mb-5 font-bold">Settings</h1>
+        <p className="text-xl pb-2 ">You can edit your Account Information here:</p>
 
+        {/* Editable name */}
         <EditableField
           label="Name"
           value={editedName}
@@ -27,6 +29,7 @@ const Settings = () => {
           isEditing={isEditing}
         />
 
+        {/* Editable email */}
         <EditableField
           label="Email"
           value={editedEmail}
@@ -35,27 +38,31 @@ const Settings = () => {
           type="email"
         />
 
-        {/* Campos de contraseña */}
-        <EditableField
+        {/* Password Field */}
+        <PasswordField
           label="Password"
-          value={editedPassword}
+          password={editedPassword}
           onChange={(e) => setEditedPassword(e.target.value)}
           isEditing={isEditing}
-          type="password"
+          placeholder="Enter new password"  // Placeholder para nueva contraseña
         />
 
-        <EditableField
-          label="Repeat Password"
-          value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
-          isEditing={isEditing}
-          type="password"
-        />
+        {/* Repeat Password Field - Only visible in edit mode */}
+        {isEditing && (
+          <PasswordField
+            label="Repeat Password"
+            password={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+            isEditing={isEditing}
+            placeholder="Repeat new password"  // Placeholder para repetir la contraseña
+          />
+        )}
 
-        <div className="px-6 mt-8 flex flex-col sm:flex-row justify-between">
+        {/* Botones */}
+        <div className="px-6 mt-8 flex flex-col sm:flex-row justify-start">
           <button 
             type="button" 
-            className="btn mb-2 sm:mb-0 sm:mr-2"
+            className="btn mr-5"
             onClick={isEditing ? saveChanges : () => setIsEditing(true)}>
             {isEditing ? (loading ? 'Saving...' : 'Save') : 'Edit'}
           </button>
@@ -63,7 +70,7 @@ const Settings = () => {
           {isEditing && (
             <button 
               type="button" 
-              className="btn bg-red-500 hover:bg-red-600"
+              className="btn bg-[var(--color-orange)] hover:bg-gray-900"
               onClick={cancelEdit}>
               Cancel
             </button>

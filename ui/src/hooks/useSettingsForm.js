@@ -15,13 +15,13 @@ const useSettingsForm = (user, updateUser) => {
     if (user) {
       setEditedName(user.name);
       setEditedEmail(user.email);
-      console.log("User ID in useEffect:", user.id); // Verifica si el ID existe
+      console.log("User ID in useEffect:", user._id); // Cambiar a user._id
     }
   }, [user]);
 
   const saveChanges = async () => {
-    console.log("User ID in saveChanges:", user.id);
-    if (!user.id) {
+    // Cambiar de user.id a user._id
+    if (!user._id) {
       setError("Invalid user ID");
       return;
     }
@@ -38,18 +38,18 @@ const useSettingsForm = (user, updateUser) => {
       const updatedUserData = {
         name: editedName,
         email: editedEmail,
-        password: editedPassword || undefined,
+        password: editedPassword || undefined, // Solo enviar la contraseña si está presente
       };
 
-      await updateUserData(user.id, updatedUserData);
-      await updateUser();
-      setSuccess("Account updated successfully");
+      await updateUserData(user._id, updatedUserData); // Cambiar a user._id
+      await updateUser(); // Actualiza el contexto del usuario
+      setSuccess("");
       setEditedPassword("");
       setRepeatPassword("");
       setIsEditing(false);
     } catch (err) {
+      console.error("Failed to update account:", err.message);
       setError("Failed to update account");
-      setSuccess("");
     } finally {
       setLoading(false);
     }

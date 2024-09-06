@@ -52,18 +52,19 @@ const AuthProvider = ({ children }) => {
 
   const updateUser = async () => {
     try {
-      const userData = await getUserDataFromToken();  // Obtener datos actualizados desde las cookies
+      const userData = await getUserDataFromToken();  // Obtener datos actualizados
       if (userData) {
-        console.log("Updated user data:", userData);  // Verifica que el ID esté presente
+        console.log("Updated user data:", userData);  // Verificar que el ID y otros datos estén presentes
         setUser(userData);  // Actualizar los datos en el estado global
       } else {
-        handleInvalidToken();
+        handleInvalidToken();  // Si no se obtiene el usuario, invalidar sesión
       }
     } catch (error) {
       console.error("Failed to update user data:", error);
       handleInvalidToken();
     }
   };
+  
   
 
   return (
