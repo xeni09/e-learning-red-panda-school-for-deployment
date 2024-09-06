@@ -15,11 +15,12 @@ const useSettingsForm = (user, updateUser) => {
     if (user) {
       setEditedName(user.name);
       setEditedEmail(user.email);
-      console.log("User ID:", user.id);
+      console.log("User ID in useEffect:", user.id); // Verifica si el ID existe
     }
   }, [user]);
 
   const saveChanges = async () => {
+    console.log("User ID in saveChanges:", user.id);
     if (!user.id) {
       setError("Invalid user ID");
       return;

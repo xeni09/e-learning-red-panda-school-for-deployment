@@ -5,12 +5,13 @@ import EditableField from '../../components/EditableField'; // Componentes reuti
 import useSettingsForm from '../../hooks/useSettingsForm';  // Hook personalizado para lógica
 
 const Settings = () => {
-  const { user, updateUser } = useContext(AuthContext);  // Contexto de autenticación
+  const { user, updateUser } = useContext(AuthContext);
   const {
     isEditing, setIsEditing, editedName, setEditedName,
-    editedEmail, setEditedEmail, loading, error, success,
+    editedEmail, setEditedEmail, editedPassword, setEditedPassword,
+    repeatPassword, setRepeatPassword, loading, error, success,
     saveChanges, cancelEdit
-  } = useSettingsForm(user, updateUser);  // Lógica de edición separada en un hook
+  } = useSettingsForm(user, updateUser);
 
   return (
     <>
@@ -23,7 +24,7 @@ const Settings = () => {
           label="Name"
           value={editedName}
           onChange={(e) => setEditedName(e.target.value)}
-          isEditing={isEditing}  // Solo editable si está en modo edición
+          isEditing={isEditing}
         />
 
         <EditableField
@@ -32,6 +33,23 @@ const Settings = () => {
           onChange={(e) => setEditedEmail(e.target.value)}
           isEditing={isEditing}
           type="email"
+        />
+
+        {/* Campos de contraseña */}
+        <EditableField
+          label="Password"
+          value={editedPassword}
+          onChange={(e) => setEditedPassword(e.target.value)}
+          isEditing={isEditing}
+          type="password"
+        />
+
+        <EditableField
+          label="Repeat Password"
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
+          isEditing={isEditing}
+          type="password"
         />
 
         <div className="px-6 mt-8 flex flex-col sm:flex-row justify-between">

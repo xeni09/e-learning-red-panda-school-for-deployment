@@ -32,7 +32,8 @@ const updateUser = async (req, res) => {
 
     // Solo actualiza la contraseña si está presente y no es vacía
     if (password && password.trim() !== "") {
-      user.password = password; // Esto será hasheado automáticamente por el middleware de bcrypt
+      console.log("New password being set:", password);
+      user.password = password;
     }
 
     await user.save();

@@ -13,6 +13,7 @@ const AuthProvider = ({ children }) => {
       try {
         const userData = await getUserDataFromToken();  // Obtener datos del usuario desde las cookies
         if (userData) {
+          console.log("User data in AuthProvider:", userData);  // Verifica si hay ID
           setUser(userData);
           setIsAuthenticated(true);
         } else {
@@ -27,6 +28,7 @@ const AuthProvider = ({ children }) => {
 
     loadUserData();
   }, []); // Solo se ejecuta una vez cuando el componente es montado
+
 
   const handleInvalidToken = () => {
     setIsAuthenticated(false);
@@ -52,6 +54,7 @@ const AuthProvider = ({ children }) => {
     try {
       const userData = await getUserDataFromToken();  // Obtener datos actualizados desde las cookies
       if (userData) {
+        console.log("Updated user data:", userData);  // Verifica que el ID esté presente
         setUser(userData);  // Actualizar los datos en el estado global
       } else {
         handleInvalidToken();
@@ -61,6 +64,7 @@ const AuthProvider = ({ children }) => {
       handleInvalidToken();
     }
   };
+  
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, logout, updateUser }}>

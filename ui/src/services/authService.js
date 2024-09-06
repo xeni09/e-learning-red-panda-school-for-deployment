@@ -25,7 +25,7 @@ export const getUserDataFromToken = async () => {
   console.log("Fetching user data...");
   try {
     const response = await axios.get("/api/auth/verifyToken");
-
+    console.log("User data received:", response.data.user); // Verifica aquí que el ID exista
     return response.data.user;
   } catch (error) {
     console.error("Error fetching user data:", error);
