@@ -16,6 +16,8 @@ SESSION_SECRET=TU_SECRETO_SESION
 MONGODB_URI=mongodb+srv://usuario:contraseña@cluster.mongodb.net/nombre-de-la-base-de-datos?retryWrites=true&w=majority
 PORT=3000
 
+dentro de la carpeta api, hay un script para generar claves automaticamente, solo hay que usar el comando node generateSecrets.js desde la carpeta /api.
+
 Descripción de las variables:
 NODE_ENV: Modo de entorno de la aplicación (development o production).
 JWT_SECRET: Secreto para la firma de tokens JWT.
