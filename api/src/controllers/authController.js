@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 // Controlador para registrar un nuevo usuario
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -13,7 +13,7 @@ const registerUser = async (req, res) => {
     }
 
     // Crear nuevo usuario
-    user = new User({ name, email, password });
+    user = new User({ name, email, password, role: role || "user" });
 
     // Guardar el usuario en la base de datos
     await user.save();
@@ -56,17 +56,15 @@ const login = async (req, res) => {
       maxAge: 60 * 60 * 1000, // Expira en 1 hora
     });
 
-    // Regenerar la sesión para prevenir ataques de session fixation
-    req.session.regenerate(() => {
-      res.json({
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          courses: user.courses,
-        },
-      });
+    // Devolver los datos del usuario
+    res.json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        courses: user.courses,
+      },
     });
   } catch (err) {
     console.error("Error during login process:", err.message);

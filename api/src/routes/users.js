@@ -5,11 +5,30 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
-const { auth } = require("../middleware/jwtAuth"); // Usa el middleware `auth` directamente
+const { auth, authorize } = require("../middleware/jwtAuth"); // Import both `auth` and `authorize`
 
-// Rutas de usuario con ID, protegidas por el middleware `auth`
+// Users can get their own profile without role check
 router.get("/user/:id", auth, getUser);
-router.put("/user/:id", auth, updateUser);
-router.delete("/user/:id", auth, deleteUser);
+
+// Users can update their own profile without needing a special role
+router.put(
+  "/user/:id",
+  auth,
+  (req, res, next) => {
+    if (req.user._id !== req.params.id && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .send({
+          error:
+            "Access denied. You can only update your own profile, or you need admin privileges.",
+        });
+    }
+    next();
+  },
+  updateUser
+);
+
+// Only admins can delete users
+router.delete("/user/:id", auth, authorize(["admin"]), deleteUser);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 // Controlador para obtener un usuario por ID
 const getUser = async (req, res) => {
@@ -16,7 +17,7 @@ const getUser = async (req, res) => {
 
 // Controlador para actualizar un usuario por ID
 const updateUser = async (req, res) => {
-  const { name, email, password, courses } = req.body;
+  const { name, email, password, courses, role } = req.body;
 
   try {
     // Buscar usuario por ID
@@ -25,15 +26,32 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Actualiza los campos solo si han sido proporcionados
+    // Actualizar name, email y password (cualquier usuario puede hacerlo)
     if (name) user.name = name;
     if (email) user.email = email;
-    if (courses) user.courses = courses;
 
     // Solo actualiza la contraseña si está presente y no es vacía
     if (password && password.trim() !== "") {
-      console.log("New password being set:", password);
-      user.password = password;
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Solo administradores pueden modificar los cursos manualmente
+    if (courses && req.user.role === "admin") {
+      user.courses = courses;
+    } else if (courses) {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to modify courses." });
+    }
+
+    // Solo administradores pueden modificar el rol del usuario
+    if (role && req.user.role === "admin") {
+      user.role = role;
+    } else if (role) {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to change roles." });
     }
 
     await user.save();
