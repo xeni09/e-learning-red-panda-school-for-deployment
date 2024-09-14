@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AuthContext from './AuthContext';
 import { getUserDataFromToken } from '../services/authService';
-import axios from '../services/axiosConfig';  // Asegúrate de importar Axios
+import axios from 'axios';
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,11 +11,15 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const userData = await getUserDataFromToken();  // Obtener datos del usuario desde las cookies
-        if (userData) {
-          console.log("User data in AuthProvider:", userData);  // Verifica si hay ID
-          setUser(userData);
-          setIsAuthenticated(true);
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+        if (token) {
+          const userData = await getUserDataFromToken();  // Obtener datos del usuario desde el token en cookies
+          if (userData) {
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            handleInvalidToken();
+          }
         } else {
           handleInvalidToken();
         }
@@ -23,12 +27,11 @@ const AuthProvider = ({ children }) => {
         console.error('Failed to load user data:', error);
         handleInvalidToken();
       }
-      setIsLoading(false);
+      setIsLoading(false);  // Dejar de cargar después de intentar obtener los datos
     };
 
     loadUserData();
   }, []); // Solo se ejecuta una vez cuando el componente es montado
-
 
   const handleInvalidToken = () => {
     setIsAuthenticated(false);
@@ -52,20 +55,17 @@ const AuthProvider = ({ children }) => {
 
   const updateUser = async () => {
     try {
-      const userData = await getUserDataFromToken();  // Obtener datos actualizados
+      const userData = await getUserDataFromToken();  // Obtener datos actualizados del usuario desde el token en las cookies
       if (userData) {
-        console.log("Updated user data:", userData);  // Verificar que el ID y otros datos estén presentes
-        setUser(userData);  // Actualizar los datos en el estado global
+        setUser(userData);  // Actualizar el estado global con los datos actualizados
       } else {
-        handleInvalidToken();  // Si no se obtiene el usuario, invalidar sesión
+        handleInvalidToken();
       }
     } catch (error) {
       console.error("Failed to update user data:", error);
       handleInvalidToken();
     }
   };
-  
-  
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, logout, updateUser }}>
