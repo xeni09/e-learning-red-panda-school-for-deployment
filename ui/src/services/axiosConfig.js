@@ -1,10 +1,23 @@
-// /services/axiosConfig.js
 import axios from "axios";
 
-// Configuración global de Axios para incluir cookies en todas las solicitudes
+axios.defaults.withCredentials = true; // Asegúrate de que Axios siempre envíe las cookies
+
+// Crear una instancia de Axios con configuración predefinida
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", // Cambia esta URL a la de tu backend en producción
-  withCredentials: true, // Asegura que las cookies se envíen y reciban automáticamente
+  baseURL: "http://localhost:3000", // Cambia según la URL de tu API
+  withCredentials: true, // Habilita el uso de cookies en las solicitudes
 });
+
+// Configuración de intercepción de respuestas para manejar errores de autenticación
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.error("Unauthorized, redirecting to login...");
+      // Puedes redirigir al login o manejar la sesión expirada aquí
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

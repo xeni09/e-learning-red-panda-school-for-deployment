@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
 
   // Si no está autenticado, redirige al login
   if (!isAuthenticated) {
-    console.log('User not authenticated, redirecting to /login');
+   
     return <Navigate to="/login" />;
   }
 

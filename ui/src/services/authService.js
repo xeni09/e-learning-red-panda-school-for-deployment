@@ -3,8 +3,6 @@ import axios from "./axiosConfig";
 // Función para autenticar al usuario
 export const authenticateUser = async (credentials) => {
   try {
-    console.log("Sending credentials:", credentials);
-
     const response = await axios.post("/api/auth/login", credentials);
 
     const data = response.data;
@@ -27,8 +25,7 @@ export const getUserDataFromToken = async () => {
   console.log("Fetching user data...");
   try {
     const response = await axios.get("/api/auth/verifyToken");
-
-    console.log("Fetched user data from API:", response.data);
+    console.log("User data received:", response.data.user); // Verifica aquí que el ID exista
     return response.data.user;
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -39,8 +36,6 @@ export const getUserDataFromToken = async () => {
 // Función para actualizar los datos del usuario
 export const updateUserData = async (userId, formData) => {
   try {
-    console.log("Sending updated data:", formData); // <-- Log de datos enviados
-
     const response = await axios.put(`/api/users/user/${userId}`, formData);
     return response.data;
   } catch (error) {
