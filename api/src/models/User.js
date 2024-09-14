@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 // Definir el esquema de cursos
 const courseSchema = new mongoose.Schema({
-  id: {
+  _id: {
     type: mongoose.Schema.Types.ObjectId, // Usar ObjectId si estás referenciando otros documentos
     ref: "Course", // Referencia a otro modelo de curso (si es necesario)
     required: true,

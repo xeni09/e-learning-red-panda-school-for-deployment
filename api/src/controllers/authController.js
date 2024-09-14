@@ -43,7 +43,7 @@ const login = async (req, res) => {
 
     // Generar el token JWT
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role, name: user.name },
+      { _id: user._id, email: user.email, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -60,7 +60,7 @@ const login = async (req, res) => {
     req.session.regenerate(() => {
       res.json({
         user: {
-          id: user._id,
+          _id: user._id,
           name: user.name,
           email: user.email,
           role: user.role,
@@ -85,7 +85,7 @@ const verifyToken = async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded._id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

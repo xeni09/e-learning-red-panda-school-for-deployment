@@ -24,7 +24,7 @@ const Settings = () => {
       const updatedUserData = { name: editedName };
 
       // Actualizamos los datos del usuario en la base de datos
-      await updateUserData(user.id, updatedUserData); // Elimina el token
+      await updateUserData(user._id, updatedUserData); // Elimina el token
 
       // Actualizamos el estado global del usuario en AuthProvider
       await updateUser();

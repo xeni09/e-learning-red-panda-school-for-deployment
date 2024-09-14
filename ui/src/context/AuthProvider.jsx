@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AuthContext from './AuthContext';
 import { getUserDataFromToken } from '../services/authService';
-import axios from 'axios';  // Asegúrate de importar axios
+import axios from 'axios';
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,10 +11,15 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const userData = await getUserDataFromToken();  // Obtener datos del usuario desde el token en cookies
-        if (userData) {
-          setUser(userData);
-          setIsAuthenticated(true);
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+        if (token) {
+          const userData = await getUserDataFromToken();  // Obtener datos del usuario desde el token en cookies
+          if (userData) {
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            handleInvalidToken();
+          }
         } else {
           handleInvalidToken();
         }

@@ -37,7 +37,7 @@ const updateUser = async (req, res) => {
     res.json({
       msg: "User updated successfully",
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         courses: user.courses,
