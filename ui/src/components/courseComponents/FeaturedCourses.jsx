@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CourseCardGrid from './CourseCard';
-import alpaca from '../assets/images/alpaca.webp';
-import cat from '../assets/images/cat.jpeg';
-import python from '../assets/images/python.jpg';
+import alpaca from '../../assets/images/alpaca.webp';
+import cat from '../../assets/images/cat.jpeg';
+import python from '../../assets/images/python.jpg';
 
 const courses = [
   

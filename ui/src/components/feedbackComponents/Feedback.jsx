@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import alpaca from '../assets/images/alpaca.webp';
-import cat from '../assets/images/cat.jpeg';
-import python from '../assets/images/python.jpg';
-import StarRating from '../components/StarRating';
+import alpaca from '../../assets/images/alpaca.webp';
+import cat from '../../assets/images/cat.jpeg';
+import python from '../../assets/images/python.jpg';
+import StarRating from './StarRating';
 
 const feedbacks = [
   {

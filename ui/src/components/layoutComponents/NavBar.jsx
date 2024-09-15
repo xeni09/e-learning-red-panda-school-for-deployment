@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../assets/logo.svg";
-import userIcon from "../assets/user-icon.png";
+import logo from "../../assets/logo.svg";
+import userIcon from "../../assets/user-icon.png";
 import { FaShoppingCart } from "react-icons/fa"; 
-import { useAuth } from "../context/AuthProvider"; 
-import LogoutButton from "./LogoutButton";
+import { useAuth } from "../../context/AuthProvider"; 
+import LogoutButton from "../authComponents/LogoutButton";
 import "./NavBar.css";
 
 const navItems = [

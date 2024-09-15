@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import CheckoutSteps from '../components/CheckoutSteps';
-import CheckoutEmpty from '../components/CheckoutEmpty';
-import CheckoutSummary from '../components/CheckoutSummary';
+import CheckoutSteps from '../components/checkoutComponents/CheckoutSteps';
+import CheckoutEmpty from '../components/checkoutComponents/CheckoutEmpty';
+import CheckoutSummary from '../components/checkoutComponents/CheckoutSummary';
 
 
 const Checkout = () => {

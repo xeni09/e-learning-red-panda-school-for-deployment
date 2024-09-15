@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Footer.css";
-import logo from "../assets/logo.svg";
-import youtube from "../assets/socials-youtube.png";
-import instagram from "../assets/socials-instagram.png";
-import facebook from "../assets/socials-facebook.png";
+import logo from "../../assets/logo.svg";
+import youtube from "../../assets/socials-youtube.png";
+import instagram from "../../assets/socials-instagram.png";
+import facebook from "../../assets/socials-facebook.png";
 
 const Footer = () => {
   const [email, setEmail] = useState("");

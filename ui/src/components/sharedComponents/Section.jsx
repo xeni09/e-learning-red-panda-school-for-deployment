@@ -1,6 +1,7 @@
 import React from "react";
 import Tilt from "react-parallax-tilt";
-import { colors, getTextColorClass } from "./colors";
+import { colors, getTextColorClass } from "../stylesComponents/colors";
+
 import StatsSection from './StatsSection';
 
 const Section = ({

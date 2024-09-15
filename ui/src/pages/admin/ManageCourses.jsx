@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
-import AdminSubMenu from './AdminSubMenu';  // Include the AdminSubMenu
+import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';  
+
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);

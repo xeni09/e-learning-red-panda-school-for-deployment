@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
-import AdminSubMenu from './AdminSubMenu';
+import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 
 const AdminDashboard = () => {
   const [adminData, setAdminData] = useState(null);

@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 
 // Components
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
-import ScrollToTop from './components/ScrollToTop';
+import NavBar from "./components/layoutComponents/NavBar";
+import Footer from "./components/layoutComponents/Footer";
+import ScrollToTop from './components/layoutComponents/ScrollToTop';
 import AuthProvider from './context/AuthProvider';
 
 // Pages
@@ -28,14 +28,15 @@ import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageUsers from './pages/admin/ManageUsers';
 import ManageCourses from './pages/admin/ManageCourses';
-import AdminRoute from './components/AdminRoute';
+import AdminRoute from './components/adminComponents/AdminRoute';
 import Admin from './pages/Admin';
 
 // Authenticated Pages
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/authComponents/ProtectedRoute';
 import MyAccount from './pages/authenticated/MyAccount';
 import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
+
 
 const App = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import SubMenu from './SubMenu';
+import SubMenu from '../../components/layoutComponents/SubMenu';
 import { useAuth } from '../../context/AuthProvider';
 
 const MyAccount = () => {
