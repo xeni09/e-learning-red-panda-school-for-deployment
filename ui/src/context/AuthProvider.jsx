@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AuthContext from './AuthContext';
-import { getUserDataFromToken } from '../services/authService';
-import axios from 'axios';
+import axios from '../services/axiosConfig';  // Use your axios instance
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -9,29 +8,25 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadUserData = async () => {
+    const verifyUserToken = async () => {
       try {
-        const token = document.cookie.split('; ').find(row => row.startsWith('token='));
-        if (token) {
-          const userData = await getUserDataFromToken();  // Obtener datos del usuario desde el token en cookies
-          if (userData) {
-            setUser(userData);
-            setIsAuthenticated(true);
-          } else {
-            handleInvalidToken();
-          }
+        const response = await axios.get('/api/auth/verifyToken');  // Call your backend to verify the token
+        if (response.data.user) {
+          setUser(response.data.user);
+          setIsAuthenticated(true);
         } else {
           handleInvalidToken();
         }
       } catch (error) {
-        console.error('Failed to load user data:', error);
+        console.error('Token verification failed:', error);
         handleInvalidToken();
+      } finally {
+        setIsLoading(false);  // Stop loading
       }
-      setIsLoading(false);  // Dejar de cargar después de intentar obtener los datos
     };
 
-    loadUserData();
-  }, []); // Solo se ejecuta una vez cuando el componente es montado
+    verifyUserToken();  // Automatically verify the token when the component mounts
+  }, []);
 
   const handleInvalidToken = () => {
     setIsAuthenticated(false);
@@ -45,7 +40,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout');  // Eliminar el token del backend
+      await axios.post('/api/auth/logout');  // Logout request to backend
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
@@ -55,14 +50,14 @@ const AuthProvider = ({ children }) => {
 
   const updateUser = async () => {
     try {
-      const userData = await getUserDataFromToken();  // Obtener datos actualizados del usuario desde el token en las cookies
-      if (userData) {
-        setUser(userData);  // Actualizar el estado global con los datos actualizados
+      const response = await axios.get('/api/auth/verifyToken');  // Call the token verification endpoint to refresh user data
+      if (response.data.user) {
+        setUser(response.data.user);  // Update user data in the state
       } else {
         handleInvalidToken();
       }
     } catch (error) {
-      console.error("Failed to update user data:", error);
+      console.error('Failed to update user data:', error);
       handleInvalidToken();
     }
   };

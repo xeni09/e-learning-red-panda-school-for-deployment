@@ -1,20 +1,21 @@
 const express = require("express");
 const session = require("express-session");
-const cookieParser = require("cookie-parser"); // Requerimos cookie-parser
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
 const { auth } = require("./middleware/jwtAuth");
+const connectDB = require("./config/db");
+const initRoutes = require("./routes/initRoutes"); // Import initRoutes
 
 const app = express();
-const connectDB = require("./config/db");
-const initRoutes = require("./routes/initRoutes");
 
 // Verificar variables de entorno requeridas
 if (
   !process.env.SESSION_SECRET ||
+  !process.env.JWT_SECRET ||
   !process.env.ADMIN_EMAIL ||
   !process.env.ADMIN_PASSWORD ||
   !process.env.MONGODB_URI
@@ -35,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir cookies
 app.use(
   cors({
-    origin: "http://localhost:5173", // Ajusta al dominio de tu frontend
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true, // Permitir envío de cookies
   })
 );
@@ -49,24 +50,12 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" }, // Cookies solo en HTTPS en producción
+    cookie: { secure: process.env.NODE_ENV === "production" },
   })
 );
 
-// Ruta raíz
-app.get("/", (req, res) => {
-  res.send("Welcome to the API");
-});
-
-// Importar y usar rutas
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/users");
-
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-
-// Inicializar rutas adicionales
-initRoutes(app);
+// Inicializar rutas desde initRoutes.js
+initRoutes(app); // This will initialize the routes for /api/auth and /api/users
 
 // Inicializar el manejador de errores
 initErrorHandler(app);
