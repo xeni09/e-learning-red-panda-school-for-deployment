@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const {
   getUser,
+  createUser,
   getAllUsers,
+  changeUserPassword,
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
@@ -13,6 +15,17 @@ router.get("/", auth, authorize(["admin"]), getAllUsers);
 
 // Obtener perfil de usuario (cualquier usuario autenticado puede ver su propio perfil)
 router.get("/user/:id", auth, getUser);
+
+// Crear un nuevo usuario (solo los administradores pueden crear usuarios)
+router.post("/", auth, authorize(["admin"]), createUser); // Añadir esta ruta
+
+// Ruta para cambiar la contraseña de un usuario (autorización requerida)
+router.put(
+  "/user/:id/change-password",
+  auth,
+  authorize(["admin"]),
+  changeUserPassword
+);
 
 // Permitir a un usuario editar su propio perfil o a un admin editar cualquier perfil
 router.put(

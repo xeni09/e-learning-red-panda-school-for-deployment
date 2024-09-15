@@ -18,24 +18,24 @@ const CustomDropdown = ({ options, selectedOption, onOptionSelect }) => {
   }, [dropdownRef]);
 
   return (
-    <div className="relative w-full md:w-48" ref={dropdownRef}>
+    <div className="relative w-36 md:w-48" ref={dropdownRef}>
       {/* Botón del dropdown */}
       <button
-        className="p-2 border border-gray-300 rounded bg-white focus:outline-none focus:border-[var(--color-yellow)] focus:ring-0 transition duration-300 w-full text-left text-sm"
+        className="p-2 border border-gray-300 rounded bg-white focus:outline-none focus:border-[var(--color-yellow)] focus:ring-0 transition duration-300 w-full text-left text-md"
         onClick={() => setIsOpen(!isOpen)}
       >
         {/* Mostrar la opción seleccionada o "All" por defecto */}
         {selectedOption ? options.find(option => option.value === selectedOption)?.label : 'All'}
-        <span className="float-right">&#9662;</span> {/* Flecha hacia abajo */}
+        <span className="float-right px-2">&#9662;</span> {/* Flecha hacia abajo */}
       </button>
 
       {/* Opciones del dropdown */}
       {isOpen && (
-        <ul className="absolute mt-1 w-full bg-white border border-gray-300 rounded shadow-lg z-10">
+        <ul className="absolute mt-1  w-full bg-white border border-gray-300 rounded shadow-lg z-10">
           {options.map((option) => (
             <li
               key={option.value}
-              className="p-2 hover:bg-[var(--color-yellow)] cursor-pointer text-sm"
+              className="p-2 hover:bg-[var(--color-yellow)] cursor-pointer text-md "
               onClick={() => {
                 onOptionSelect(option.value);
                 setIsOpen(false);

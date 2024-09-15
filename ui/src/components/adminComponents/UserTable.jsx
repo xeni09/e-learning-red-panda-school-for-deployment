@@ -5,9 +5,9 @@ const UserTable = ({ users, editingUserId, editFormData, setEditFormData, setEdi
 
   const renderSortIcon = (field) => {
     if (sortField !== field) {
-      return '↑↓';  // Default sort icon
+      return '↑↓';  
     }
-    return sortOrder === 'asc' ? '↑' : '↓';  // Ascending or descending sort icon
+    return sortOrder === 'asc' ? '↑' : '↓';  
   };
 
   return (
@@ -36,9 +36,9 @@ const UserTable = ({ users, editingUserId, editFormData, setEditFormData, setEdi
             editFormData={editFormData}
             setEditFormData={setEditFormData}
             setEditingUserId={setEditingUserId}
-            handleDeleteUser={handleDeleteUser}
-            handleSaveChanges={handleSaveChanges}
-            handleCancelEdit={handleCancelEdit}
+            handleDeleteUser={handleDeleteUser}  
+            handleSaveChanges={handleSaveChanges} 
+            handleCancelEdit={handleCancelEdit}   
           />
         ))}
       </tbody>

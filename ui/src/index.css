@@ -20,6 +20,8 @@
   --color-grey: #80858f;
   --color-white: #fff9f4;
   --color-beige: #efede7;
+  --color-green: #7ab00c;
+  --color-red: #c71515;
   margin: 0;
   width: 100%;
 }
@@ -136,6 +138,15 @@ a {
 }
 a:hover {
   font-weight: 600;
+}
+
+/* Quitar el "ring" azul y aplicar borde amarillo globalmente */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important; /* Eliminar borde predeterminado */
+  border-color: var(--color-yellow); /* Aplicar borde amarillo */
+  box-shadow: none !important; /* Eliminar sombra azul en algunos navegadores */
 }
 
 @media (max-width: 1200px) {

@@ -1,6 +1,15 @@
 import React from 'react';
 
-const UserRow = ({ user, editingUserId, editFormData, setEditFormData, setEditingUserId, handleDeleteUser, handleSaveChanges, handleCancelEdit }) => {
+const UserRow = ({
+  user,
+  editingUserId,
+  editFormData,
+  setEditFormData,
+  setEditingUserId,
+  handleDeleteUser,
+  handleSaveChanges,
+  handleCancelEdit
+}) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -56,35 +65,35 @@ const UserRow = ({ user, editingUserId, editFormData, setEditFormData, setEditin
       </td>
       <td className="border px-4 py-2">
         {editingUserId === user._id ? (
-          <>
+          <div className="flex space-x-2">
             <button
               onClick={() => handleSaveChanges(user._id)}
-              className="btn bg-blue-600 text-white px-4 py-2 rounded mr-2"
+              className="btn px-4 py-2 rounded"
             >
               Save
             </button>
             <button
               onClick={handleCancelEdit}
-              className="btn bg-gray-400 text-white px-4 py-2 rounded"
+              className="btn bg-gray-400  px-4 py-2 rounded"
             >
               Cancel
             </button>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="flex space-x-2">
             <button
               onClick={() => setEditingUserId(user._id)}
-              className="btn bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+              className="btn   px-4 py-2 rounded"
             >
               Edit
             </button>
             <button
               onClick={() => handleDeleteUser(user._id)}
-              className="btn bg-red-600 text-white px-4 py-2 rounded"
+              className="btn bg-[var(--color-red)]  px-4 py-2 rounded"
             >
               Delete
             </button>
-          </>
+          </div>
         )}
       </td>
     </tr>
