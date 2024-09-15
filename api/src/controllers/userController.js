@@ -32,7 +32,7 @@ const updateUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    // Actualizar name, email y password
+    // Actualizar name, email y password (sin permitir modificar el customId)
     if (name) user.name = name;
     if (email) user.email = email;
 
@@ -50,6 +50,7 @@ const updateUser = async (req, res) => {
         .json({ msg: "You are not authorized to modify courses." });
     }
 
+    // Solo los administradores pueden cambiar el rol del usuario
     if (role && req.user.role === "admin") {
       user.role = role;
     } else if (role) {
@@ -60,10 +61,12 @@ const updateUser = async (req, res) => {
 
     await user.save();
 
+    // Enviar la respuesta con los datos actualizados, sin modificar el customId
     res.json({
       msg: "User updated successfully",
       user: {
         _id: user._id,
+        customId: user.customId, // No se permite modificar el customId
         name: user.name,
         email: user.email,
         courses: user.courses,
@@ -91,11 +94,6 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Validar formato del email
-    if (!validateEmail(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
-    }
-
     // Verificar si el email ya está en uso
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -105,18 +103,22 @@ const createUser = async (req, res) => {
     // Hashear la contraseña antes de guardarla
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Obtener el último usuario para calcular el próximo customId
+    const lastUser = await User.findOne().sort({ customId: -1 });
+    const newCustomId = lastUser ? lastUser.customId + 1 : 1;
+
     // Crear un nuevo usuario
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
       role: role || "user", // Asignar "user" por defecto si no se proporciona un rol
+      customId: newCustomId,
     });
 
     // Guardar al usuario en la base de datos
     await newUser.save();
 
-    // Devolver el nuevo usuario
     res.status(201).json(newUser);
   } catch (error) {
     console.error("Error creating user:", error);

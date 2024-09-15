@@ -16,6 +16,11 @@ const courseSchema = new mongoose.Schema({
 
 // Definir el esquema de usuario
 const userSchema = new mongoose.Schema({
+  customId: {
+    type: Number,
+    unique: true,
+  },
+
   name: {
     type: String,
     required: true,
