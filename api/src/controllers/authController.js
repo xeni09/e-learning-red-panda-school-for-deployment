@@ -12,8 +12,18 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    // Crear nuevo usuario
-    user = new User({ name, email, password, role: role || "user" });
+    // Obtener el último customId y sumarle 1 para asignarlo al nuevo usuario
+    const lastUser = await User.findOne().sort({ customId: -1 });
+    const newCustomId = lastUser ? lastUser.customId + 1 : 1;
+
+    // Crear nuevo usuario con customId
+    user = new User({
+      name,
+      email,
+      password,
+      role: role || "user",
+      customId: newCustomId, // Asignar el nuevo customId
+    });
 
     // Guardar el usuario en la base de datos
     await user.save();
@@ -60,6 +70,7 @@ const login = async (req, res) => {
     res.json({
       user: {
         _id: user._id,
+        customId: user.customId,
         name: user.name,
         email: user.email,
         role: user.role,
