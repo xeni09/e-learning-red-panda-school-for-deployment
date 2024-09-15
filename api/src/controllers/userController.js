@@ -30,13 +30,13 @@ const updateUser = async (req, res) => {
     if (name) user.name = name;
     if (email) user.email = email;
 
-    // Solo actualiza la contraseña si está presente y no es vacía
+    // Actualizar contraseña solo si está presente y no es vacía
     if (password && password.trim() !== "") {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
 
-    // Solo administradores pueden modificar los cursos manualmente
+    // Administradores pueden modificar los cursos manualmente
     if (courses && req.user.role === "admin") {
       user.courses = courses;
     } else if (courses) {
@@ -45,7 +45,7 @@ const updateUser = async (req, res) => {
         .json({ msg: "You are not authorized to modify courses." });
     }
 
-    // Solo administradores pueden modificar el rol del usuario
+    // Administradores pueden modificar el rol
     if (role && req.user.role === "admin") {
       user.role = role;
     } else if (role) {
@@ -90,8 +90,20 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// Controlador para obtener todos los usuarios
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find(); // Obtener todos los usuarios
+    res.json(users);
+  } catch (err) {
+    console.error("Error fetching users:", err.message);
+    res.status(500).send("Server error");
+  }
+};
+
 module.exports = {
   getUser,
+  getAllUsers,
   updateUser,
   deleteUser,
 };

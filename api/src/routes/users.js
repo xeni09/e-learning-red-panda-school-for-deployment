@@ -2,33 +2,37 @@ const express = require("express");
 const router = express.Router();
 const {
   getUser,
+  getAllUsers,
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
-const { auth, authorize } = require("../middleware/jwtAuth"); // Import both `auth` and `authorize`
+const { auth, authorize } = require("../middleware/jwtAuth");
 
-// Users can get their own profile without role check
+// Ruta para obtener todos los usuarios
+router.get("/", auth, authorize(["admin"]), getAllUsers);
+
+// Obtener perfil de usuario (cualquier usuario autenticado puede ver su propio perfil)
 router.get("/user/:id", auth, getUser);
 
-// Users can update their own profile without needing a special role
+// Permitir a un usuario editar su propio perfil o a un admin editar cualquier perfil
 router.put(
   "/user/:id",
   auth,
   (req, res, next) => {
-    if (req.user._id !== req.params.id && req.user.role !== "admin") {
-      return res
-        .status(403)
-        .send({
-          error:
-            "Access denied. You can only update your own profile, or you need admin privileges.",
-        });
+    // Permitir que el usuario edite su propio perfil o que el administrador edite cualquier perfil
+    if (req.user._id === req.params.id || req.user.role === "admin") {
+      next();
+    } else {
+      return res.status(403).json({
+        error:
+          "Access denied. You can only update your own profile, or you need admin privileges.",
+      });
     }
-    next();
   },
   updateUser
 );
 
-// Only admins can delete users
+// Solo los administradores pueden eliminar usuarios
 router.delete("/user/:id", auth, authorize(["admin"]), deleteUser);
 
 module.exports = router;
