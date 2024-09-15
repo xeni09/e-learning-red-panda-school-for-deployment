@@ -20,6 +20,8 @@
   --color-grey: #80858f;
   --color-white: #fff9f4;
   --color-beige: #efede7;
+  --color-green: #7ab00c;
+  --color-red: #c71515;
   margin: 0;
   width: 100%;
 }
@@ -80,7 +82,7 @@ button {
 
 h1 {
   font-size: 3.75rem !important;
-  line-height: 1.2;
+  line-height: 3.25rem !important;
   padding-bottom: 20px;
 }
 
@@ -138,6 +140,15 @@ a:hover {
   font-weight: 600;
 }
 
+/* Quitar el "ring" azul y aplicar borde amarillo globalmente */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important; /* Eliminar borde predeterminado */
+  border-color: var(--color-yellow); /* Aplicar borde amarillo */
+  box-shadow: none !important; /* Eliminar sombra azul en algunos navegadores */
+}
+
 @media (max-width: 1200px) {
   .container {
     padding: 3rem 2rem;
@@ -181,8 +192,9 @@ a:hover {
 }
 
 .btn {
-  @apply btn-base py-2 px-8;
+  @apply btn-base py-2 px-8 whitespace-nowrap w-full sm:w-auto text-center;
 }
+
 .btn-wide {
   @apply btn-base py-2 px-16;
 }

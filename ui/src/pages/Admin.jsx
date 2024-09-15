@@ -1,4 +1,3 @@
-// src/components/Admin.js
 import React, { useEffect, useState } from 'react';
 
 const Admin = () => {

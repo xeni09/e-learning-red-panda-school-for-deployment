@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import telephoneOrange from '../assets/telephone-orange.jpg';
-import Section from "../components/Section";
+import Section from "../components/sharedComponents/Section";
 import TermsOfService from './TermsOfService'; 
 
 

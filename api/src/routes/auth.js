@@ -1,3 +1,4 @@
+// auth.js (Authentication-related routes)
 const express = require("express");
 const router = express.Router();
 const {
@@ -9,24 +10,24 @@ const {
 
 const { auth } = require("../middleware/jwtAuth");
 
-// Ruta para registrar un nuevo usuario
+// Register a new user
 router.post("/register", registerUser);
 
-// Ruta para iniciar sesión
+// Login route
 router.post("/login", login);
 
-// Ruta para verificar el token JWT y devolver los datos del usuario
-router.get("/verifyToken", verifyToken); // Verificación de token
+// Verify JWT token
+router.get("/verifyToken", verifyToken);
 
-// Ruta para cerrar sesión
-router.post("/logout", logout); // Limpiar la cookie del token
+// Logout route
+router.post("/logout", logout);
 
-// Ruta protegida solo para administradores
-router.get("/admin", auth, (req, res) => {
+// General route to check if user is admin (optional)
+router.get("/admin-access", auth, (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).send({ error: "Access denied. Admins only." });
   }
-  res.send("Welcome Admin");
+  res.send("Admin access verified");
 });
 
 module.exports = router;

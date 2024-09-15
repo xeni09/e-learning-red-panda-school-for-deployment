@@ -1,8 +1,8 @@
 import React from 'react';
-import Section from "../components/Section";
+import Section from "../components/sharedComponents/Section";
 import heroBanner from "../assets/hero-banner2.png";
-import Feedback from "../components/Feedback";
-import CallToAction from "../components/CallToAction";
+import Feedback from "../components/feedbackComponents/Feedback";
+import CallToAction from "../components/sharedComponents/CallToAction";
 import '../index.css';
 
 

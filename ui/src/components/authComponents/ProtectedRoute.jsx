@@ -1,5 +1,6 @@
-import { useAuth } from '../context/AuthProvider';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthProvider';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -10,7 +11,6 @@ const ProtectedRoute = ({ children }) => {
 
   // Si no está autenticado, redirige al login
   if (!isAuthenticated) {
-   
     return <Navigate to="/login" />;
   }
 

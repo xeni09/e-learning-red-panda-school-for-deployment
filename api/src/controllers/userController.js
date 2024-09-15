@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 // Controlador para obtener un usuario por ID
 const getUser = async (req, res) => {
@@ -15,8 +16,9 @@ const getUser = async (req, res) => {
 };
 
 // Controlador para actualizar un usuario por ID
+
 const updateUser = async (req, res) => {
-  const { name, email, password, courses } = req.body;
+  const { name, email, password, courses, role } = req.body;
 
   try {
     // Buscar usuario por ID
@@ -25,15 +27,35 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Actualiza los campos solo si han sido proporcionados
+    // Validar formato del email si se intenta actualizar
+    if (email && !validateEmail(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Actualizar name, email y password
     if (name) user.name = name;
     if (email) user.email = email;
-    if (courses) user.courses = courses;
 
-    // Solo actualiza la contraseña si está presente y no es vacía
     if (password && password.trim() !== "") {
-      console.log("New password being set:", password);
-      user.password = password;
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Administradores pueden modificar los cursos manualmente
+    if (courses && req.user.role === "admin") {
+      user.courses = courses;
+    } else if (courses) {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to modify courses." });
+    }
+
+    if (role && req.user.role === "admin") {
+      user.role = role;
+    } else if (role) {
+      return res
+        .status(403)
+        .json({ msg: "You are not authorized to change roles." });
     }
 
     await user.save();
@@ -51,6 +73,54 @@ const updateUser = async (req, res) => {
   } catch (err) {
     console.error("Error updating user:", err.message);
     res.status(500).send("Server error");
+  }
+};
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+/// Crear un nuevo usuario
+const createUser = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    // Validar que no falten campos obligatorios
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // Validar formato del email
+    if (!validateEmail(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Verificar si el email ya está en uso
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email is already in use" });
+    }
+
+    // Hashear la contraseña antes de guardarla
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crear un nuevo usuario
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || "user", // Asignar "user" por defecto si no se proporciona un rol
+    });
+
+    // Guardar al usuario en la base de datos
+    await newUser.save();
+
+    // Devolver el nuevo usuario
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Error creating user" });
   }
 };
 
@@ -72,8 +142,45 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// Controlador para obtener todos los usuarios
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find(); // Obtener todos los usuarios
+    res.json(users);
+  } catch (err) {
+    console.error("Error fetching users:", err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// Controlador para cambiar la contraseña de un usuario
+const changeUserPassword = async (req, res) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Hashear la nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 module.exports = {
   getUser,
+  getAllUsers,
   updateUser,
+  createUser,
   deleteUser,
+  changeUserPassword,
 };

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import CourseTabs from '../components/CourseTabs';
-import CourseSummary from '../components/CourseSummary';
-import FeaturedCourses from '../components/FeaturedCourses'; // Importa el componente
+import CourseTabs from '../components//courseComponents/CourseTabs';
+import CourseSummary from '../components/courseComponents/CourseSummary';
+import FeaturedCourses from '../components//courseComponents/FeaturedCourses'; 
 
 const CoursePage = () => {
   const { courseId } = useParams();

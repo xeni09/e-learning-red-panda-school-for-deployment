@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 // Definir el esquema de cursos
 const courseSchema = new mongoose.Schema({
-  _id: {
+  id: {
     type: mongoose.Schema.Types.ObjectId, // Usar ObjectId si estás referenciando otros documentos
     ref: "Course", // Referencia a otro modelo de curso (si es necesario)
     required: true,
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
+    enum: ["user", "admin", "teacher"],
     default: "user",
   },
   courses: [courseSchema], // Array de cursos
@@ -43,13 +43,9 @@ userSchema.pre("save", async function (next) {
     return next();
   }
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt); // Hasheo
-    next();
-  } catch (error) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 // Método para comparar contraseñas

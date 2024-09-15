@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
-import SubMenu from './SubMenu';
-import EditableField from '../../components/EditableField';
-import PasswordField from '../../components/PasswordField';
+import SubMenu from '../../components/layoutComponents/SubMenu';
+import EditableField from '../../components/sharedComponents/EditableField';
+import PasswordField from '../../components/sharedComponents/PasswordField';
 import useSettingsForm from '../../hooks/useSettingsForm';
 
 const Settings = () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CourseCardGrid from '../components/CourseCard';
-import Section from "../components/Section";
+import CourseCardGrid from '../components/courseComponents/CourseCard';
+import Section from "../components/sharedComponents/Section";
 
 import heroBanner from "../assets/hero-banner3.jpeg";
 

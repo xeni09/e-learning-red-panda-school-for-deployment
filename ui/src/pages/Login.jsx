@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import { authenticateUser } from '../services/authService';
 import { useAuth } from '../context/AuthProvider';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/authComponents/LoginForm';
 
 export default function Login() {
   const [error, setError] = useState('');

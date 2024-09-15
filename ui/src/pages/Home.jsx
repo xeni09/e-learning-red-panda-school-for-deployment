@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Section from "../components/Section";
+import Section from "../components/sharedComponents/Section";
 import heroBanner from "../assets/hero-banner2.png";
-import Feedback from '../components/Feedback';
-import CallToAction from "../components/CallToAction";
-import FeaturedCourses from '../components/FeaturedCourses';
+import Feedback from '../components/feedbackComponents/Feedback';
+import CallToAction from "../components/sharedComponents/CallToAction";
+import FeaturedCourses from '../components/courseComponents/FeaturedCourses';
 
 const Home = () => {
   const selectedCourseIds = [1, 2, 5];

@@ -1,5 +1,5 @@
 import React from "react";
-import { colors, getTextColorClass } from "./colors";
+import { colors, getTextColorClass } from "../stylesComponents/colors";
 
 const stats = [
   { id: 1, name: 'Instructors', value: '100+' },
