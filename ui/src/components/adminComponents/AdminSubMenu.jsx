@@ -3,13 +3,13 @@ import { NavLink } from 'react-router-dom';
 
 const AdminSubMenu = () => {
   return (
-    <div className="flex justify-start bg-[var(--color-yellow)]">
-      <div className="container py-5 ">
+    <div className="bg-[var(--color-yellow)]">
+      <div className="container py-5 flex flex-col items-center md:flex-row md:justify-start md:space-x-4 space-y-2 md:space-y-0">
         <NavLink
           to="/admin/dashboard"
           className={({ isActive }) =>
-            `mr-4 py-2 mb-4 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
-              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)]' : 'text-[var(--color-white)]'
+            `py-2 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
+              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)] inline-block' : 'text-[var(--color-white)] inline-block'
             }`
           }
         >
@@ -19,8 +19,8 @@ const AdminSubMenu = () => {
         <NavLink
           to="/admin/manage-courses"
           className={({ isActive }) =>
-            `mx-2 py-2 mb-4 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
-              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)]' : 'text-[var(--color-white)]'
+            `py-2 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
+              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)] inline-block' : 'text-[var(--color-white)] inline-block'
             }`
           }
         >
@@ -30,8 +30,8 @@ const AdminSubMenu = () => {
         <NavLink
           to="/admin/manage-users"
           className={({ isActive }) =>
-            `mx-4 py-2 mb-4 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
-              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)]' : 'text-[var(--color-white)]'
+            `py-2 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
+              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)] inline-block' : 'text-[var(--color-white)] inline-block'
             }`
           }
         >

@@ -181,8 +181,9 @@ a:hover {
 }
 
 .btn {
-  @apply btn-base py-2 px-8;
+  @apply btn-base py-2 px-8 whitespace-nowrap w-full sm:w-auto text-center;
 }
+
 .btn-wide {
   @apply btn-base py-2 px-16;
 }
