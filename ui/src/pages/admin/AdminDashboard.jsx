@@ -1,25 +1,42 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';  // Importar para manejar la navegación
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 
 const AdminDashboard = () => {
-  const [adminData, setAdminData] = useState(null);
+  const [adminData, setAdminData] = useState({ usersCount: 0, coursesCount: 0 });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);  // Estado para manejar el loading
+  const navigate = useNavigate();  // Hook para redirigir a otra página
 
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/admin/dashboard');
-        console.log('Response from backend:', response);
-        setAdminData(response.data);
+        // Llamadas API para obtener datos de usuarios y cursos
+        const [usersResponse, coursesResponse] = await Promise.all([
+          axios.get('/api/users'),  // Ruta para obtener todos los usuarios
+          axios.get('/api/courses'),  // Ruta para obtener todos los cursos
+        ]);
+
+        setAdminData({
+          usersCount: usersResponse.data.length,
+          coursesCount: coursesResponse.data.length,
+        });
+
+        setLoading(false);  // Cuando los datos se cargan, detenemos el loading
       } catch (err) {
         console.error('Error fetching admin data:', err.response ? err.response.data : err.message);
         setError(err.message);
+        setLoading(false);  // Detener loading en caso de error también
       }
     };
 
-    fetchAdminData();
+    fetchAdminData();  // Ejecutar la función cuando se monte el componente
   }, []);
+
+  if (loading) {
+    return <p className="text-center text-xl">Loading admin data...</p>;
+  }
 
   if (error) {
     return <p className="text-red-500">Error: {error}</p>;
@@ -33,25 +50,30 @@ const AdminDashboard = () => {
 
         {/* Section for summary data */}
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-          <h2 className="text-2xl mb-4">Admin Summary</h2>
-          {adminData ? (
-            <ul>
-              <li className="mb-4">
-                <strong>Users:</strong> {adminData.usersCount}
-              </li>
-              <li className="mb-4">
-                <strong>Courses:</strong> {adminData.coursesCount}
-              </li>
-              <li className="mb-4">
-                <strong>Revenue:</strong> ${adminData.revenue}
-              </li>
-            </ul>
-          ) : (
-            <p>Loading admin data...</p>
-          )}
-        </div>
+          <h2 className="text-2xl my-6">Admin Summary</h2>
 
-        {/* You can add more sections here */}
+          <ul>
+            <li className="mb-10">
+              <strong>Users:</strong> {adminData.usersCount}
+              <button
+                onClick={() => navigate('/admin/manage-users')}  // Redirigir a la página de Manage Users
+                className="btn block"
+              >
+                Manage Users
+              </button>
+            </li>
+
+            <li className="mb-4">
+              <strong>Courses:</strong> {adminData.coursesCount}
+              <button
+                onClick={() => navigate('/admin/manage-courses')}  // Redirigir a la página de Manage Courses
+                className="btn block"
+              >
+                Manage Courses
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   );

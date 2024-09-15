@@ -56,7 +56,7 @@ const ManageCourses = () => {
 
   return (
     <>
-      <AdminSubMenu />  {/* Submenu at the top */}
+      <AdminSubMenu /> 
       <div className="container mx-auto p-4 pt-20">
         <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
 
