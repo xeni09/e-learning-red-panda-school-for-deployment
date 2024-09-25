@@ -57,6 +57,11 @@ app.use(
 // Inicializar rutas desde initRoutes.js
 initRoutes(app); // This will initialize the routes for /api/auth and /api/users
 
+// Agregar una ruta para la raíz (esto te ayudará a verificar si el backend está funcionando)
+app.get("/", (req, res) => {
+  res.send("Backend funcionando correctamente");
+});
+
 // Inicializar el manejador de errores
 initErrorHandler(app);
 

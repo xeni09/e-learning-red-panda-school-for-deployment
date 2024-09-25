@@ -1,10 +1,11 @@
 import axios from "axios";
 
-axios.defaults.withCredentials = true; // Asegúrate de que Axios siempre envíe las cookies
+// Usar la variable de entorno para la URL base del backend
+const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 // Crear una instancia de Axios con configuración predefinida
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", // Cambia según la URL de tu API
+  baseURL, // Usar la URL del backend desde la variable de entorno
   withCredentials: true, // Habilita el uso de cookies en las solicitudes
 });
 
