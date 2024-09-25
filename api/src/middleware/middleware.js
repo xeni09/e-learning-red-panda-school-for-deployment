@@ -23,17 +23,44 @@ function configure(app) {
   app.use(compression());
 
   // Configurar Content Security Policy con Helmet
+  const isProduction = process.env.NODE_ENV === "production";
+
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "http://localhost:3000"],
-        connectSrc: ["'self'", "http://localhost:3000"],
-        scriptSrc: ["'self'", "http://localhost:3000"],
-        styleSrc: ["'self'", "http://localhost:3000"],
-        fontSrc: ["'self'", "http://localhost:3000"],
+        imgSrc: [
+          "'self'",
+          isProduction
+            ? "https://e-learning-red-panda-school.vercel.app"
+            : "http://localhost:3000",
+        ],
+        connectSrc: [
+          "'self'",
+          isProduction
+            ? "https://e-learning-red-panda-school-production.up.railway.app"
+            : "http://localhost:3000",
+        ],
+        scriptSrc: [
+          "'self'",
+          isProduction
+            ? "https://e-learning-red-panda-school.vercel.app"
+            : "http://localhost:3000",
+        ],
+        styleSrc: [
+          "'self'",
+          isProduction
+            ? "https://e-learning-red-panda-school.vercel.app"
+            : "http://localhost:3000",
+        ],
+        fontSrc: [
+          "'self'",
+          isProduction
+            ? "https://e-learning-red-panda-school.vercel.app"
+            : "http://localhost:3000",
+        ],
         objectSrc: ["'none'"],
-        upgradeInsecureRequests: [],
+        upgradeInsecureRequests: isProduction ? [] : [],
       },
     })
   );
