@@ -55,7 +55,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" },
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // Solo en producción
+      sameSite: "none", // Asegúrate de que esto esté en "none" para permitir el envío entre dominios
+      httpOnly: true, // Solo accesible desde el servidor
+    },
   })
 );
 

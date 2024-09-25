@@ -18,12 +18,14 @@ function configure(app) {
 
   // Middleware para analizar las cookies
   app.use(cookieParser());
+  console.log("Cookies parsed");
 
   // Middleware de compresión
   app.use(compression());
 
   // Configurar Content Security Policy con Helmet
   const isProduction = process.env.NODE_ENV === "production";
+  console.log(`Running in ${isProduction ? "production" : "development"} mode`);
 
   app.use(
     helmet.contentSecurityPolicy({
@@ -64,6 +66,7 @@ function configure(app) {
       },
     })
   );
+  console.log("Helmet configured");
 }
 
 /**
