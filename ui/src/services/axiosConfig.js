@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Usar la variable de entorno para la URL base del backend
+// Usar la variable de entorno para la URL base del backend en producción o localhost en desarrollo
 const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 // Crear una instancia de Axios con configuración predefinida
