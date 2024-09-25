@@ -36,10 +36,15 @@ app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir cookies
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true, // Permitir envío de cookies
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // URL del frontend en producción o localhost en desarrollo
+    credentials: true, // Permitir el uso de cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
   })
 );
+
+// Habilitar preflight (solicitudes OPTIONS) para todas las rutas
+app.options("*", cors());
 
 // Middleware para analizar cookies
 app.use(cookieParser());

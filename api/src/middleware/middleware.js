@@ -2,7 +2,6 @@ const HttpStatus = require("http-status-codes");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
 const { AppError } = require("../config/config");
@@ -22,16 +21,6 @@ function configure(app) {
 
   // Middleware de compresión
   app.use(compression());
-
-  // Habilitar CORS para permitir cookies entre frontend y backend
-  app.use(
-    cors({
-      origin: "http://localhost:5173", // Reemplaza con el dominio de tu frontend en producción
-      credentials: true, // Permitir el envío de cookies de autenticación
-      methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
-      allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-    })
-  );
 
   // Configurar Content Security Policy con Helmet
   app.use(
