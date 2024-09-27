@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
-import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';  
-import CourseList from '../../components/courseComponents/CourseList';  
+import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
+import CourseList from '../../components/courseComponents/CourseList';
 import CourseForm from '../../components/courseComponents/CourseForm';
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null); // Para manejar la edición
+  const [showForm, setShowForm] = useState(false); // Controlar el formulario de creación
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -21,24 +22,54 @@ const ManageCourses = () => {
     fetchCourses();
   }, []);
 
-  const handleCreateCourse = async (newCourse) => {
+  const handleCreateCourse = async (courseData) => {
     try {
       const formData = new FormData();
-      Object.keys(newCourse).forEach(key => {
-        formData.append(key, newCourse[key]);
+      
+      // Añadir datos al FormData
+      Object.keys(courseData).forEach(key => {
+        formData.append(key, courseData[key]);
       });
-
-      const response = await axios.post('/api/courses', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      setCourses([...courses, response.data]);
+  
+      // Log para revisar el contenido del FormData
+      console.log([...formData.entries()]);
+  
+      if (selectedCourse) {
+        // Si estamos editando un curso
+        await axios.put(`/api/courses/${selectedCourse._id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setCourses(courses.map(course => 
+          course._id === selectedCourse._id ? { ...course, ...courseData } : course));
+        setSelectedCourse(null);
+      } else {
+        // Crear nuevo curso
+        const response = await axios.post('/api/courses', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setCourses([...courses, response.data]);
+      }
+      setShowForm(false); // Ocultar el formulario después de crear/editar
     } catch (error) {
-      console.error('Error creating course:', error);
+      if (error.response) {
+        // El servidor respondió con un estado fuera del rango 2xx
+        console.error('Error en la respuesta del servidor:', error.response.data);
+      } else if (error.request) {
+        // La solicitud fue hecha pero no hubo respuesta
+        console.error('No se recibió respuesta del servidor:', error.request);
+      } else {
+        // Algo sucedió al configurar la solicitud que provocó un error
+        console.error('Error en la solicitud:', error.message);
+      }
     }
   };
+  
+  
+  
 
   const handleDeleteCourse = async (courseId) => {
     try {
@@ -50,27 +81,35 @@ const ManageCourses = () => {
   };
 
   const handleEditCourse = (course) => {
-    setSelectedCourse(course); // Set the course to be edited in the form
+    setSelectedCourse(course); // Pasar el curso a editar
+    setShowForm(true); // Mostrar el formulario
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setSelectedCourse(null);
   };
 
   return (
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
-        <CourseList 
-          courses={courses} 
-          onDeleteCourse={handleDeleteCourse} 
-          onEditCourse={handleEditCourse} 
+        <CourseList
+          courses={courses}
+          onDeleteCourse={handleDeleteCourse}
+          onEditCourse={handleEditCourse}
+          setShowForm={setShowForm} // Pasamos el control de mostrar el formulario
         />
-        <CourseForm 
-          onSubmit={handleCreateCourse} 
-          courseToEdit={selectedCourse} // Pass the course to edit
-        />
+        {showForm && (
+          <CourseForm
+            onSubmit={handleCreateCourse}
+            courseToEdit={selectedCourse}
+            onCancel={handleCancel}
+          />
+        )}
       </div>
     </>
   );
 };
-
 
 export default ManageCourses;
