@@ -47,7 +47,7 @@ const MyAccount = () => {
             <ul>
               {user.courses.map((course) => (
                 <li key={course.id} className="mb-4">
-                  <strong>{course.title}</strong>
+                  <strong>{course.name}</strong> {/* Ajustamos para usar 'name' */}
                   <p>Course ID: {course.id}</p>
                 </li>
               ))}

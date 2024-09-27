@@ -40,7 +40,8 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    // Buscar el usuario por email y popular los cursos comprados
+    const user = await User.findOne({ email }).populate("courses");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -66,7 +67,7 @@ const login = async (req, res) => {
       maxAge: 60 * 60 * 1000, // Expira en 1 hora
     });
 
-    // Devolver los datos del usuario
+    // Devolver los datos del usuario, incluyendo los cursos
     res.json({
       user: {
         _id: user._id,
@@ -74,7 +75,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        courses: user.courses,
+        courses: user.courses, // Aquí devolvemos los cursos populados
       },
     });
   } catch (err) {
