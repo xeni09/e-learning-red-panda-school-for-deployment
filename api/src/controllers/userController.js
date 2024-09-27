@@ -4,10 +4,13 @@ const bcrypt = require("bcryptjs");
 // Controlador para obtener un usuario por ID
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    // Popular los cursos con la información completa
+    const user = await User.findById(req.params.id).populate("courses");
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
+
     res.json(user);
   } catch (err) {
     console.error("Error fetching user:", err.message);
