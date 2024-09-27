@@ -4,12 +4,8 @@ const bcrypt = require("bcryptjs");
 // Definir el esquema de cursos
 const courseSchema = new mongoose.Schema({
   id: {
-    type: mongoose.Schema.Types.ObjectId, // Usar ObjectId si estás referenciando otros documentos
-    ref: "Course", // Referencia a otro modelo de curso (si es necesario)
-    required: true,
-  },
-  title: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course", // Referencia a otro modelo de curso
     required: true,
   },
 });
@@ -20,7 +16,6 @@ const userSchema = new mongoose.Schema({
     type: Number,
     unique: true,
   },
-
   name: {
     type: String,
     required: true,
@@ -42,7 +37,7 @@ const userSchema = new mongoose.Schema({
   courses: [courseSchema], // Array de cursos
 });
 
-// Middleware para hashear la contraseña antes de guardarla
+// Middleware para hashear la contraseña
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
