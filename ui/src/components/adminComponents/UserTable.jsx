@@ -45,29 +45,29 @@ const UserTable = ({
       </thead>
       <tbody>
         {users.map(user => (
-              <tr key={user.customId}>  {/* Cambiar _id a customId */}
-              <td className="border px-4 py-2">{user.customId}</td>  {/* Mostrar customId */}
-              <td className="border px-4 py-2">
-                {editingUserId === user.customId ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={editFormData.name}
-                    onChange={(e) => handleInputChange(e)}
-                    placeholder="Enter new name"
-                    className="input mb-2 w-full p-2 border rounded"
-                  />
-                ) : (
-                  user.name
-                )}
-              </td>
+          <tr key={user.customId}>
+            <td className="border px-4 py-2">{user.customId}</td>
+            <td className="border px-4 py-2">
+              {editingUserId === user.customId ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter new name"
+                  className="input mb-2 w-full p-2 border rounded"
+                />
+              ) : (
+                user.name
+              )}
+            </td>
             <td className="border px-4 py-2">
               {editingUserId === user._id ? (
                 <input
                   type="email"
                   name="email"
                   value={editFormData.email}
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={handleInputChange}
                   placeholder="Enter new email"
                   className="input mb-2 w-full p-2 border border-gray-300 rounded"
                 />
@@ -80,7 +80,7 @@ const UserTable = ({
                 <select
                   name="role"
                   value={editFormData.role}
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={handleInputChange}
                   className="input mb-2 w-full p-2 border border-gray-300 rounded"
                 >
                   <option value="user">User</option>

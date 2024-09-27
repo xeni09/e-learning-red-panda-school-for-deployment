@@ -1,7 +1,7 @@
 import React from "react";
 import Tilt from "react-parallax-tilt";
+import { Link } from "react-router-dom"; // Importa Link de react-router-dom
 import { colors, getTextColorClass } from "../stylesComponents/colors";
-
 import StatsSection from './StatsSection';
 
 const Section = ({
@@ -22,7 +22,7 @@ const Section = ({
 }) => {
   const titleColorClass = getTextColorClass(colors[titleColor]);
   const textColorClass = getTextColorClass(colors[textColor]);
-  const buttonTextColorClass = getTextColorClass(colors[buttonTextColor]); 
+  const buttonTextColorClass = getTextColorClass(colors[buttonTextColor]);
 
   return (
     <div className={`py-12 px-6`} style={{ backgroundColor: colors[backgroundColor] }}>
@@ -39,7 +39,7 @@ const Section = ({
         )}
 
         <div className="flex-1 text-center lg:text-left">
-          <h1 className={`  font-bold tracking-tight ${titleColorClass}`}>
+          <h1 className={`font-bold tracking-tight ${titleColorClass}`}>
             {title}
           </h1>
           <h5 className={` ${textColorClass}`}>
@@ -49,16 +49,16 @@ const Section = ({
             {text2}
           </p>
           {buttonText && buttonLink && ( 
-            <a href={buttonLink}>
+            <Link to={buttonLink}>  {/* Cambia <a href={buttonLink}> a <Link to={buttonLink}> */}
               <button
                 className={`mt-8 py-3 px-4 rounded ${buttonTextColorClass}`}
                 style={{ backgroundColor: colors[buttonBgColor] }} 
               >
                 {buttonText}
               </button>
-            </a>
+            </Link>
           )}
-          {showStatsSection && <StatsSection />} 
+          {showStatsSection && <StatsSection />}
         </div>
 
         {imagePosition === "right" && (
