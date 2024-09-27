@@ -3,6 +3,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const multer = require("multer");
+const sharp = require("sharp");
 const path = require("path");
 const MongoStore = require("connect-mongo");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
@@ -34,20 +35,32 @@ connectDB();
 // Configurar middlewares
 configure(app);
 
-// Configurar multer para almacenar imágenes en la carpeta 'public/uploads'
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads"));
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para la imagen
-  },
-});
-
+// Configurar multer para almacenar imágenes en memoria temporalmente
+const storage = multer.memoryStorage(); // Usamos memoria para procesar antes de guardar
 const upload = multer({ storage: storage });
 
 // Middleware para servir los archivos estáticos (como las imágenes)
 app.use("/uploads", express.static("public/uploads"));
+
+// Ruta para subir la imagen y procesarla con sharp
+app.post("/api/upload", upload.single("courseImage"), async (req, res) => {
+  try {
+    const filename = `course-${Date.now()}.jpeg`;
+    const outputPath = path.join(__dirname, "../public/uploads", filename);
+
+    // Usamos sharp para redimensionar la imagen
+    await sharp(req.file.buffer)
+      .resize(800, 450) // Redimensiona a 800x450 (horizontal)
+      .toFormat("jpeg")
+      .jpeg({ quality: 80 }) // Reduce la calidad para optimizar
+      .toFile(outputPath);
+
+    res.json({ imageUrl: `/uploads/${filename}` });
+  } catch (error) {
+    console.error("Error processing image:", error);
+    res.status(500).send("Error processing image");
+  }
+});
 
 // Middleware para manejar JSON y datos de formularios
 app.use(express.json());

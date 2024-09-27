@@ -4,7 +4,7 @@ const User = require("../models/User");
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find().populate("teacher", "name");
     res.json(courses);
   } catch (error) {
     console.error("Error fetching courses:", error.message);
@@ -12,26 +12,33 @@ const getCourses = async (req, res) => {
   }
 };
 
-// Crear un nuevo curso con imagen
+// Crear un nuevo curso con imagen y customId
 const createCourse = async (req, res) => {
-  const { name, description, price, category } = req.body;
+  const { name, description, price, category, teacher } = req.body; // Añadir teacher aquí
 
   // Ruta de la imagen subida
   const imagePath = `/uploads/${req.file.filename}`;
 
   try {
+    // Obtener el último curso para determinar el próximo customId
+    const lastCourse = await Course.findOne().sort({ customId: -1 });
+    const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
+
+    // Crear un nuevo curso con el customId
     const newCourse = new Course({
+      customId: newCustomId, // Asignar el nuevo customId
       name,
       description,
       price,
       category,
       imageSrc: imagePath,
-      teacher: req.user._id,
+      teacher, // Asegurar que teacher viene del req.body
     });
 
     await newCourse.save();
     res.status(201).json(newCourse);
   } catch (error) {
+    console.error("Error creando el curso:", error.message);
     res.status(500).json({ error: "Error creando el curso" });
   }
 };
