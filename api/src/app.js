@@ -3,12 +3,13 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
+const MongoStore = require("connect-mongo"); // Importar connect-mongo
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
 const { auth } = require("./middleware/jwtAuth");
 const connectDB = require("./config/db");
-const initRoutes = require("./routes/initRoutes"); // Import initRoutes
+const initRoutes = require("./routes/initRoutes");
 
 const app = express();
 
@@ -36,8 +37,8 @@ app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir cookies
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // URL del frontend en Vercel o localhost para desarrollo
-    credentials: true, // Permitir el uso de cookies
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -49,24 +50,28 @@ app.options("*", cors());
 // Middleware para analizar cookies
 app.use(cookieParser());
 
-// Configurar sesiones
+// Configurar sesiones con almacenamiento en MongoDB
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI, // Utilizar la misma URI que conectas a MongoDB
+      ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
+    }),
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Solo en producción
-      sameSite: "none", // Asegúrate de que esto esté en "none" para permitir el envío entre dominios
-      httpOnly: true, // Solo accesible desde el servidor
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      httpOnly: true,
     },
   })
 );
 
 // Inicializar rutas desde initRoutes.js
-initRoutes(app); // This will initialize the routes for /api/auth and /api/users
+initRoutes(app);
 
-// Agregar una ruta para la raíz (esto te ayudará a verificar si el backend está funcionando)
+// Agregar una ruta para la raíz
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");
 });
