@@ -12,26 +12,27 @@ const getCourses = async (req, res) => {
   }
 };
 
-// Crear un nuevo curso
+// Crear un nuevo curso con imagen
 const createCourse = async (req, res) => {
-  const { name, category, teacher, description, participants, price } =
-    req.body;
+  const { name, description, price, category } = req.body;
+
+  // Ruta de la imagen subida
+  const imagePath = `/uploads/${req.file.filename}`;
 
   try {
     const newCourse = new Course({
       name,
-      category,
-      teacher,
       description,
-      participants,
       price,
+      category,
+      imageSrc: imagePath,
+      teacher: req.user._id,
     });
 
     await newCourse.save();
     res.status(201).json(newCourse);
   } catch (error) {
-    console.error("Error creating course:", error.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: "Error creando el curso" });
   }
 };
 
