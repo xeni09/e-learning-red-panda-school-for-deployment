@@ -2,8 +2,9 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const multer = require("multer");
 const path = require("path");
-const MongoStore = require("connect-mongo"); // Importar connect-mongo
+const MongoStore = require("connect-mongo");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
@@ -24,11 +25,29 @@ if (
   throw new Error("Faltan variables de entorno requeridas");
 }
 
+// Servir archivos estáticos
+app.use("/assets", express.static(path.join(__dirname, "../../ui/src/assets")));
+
 // Conectar a MongoDB
 connectDB();
 
 // Configurar middlewares
 configure(app);
+
+// Configurar multer para almacenar imágenes en la carpeta 'public/uploads'
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public/uploads"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para la imagen
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware para servir los archivos estáticos (como las imágenes)
+app.use("/uploads", express.static("public/uploads"));
 
 // Middleware para manejar JSON y datos de formularios
 app.use(express.json());

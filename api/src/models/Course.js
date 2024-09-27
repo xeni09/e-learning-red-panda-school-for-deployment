@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const CourseSchema = new mongoose.Schema({
+  customId: {
+    type: Number,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -23,6 +27,11 @@ const CourseSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
+    required: true,
+  },
+  imageSrc: {
+    type: String,
+    default: "https://via.placeholder.com/150",
     required: true,
   },
   createdAt: {
