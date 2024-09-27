@@ -1,7 +1,23 @@
-const CourseList = ({ courses, onDeleteCourse, onEditCourse }) => {
+import React from 'react';
+
+const CourseList = ({ courses, onDeleteCourse, onEditCourse, setShowForm }) => {
+  // Función para manejar la eliminación con confirmación
+  const handleDelete = (courseId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this course?');
+    if (confirmed) {
+      onDeleteCourse(courseId);
+    }
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg p-10 my-10">
-      <h2 className="text-2xl mb-4">Existing Courses</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start mb-6">
+        <h2 className="text-xl font-bold">Courses List</h2>
+        <button className="btn mt-4 md:mt-0" onClick={() => setShowForm(true)}>
+          Create New Course
+        </button>
+      </div>
+      
       <table className="table-auto w-full mb-6">
         <thead>
           <tr>
@@ -10,7 +26,7 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse }) => {
             <th className="px-4 py-2">Category</th>
             <th className="px-4 py-2">Teacher</th>
             <th className="px-4 py-2">Price</th>
-            <th className="px-4 py-2">Image</th> {/* Columna para la imagen */}
+            <th className="px-4 py-2">Image</th>
             <th className="px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -23,26 +39,24 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse }) => {
               <td className="border px-4 py-2">{course.teacher}</td>
               <td className="border px-4 py-2">{course.price}</td>
               <td className="border px-4 py-2">
-                <img 
-                  src={course.imageSrc || "https://via.placeholder.com/150"} // Usar imagen por defecto si no hay imagen
-                  alt={`${course.name} image`} 
-                  className="w-16 h-16 object-cover rounded" 
+                <img
+                  src={`http://localhost:3000${course.imageSrc}`}
+                  alt={course.name}
+                  className="w-16 h-16 object-cover"
                 />
               </td>
               <td className="border px-4 py-2">
-                {/* Botón de editar */}
-                <button 
-                  className="bg-yellow-500 text-white p-2 rounded mr-2" 
+                <button
+                  className="btn bg-red-500 text-white p-2 rounded"
+                  onClick={() => handleDelete(course._id)} // Confirmación al eliminar
+                >
+                  Delete
+                </button>
+                <button
+                  className="btn p-2 rounded ml-2"
                   onClick={() => onEditCourse(course)}
                 >
                   Edit
-                </button>
-                {/* Botón de eliminar */}
-                <button 
-                  className="bg-red-500 text-white p-2 rounded" 
-                  onClick={() => onDeleteCourse(course._id)}
-                >
-                  Delete
                 </button>
               </td>
             </tr>

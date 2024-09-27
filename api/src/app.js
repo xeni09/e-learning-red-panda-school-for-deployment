@@ -40,7 +40,7 @@ const storage = multer.memoryStorage(); // Usamos memoria para procesar antes de
 const upload = multer({ storage: storage });
 
 // Middleware para servir los archivos estáticos (como las imágenes)
-app.use("/uploads", express.static("public/uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Ruta para subir la imagen y procesarla con sharp
 app.post("/api/upload", upload.single("courseImage"), async (req, res) => {

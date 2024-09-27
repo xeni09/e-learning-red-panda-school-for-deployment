@@ -1,130 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import TextInput from './TextInput';
+import SelectInput from './SelectInput';
+import TextareaInput from './TextareaInput';
 import ImageUploader from '../sharedComponents/ImageUploader';
+import { categories } from '../sharedComponents/constants'; 
 
-const categories = [
-  'Programming',
-  'Design',
-  'Marketing',
-  'Business',
-  'Art',
-  'Photography',
-];
-
-const CourseForm = ({ onSubmit }) => {
+const CourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
   const [newCourse, setNewCourse] = useState({
     name: '',
     category: '',
     teacher: '',
     description: '',
     price: '',
-    courseImage: null,
+    courseImage: null, // El archivo de imagen se almacenará aquí
   });
 
-  const [errors, setErrors] = useState({}); // Estado para manejar los errores de cada campo
+  const [errors, setErrors] = useState({}); // Estado para manejar los errores de los campos
 
-  // Manejar cambios de entrada
+  // Rellenar el formulario si `courseToEdit` existe
+  useEffect(() => {
+    if (courseToEdit) {
+      setNewCourse({
+        name: courseToEdit.name || '',
+        category: courseToEdit.category || '',
+        teacher: courseToEdit.teacher || '',
+        description: courseToEdit.description || '',
+        price: courseToEdit.price || '',
+        courseImage: courseToEdit.imageSrc || null, // Imagen existente si está disponible
+      });
+    }
+  }, [courseToEdit]);
+
+  // Manejar cambios en los campos del formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewCourse({ ...newCourse, [name]: value });
-    setErrors({ ...errors, [name]: '' }); // Limpiar error cuando el usuario empieza a escribir
+    setErrors({ ...errors, [name]: '' }); // Limpiar errores al escribir
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewCourse({ ...newCourse, courseImage: file });
-      setErrors({ ...errors, courseImage: '' }); // Limpiar error si se selecciona una imagen
-    } else {
-      setNewCourse({ ...newCourse, courseImage: null });
-      setErrors({ ...errors, courseImage: 'Por favor sube una imagen.' });
-    }
+  // Manejar el cambio de archivo
+  const handleFileChange = (file) => {
+    setNewCourse({ ...newCourse, courseImage: file });
+    setErrors({ ...errors, courseImage: '' });  // Limpiar errores si se sube un archivo
   };
 
   const handleSubmit = () => {
     const newErrors = {};
-
-    // Validar campos individualmente
-    if (!newCourse.name) newErrors.name = 'El campo "Nombre" es obligatorio.';
-    if (!newCourse.category) newErrors.category = 'El campo "Categoría" es obligatorio.';
-    if (!newCourse.teacher) newErrors.teacher = 'El campo "Profesor" es obligatorio.';
-    if (!newCourse.description) newErrors.description = 'El campo "Descripción" es obligatorio.';
-    if (!newCourse.price) newErrors.price = 'El campo "Precio" es obligatorio.';
-    if (!newCourse.courseImage) newErrors.courseImage = 'Por favor sube una imagen.';
-
-    // Si hay errores, no enviar el formulario
+  
+    // Validaciones de campos
+    if (!newCourse.name) newErrors.name = 'Course name is required.';
+    if (!newCourse.category) newErrors.category = 'Category is required.';
+    if (!newCourse.teacher) newErrors.teacher = 'Teacher name is required.';
+    if (!newCourse.description) newErrors.description = 'Description is required.';
+    if (!newCourse.price) newErrors.price = 'Price is required.';
+    if (!newCourse.courseImage && !courseToEdit) newErrors.courseImage = 'Please upload an image.';
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    onSubmit(newCourse);
+  
+    // Crear FormData para enviar al backend
+    const formData = new FormData();
+    formData.append("name", newCourse.name);
+    formData.append("category", newCourse.category);
+    formData.append("teacher", newCourse.teacher);
+    formData.append("description", newCourse.description);
+    formData.append("price", newCourse.price);
+    
+    // Asegurarse de que el archivo es de tipo "File"
+    if (newCourse.courseImage instanceof File) {
+      formData.append("courseImage", newCourse.courseImage); // Aquí debe ser un archivo
+    }
+  
+    console.log([...formData]); // Verifica que la imagen se esté añadiendo como archivo
+  
+    onSubmit(formData); // Enviar los datos al backend
   };
+  
 
   return (
     <div className="bg-white shadow-md rounded-lg p-10 my-10">
-      <h2 className="text-2xl mb-4">Crear Nuevo Curso</h2>
+      <h2 className="text-xl font-bold">{courseToEdit ? 'Edit Course' : 'Create New Course'}</h2>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Curso</label>
-        <input
-          type="text"
+        <TextInput
+          label="Course Name"
           name="name"
           value={newCourse.name}
           onChange={handleInputChange}
-          className="input mb-1 w-full p-2 border rounded"
+          error={errors.name}
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>} {/* Mostrar error */}
-
-        <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-        <select
+        <SelectInput
+          label="Category"
           name="category"
           value={newCourse.category}
+          options={categories}
           onChange={handleInputChange}
-          className="input mb-1 w-full p-2 border rounded"
-        >
-          <option value="">Seleccionar Categoría</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-        {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-
-        <label className="block text-sm font-medium text-gray-700 mb-1">Profesor</label>
-        <input
-          type="text"
+          error={errors.category}
+        />
+        <TextInput
+          label="Teacher"
           name="teacher"
           value={newCourse.teacher}
           onChange={handleInputChange}
-          className="input mb-1 w-full p-2 border rounded"
+          error={errors.teacher}
         />
-        {errors.teacher && <p className="text-red-500 text-sm">{errors.teacher}</p>}
-
-        <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-        <textarea
+        <TextareaInput
+          label="Description"
           name="description"
           value={newCourse.description}
           onChange={handleInputChange}
-          className="textarea mb-1 w-full p-2 border rounded"
+          error={errors.description}
         />
-        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-
-        <label className="block text-sm font-medium text-gray-700 mb-1">Precio</label>
-        <input
-          type="text"
+        <TextInput
+          label="Price"
           name="price"
           value={newCourse.price}
           onChange={handleInputChange}
-          className="input mb-1 w-full p-2 border rounded"
+          error={errors.price}
         />
-        {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
 
         <ImageUploader onFileChange={handleFileChange} />
-        {errors.courseImage && <p className="text-red-500 text-sm">{errors.courseImage}</p>}
 
-        <button onClick={handleSubmit} className="btn mt-4">
-          Crear Curso
-        </button>
+        <div className="flex justify-between mt-4">
+          <button onClick={handleSubmit} className="btn">
+            {courseToEdit ? 'Save Changes' : 'Create Course'}
+          </button>
+          <button onClick={onCancel} className="btn bg-gray-500 text-white">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
