@@ -49,7 +49,7 @@ const Section = ({
             {text2}
           </p>
           {buttonText && buttonLink && ( 
-            <Link to={buttonLink}>  {/* Cambia <a href={buttonLink}> a <Link to={buttonLink}> */}
+            <Link to={buttonLink}>  
               <button
                 className={`mt-8 py-3 px-4 rounded ${buttonTextColorClass}`}
                 style={{ backgroundColor: colors[buttonBgColor] }} 

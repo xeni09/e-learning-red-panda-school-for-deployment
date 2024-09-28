@@ -52,7 +52,7 @@ const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCours
 
   return (
     <div className="container mx-auto p-4 py-20">
-      <p className={`font-bold text-[var(--color-black)] text-center pb-10 ${titleFontSize}`}>{title}</p>
+      <h2 className={`font-bold text-[var(--color-black)] text-center pb-10 ${titleFontSize}`}>{title}</h2>
       <CourseCardGrid courses={filteredCourses} />
       
       <h2 className="font-bold text-center pt-16">{subText}</h2>
