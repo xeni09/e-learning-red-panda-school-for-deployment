@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CourseCardGrid from '../components/courseComponents/CourseCard';
 import Section from "../components/sharedComponents/Section";
 
-import heroBanner from "../assets/hero-banner3.jpeg";
+import heroBanner from "../assets/hero-banner2.png";
 
 import alpaca from '../assets/images/alpaca.webp';
 import bear from '../assets/images/bear.jpeg';
@@ -145,7 +145,7 @@ const Courses = () => {
         textColor="white"
         image={heroBanner}
         imagePosition={"right"}
-        imageSize={400}
+        imageSize={500}
         title="Best Courses and Tutorials"
         text={
           <>
