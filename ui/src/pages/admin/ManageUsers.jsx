@@ -4,17 +4,17 @@ import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CustomDropdown from '../../components/adminComponents/CustomDropdown';
 import SearchBar from '../../components/adminComponents/SearchBar';
 import UserTable from '../../components/adminComponents/UserTable';
-import ChangePasswordForm from '../../components/adminComponents/ChangePasswordForm';
+
 import CreateUserForm from '../../components/adminComponents/CreateUserForm';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
-  const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'user' });
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'user', password: '' });
+
   const [error, setError] = useState(null);
   const [filterRole, setFilterRole] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
 
   const roleOptions = [
@@ -28,6 +28,7 @@ const ManageUsers = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get('/api/users');
+      
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -42,26 +43,56 @@ const ManageUsers = () => {
     try {
       const response = await axios.post("/api/users", newUserData);
       setUsers([...users, response.data]);  // Add new user to the list
-      alert('User created successfully');
+      return { success: true }; // Enviar éxito a CreateUserForm
     } catch (error) {
       console.error('Error creating user:', error);
-      setError('Failed to create user.');
-      // Return error to CreateUserForm
-      return { error: 'Failed to create user. Please try again.' };
+      return { error: 'Failed to create user. Please try again.' };  // Retornar error para CreateUserForm
     }
   };
 
-  const handlePasswordChange = async (userId, newPassword) => {
+
+  const handleEditClick = (user) => {
+ 
+    setEditingUserId(user._id);
+    setEditFormData({ 
+      name: user.name || '',  
+      email: user.email || '', 
+      role: user.role || '',  // Check if this value is coming correctly
+      password: ''  // Password field will be left empty as it won't be fetched from the database
+    });
+  
+  console.log("hello");
+  };
+  
+
+  const handleSaveChanges = async (userId) => {
     try {
-      const response = await axios.put(`/api/users/user/${userId}/change-password`, { newPassword });
-      alert('Password updated successfully');
+      // Only send the password if it's been updated (not empty)
+      const updatedData = { ...editFormData };
+      if (!editFormData.password) {
+        delete updatedData.password; // Don't send empty password if not updated
+      }
+  
+      await axios.put(`/api/users/user/${userId}`, updatedData);
+      setUsers(users.map(user => (user._id === userId ? { ...user, ...updatedData } : user)));
+      setEditingUserId(null);
     } catch (error) {
-      console.error('Error changing password:', error);
-      setError('Failed to change password.');
+      console.error('Error updating user:', error);
+      setError('Failed to update user.');
     }
   };
+  
+
+  const handleCancelEdit = () => {
+    setEditingUserId(null);
+    setEditFormData({ name: '', email: '', role: 'user', password: '' }); // Include password
+  };
+  
 
   const handleDeleteUser = async (userId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this user?');
+    if (!confirmed) return;  // Si no se confirma, no eliminar
+
     try {
       await axios.delete(`/api/users/user/${userId}`);
       setUsers(users.filter(user => user._id !== userId));
@@ -71,28 +102,9 @@ const ManageUsers = () => {
     }
   };
 
-  const handleSaveChanges = async (userId) => {
-    try {
-      await axios.put(`/api/users/user/${userId}`, editFormData);
-      setUsers(users.map(user => (user._id === userId ? { ...user, ...editFormData } : user)));
-      setEditingUserId(null);  // Exit edit mode
-    } catch (error) {
-      console.error('Error updating user:', error);
-      setError('Failed to update user.');
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingUserId(null);
-    setEditFormData({ name: '', email: '', role: 'user' });
-  };
-
   const toggleForm = (form) => {
     if (form === 'create') {
-      setShowCreateUserForm(!showCreateUserForm);
-      setShowChangePasswordForm(false);  // Close change password form
-    } else if (form === 'password') {
-      setShowChangePasswordForm(!showChangePasswordForm);
+      setShowCreateUserForm(!showCreateUserForm);    
       setShowCreateUserForm(false);  // Close create user form
     }
   };
@@ -126,7 +138,6 @@ const ManageUsers = () => {
             </div>
           </div>
 
-          
           <div className="flex flex-col md:flex-row md:space-x-4 mb-6">
             <button
               className="btn"
@@ -135,21 +146,11 @@ const ManageUsers = () => {
               {showCreateUserForm ? 'Hide Create New User' : 'Create New User'}
             </button>
 
-            <button
-              className="btn"
-              onClick={() => toggleForm('password')}
-            >
-              {showChangePasswordForm ? 'Hide Change Password' : 'Change User Password'}
-            </button>
           </div>
 
           {error && <p className="text-red-500">{error}</p>} {/* Handle global errors */}
 
-          {showChangePasswordForm && (
-            <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
-              <ChangePasswordForm onChangePassword={handlePasswordChange} />
-            </div>
-          )}
+        
 
           {showCreateUserForm && (
             <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
@@ -166,6 +167,7 @@ const ManageUsers = () => {
             setEditingUserId={setEditingUserId}
             handleDeleteUser={handleDeleteUser}
             handleSaveChanges={handleSaveChanges}
+            handleEditClick={handleEditClick}
             editingUserId={editingUserId}
             handleCancelEdit={handleCancelEdit}
           />

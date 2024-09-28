@@ -11,10 +11,11 @@ const UserTable = ({
   handleCancelEdit,
   handleSort,
   sortField,
-  sortOrder
+  sortOrder,
+  handleEditClick
 }) => {
 
-  const handleInputChange = (e, field) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditFormData(prevData => ({ ...prevData, [name]: value }));
   };
@@ -37,24 +38,27 @@ const UserTable = ({
           <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('email')}>
             Email {renderSortIcon('email')}
           </th>
-          <th className="px-4 py-2 cursor-pointer min-w-[150px]" onClick={() => handleSort('role')}>
+          <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('role')}>
             Role {renderSortIcon('role')}
+          </th>
+          <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('password')}>
+            Password
           </th>
           <th className="px-4 py-2">Actions</th>
         </tr>
       </thead>
       <tbody>
         {users.map(user => (
-          <tr key={user.customId}>
+          <tr key={user._id}>
             <td className="border px-4 py-2">{user.customId}</td>
             <td className="border px-4 py-2">
-              {editingUserId === user.customId ? (
+              {editingUserId === user._id ? (
                 <input
                   type="text"
                   name="name"
                   value={editFormData.name}
                   onChange={handleInputChange}
-                  placeholder="Enter new name"
+                  placeholder= {user.name}
                   className="input mb-2 w-full p-2 border rounded"
                 />
               ) : (
@@ -68,14 +72,14 @@ const UserTable = ({
                   name="email"
                   value={editFormData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter new email"
+                  placeholder={user.email}
                   className="input mb-2 w-full p-2 border border-gray-300 rounded"
                 />
               ) : (
                 user.email
               )}
             </td>
-            <td className="border px-4 py-2 min-w-[150px]">
+            <td className="border px-4 py-2">
               {editingUserId === user._id ? (
                 <select
                   name="role"
@@ -89,6 +93,20 @@ const UserTable = ({
                 </select>
               ) : (
                 user.role
+              )}
+            </td>
+            <td className="border px-4 py-2">
+              {editingUserId === user._id ? (
+                <input
+                  type="password"
+                  name="password"
+                  value={editFormData.password}
+                  onChange={handleInputChange}
+                  placeholder="Enter new password"
+                  className="input mb-2 w-full p-2 border border-gray-300 rounded"
+                />
+              ) : (
+                '••••••••'
               )}
             </td>
             <td className="border px-4 py-2">
@@ -110,11 +128,15 @@ const UserTable = ({
               ) : (
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => setEditingUserId(user._id)}
-                    className="btn px-4 py-2 rounded"
-                  >
-                    Edit
-                  </button>
+  onClick={() => {
+    console.log('Edit button clicked for user:', user); // Log which user is being clicked
+    setEditingUserId(user._id);  // Use user._id here
+    handleEditClick(user);  // Call the handleEditClick function with user data
+  }}
+  className="btn px-4 py-2 rounded"
+>
+  Edit
+</button>
                   <button
                     onClick={() => handleDeleteUser(user._id)}
                     className="btn bg-[var(--color-red)] px-4 py-2 rounded"

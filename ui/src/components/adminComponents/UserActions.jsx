@@ -1,6 +1,14 @@
 import React from 'react';
 
 const UserActions = ({ editingUserId, userId, handleSaveChanges, handleCancelEdit, handleEditClick, handleDeleteUser }) => {
+  // Función para manejar la eliminación con confirmación
+  const handleDelete = () => {
+    const confirmed = window.confirm('Are you sure you want to delete this user?');
+    if (confirmed) {
+      handleDeleteUser(userId);
+    }
+  };
+
   return editingUserId === userId ? (
     <>
       <button
@@ -11,7 +19,7 @@ const UserActions = ({ editingUserId, userId, handleSaveChanges, handleCancelEdi
       </button>
       <button
         onClick={handleCancelEdit}
-        className="btn bg-gray-400  px-4 py-2 rounded"
+        className="btn bg-gray-400 px-4 py-2 rounded"
       >
         Cancel
       </button>
@@ -25,8 +33,8 @@ const UserActions = ({ editingUserId, userId, handleSaveChanges, handleCancelEdi
         Edit
       </button>
       <button
-        onClick={handleDeleteUser}
-        className="btn bg-red-600  px-4 py-2 rounded"
+        onClick={handleDelete}
+        className="btn bg-red-600 px-4 py-2 rounded"
       >
         Delete
       </button>

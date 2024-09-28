@@ -24,27 +24,33 @@ const updateUser = async (req, res) => {
   const { name, email, password, courses, role } = req.body;
 
   try {
-    // Buscar usuario por ID
+    // Fetch user by ID
     let user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Validar formato del email si se intenta actualizar
-    if (email && !validateEmail(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
+    // Update email if it is being changed
+    if (email && user.email !== email) {
+      if (!validateEmail(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+      }
+      user.email = email;
     }
 
-    // Actualizar name, email y password (sin permitir modificar el customId)
-    if (name) user.name = name;
-    if (email) user.email = email;
+    // Update name if it is provided and different
+    if (name && user.name !== name) user.name = name;
 
+    // Update password only if provided and different
     if (password && password.trim() !== "") {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      const isSamePassword = await bcrypt.compare(password, user.password);
+      if (!isSamePassword) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+      }
     }
 
-    // Administradores pueden modificar los cursos manualmente
+    // Allow admin to modify courses
     if (courses && req.user.role === "admin") {
       user.courses = courses;
     } else if (courses) {
@@ -53,7 +59,7 @@ const updateUser = async (req, res) => {
         .json({ msg: "You are not authorized to modify courses." });
     }
 
-    // Solo los administradores pueden cambiar el rol del usuario
+    // Only admin can modify the role
     if (role && req.user.role === "admin") {
       user.role = role;
     } else if (role) {
@@ -62,14 +68,13 @@ const updateUser = async (req, res) => {
         .json({ msg: "You are not authorized to change roles." });
     }
 
+    // Save the user and return the updated data
     await user.save();
-
-    // Enviar la respuesta con los datos actualizados, sin modificar el customId
     res.json({
       msg: "User updated successfully",
       user: {
         _id: user._id,
-        customId: user.customId, // No se permite modificar el customId
+        customId: user.customId, // CustomId should remain unchanged
         name: user.name,
         email: user.email,
         courses: user.courses,
@@ -78,7 +83,7 @@ const updateUser = async (req, res) => {
     });
   } catch (err) {
     console.error("Error updating user:", err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ error: `Internal Server Error: ${err.message}` });
   }
 };
 

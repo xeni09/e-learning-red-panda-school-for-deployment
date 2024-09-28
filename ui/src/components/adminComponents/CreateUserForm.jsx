@@ -3,7 +3,7 @@ import CustomDropdown from '../../components/adminComponents/CustomDropdown';
 
 const CreateUserForm = ({ onCreateUser }) => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
-  const [formErrors, setFormErrors] = useState({ name: '', email: '', password: '' }); // Errores específicos por campo
+  const [formErrors, setFormErrors] = useState({}); // Errores específicos por campo
   const [error, setError] = useState(''); // Estado para errores generales
   const [success, setSuccess] = useState(''); // Estado para manejar el éxito
 
@@ -13,70 +13,71 @@ const CreateUserForm = ({ onCreateUser }) => {
     { value: 'admin', label: 'Admin' }
   ];
 
+  // Manejar cambios en los inputs y eliminar errores si se corrigen
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Limpia el error específico al cambiar el input
+
+    // Eliminar el error del campo si se corrige el valor en tiempo real
+    if (formErrors[name]) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '' // Elimina el error de este campo si ha sido corregido
+      }));
+    }
   };
 
+  // Manejar cambios en el dropdown sin disparar la validación
   const handleRoleChange = (selectedRole) => {
     setFormData((prevData) => ({ ...prevData, role: selectedRole }));
   };
 
+  // Validación del formato de correo electrónico con una expresión regular
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
+  // Validar el formulario al momento de enviarlo
   const validateForm = () => {
     const errors = {};
     if (!formData.name) errors.name = 'Name is required.';
     if (!formData.email) {
       errors.email = 'Email is required.';
     } else if (!validateEmail(formData.email)) {
-      errors.email = 'Please enter a valid email address.'; // Error de formato de email
+      errors.email = 'Please enter a valid email address.';
     }
     if (!formData.password) errors.password = 'Password is required.';
     return errors;
   };
 
-  // Limpia el mensaje de error/success después de un tiempo
-  const clearMessages = () => {
-    setTimeout(() => {
-      setError('');
-      setSuccess('');
-    }, 5000); // 5 segundos
-  };
-
+  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Resetear mensajes de éxito y error antes de la validación
+    // Limpiar mensajes previos
     setError('');
     setSuccess('');
 
-    // Validar campos antes de enviar
+    // Validar los campos del formulario
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
-      setFormErrors(errors); // Mostrar los errores específicos por campo
+      setFormErrors(errors); // Mostrar errores específicos por campo
       return;
     }
 
+    // Intentar crear el usuario
     try {
-      const response = await onCreateUser(formData);
-      if (response.error) {
-        setError(response.error); // Muestra el error si lo hay
-        clearMessages();
+      const result = await onCreateUser(formData);
+      if (result.error) {
+        setError(result.error); // Mostrar error del backend
       } else {
         setSuccess('User created successfully.');
-        // Limpiar el formulario después de crear el usuario
-        setFormData({ name: '', email: '', password: '', role: 'user' });
-        setFormErrors({ name: '', email: '', password: '' }); // Limpiar los errores
-        clearMessages(); // Limpia el mensaje después de unos segundos
+        setFormData({ name: '', email: '', password: '', role: 'user' }); // Limpiar el formulario
+        setFormErrors({}); // Limpiar errores
       }
     } catch (err) {
       setError('An error occurred while creating the user.');
-      clearMessages();
     }
   };
 
@@ -89,7 +90,7 @@ const CreateUserForm = ({ onCreateUser }) => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block mb-1 font-semibold">Name</label>
+          <label htmlFor="name" className="block mb-1 font-semibold">Name*</label>
           <input
             type="text"
             name="name"
@@ -98,10 +99,10 @@ const CreateUserForm = ({ onCreateUser }) => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded w-full focus:outline-none focus:border-[var(--color-yellow)]"
           />
-          {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>} {/* Mostrar error de nombre */}
+          {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
         </div>
         <div>
-          <label htmlFor="email" className="block mb-1 font-semibold">Email</label>
+          <label htmlFor="email" className="block mb-1 font-semibold">Email*</label>
           <input
             type="email"
             name="email"
@@ -110,10 +111,10 @@ const CreateUserForm = ({ onCreateUser }) => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded w-full focus:outline-none focus:border-[var(--color-yellow)]"
           />
-          {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>} {/* Mostrar error de email */}
+          {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
         </div>
         <div>
-          <label htmlFor="password" className="block mb-1 font-semibold">Password</label>
+          <label htmlFor="password" className="block mb-1 font-semibold">Password*</label>
           <input
             type="password"
             name="password"
@@ -122,10 +123,10 @@ const CreateUserForm = ({ onCreateUser }) => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded w-full focus:outline-none focus:border-[var(--color-yellow)]"
           />
-          {formErrors.password && <p className="text-red-500 text-sm">{formErrors.password}</p>} {/* Mostrar error de contraseña */}
+          {formErrors.password && <p className="text-red-500 text-sm">{formErrors.password}</p>}
         </div>
         <div className="flex items-center space-x-2">
-          <label htmlFor="role" className="text-sm">Role:</label>
+          <label htmlFor="role" className="block mb-1 font-semibold">Role:*</label>
           <CustomDropdown
             options={roleOptions}
             selectedOption={formData.role}
