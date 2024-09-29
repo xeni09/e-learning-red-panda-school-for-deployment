@@ -157,7 +157,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
       </div>
       <div className="md:col-span-2 my-2">
         <ImageUploader onFileChange={handleFileChange} />
-        {errors.courseImage && <p className="text-red-500 text-sm">{errors.courseImage}</p>}
+        {errors.courseImage && <p className="text-red-500 text-sm mt-3">{errors.courseImage}</p>}
       </div>
       <div className="md:col-span-2 flex justify-between mt-4">
         <button type="submit" className="btn px-4 py-2 rounded bg-[var(--color-green)]">
