@@ -32,7 +32,7 @@ const CourseSchema = new mongoose.Schema({
   imageSrc: {
     type: String,
     default: "https://via.placeholder.com/150",
-    required: false,
+    required: true,
   },
   createdAt: {
     type: Date,

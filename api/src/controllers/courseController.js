@@ -17,17 +17,15 @@ const createCourse = async (req, res) => {
   try {
     const { name, description, price, category, teacher } = req.body;
 
-    // Log request body to debug what's coming in
-    console.log("Request body:", req.body);
-
-    let imagePath = ""; // Variable for the image (empty by default)
-
-    // Verify if an image was uploaded and assign if it exists
-    if (req.file) {
-      imagePath = `/uploads/${req.file.filename}`;
+    // Verificar si la imagen está presente en la solicitud
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
     }
 
-    // Check if all required fields are provided
+    // Asignar la ruta de la imagen
+    const imagePath = `/uploads/${req.file.filename}`;
+
+    // Verificar si todos los campos requeridos están presentes
     if (!name || !description || !price || !category || !teacher) {
       return res.status(400).json({
         error: "Validation error",
@@ -36,7 +34,7 @@ const createCourse = async (req, res) => {
       });
     }
 
-    // Ensure that price is a number
+    // Verificar que el precio sea un número
     if (isNaN(price)) {
       return res.status(400).json({
         error: "Validation error",
@@ -44,21 +42,22 @@ const createCourse = async (req, res) => {
       });
     }
 
-    // Get the last course to determine the next customId
+    // Obtener el último curso para determinar el próximo `customId`
     const lastCourse = await Course.findOne().sort({ customId: -1 });
     const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
 
-    // Create the new course
+    // Crear el nuevo curso
     const newCourse = new Course({
       customId: newCustomId,
       name,
       description,
-      price: parseFloat(price), // Ensure price is treated as a float
+      price: parseFloat(price), // Asegurar que el precio sea tratado como número
       category,
-      imageSrc: imagePath, // Use the image if it exists
+      imageSrc: imagePath, // Asignar la imagen cargada
       teacher,
     });
 
+    // Guardar el curso en la base de datos
     await newCourse.save();
     res.status(201).json(newCourse);
   } catch (error) {

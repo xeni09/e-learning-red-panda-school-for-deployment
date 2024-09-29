@@ -58,7 +58,10 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     } else if (isNaN(newCourse.price)) {
       newErrors.price = "Price must be a number.";
     }
-  
+    if (!newCourse.courseImage) {
+      newErrors.courseImage = "Course image is required.";
+    }
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
