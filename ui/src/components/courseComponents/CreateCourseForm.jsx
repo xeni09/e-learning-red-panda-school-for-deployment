@@ -119,7 +119,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
         />
       </div>
       <div>
-        <label className="block mb-1 font-semibold">Category*</label>
+        <label className="block mb-1 font-semibold w-full">Category*</label>
         <CustomDropdown
           options={categoryOptions}
           selectedOption={newCourse.category}

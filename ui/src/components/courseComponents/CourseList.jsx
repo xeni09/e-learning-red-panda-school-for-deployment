@@ -1,5 +1,7 @@
 import React from 'react';
 import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
+import CustomDropdown from '../../components/adminComponents/CustomDropdown'; 
+import { categories } from '../sharedComponents/constants';
 
 const CourseList = ({
   courses,
@@ -25,9 +27,14 @@ const CourseList = ({
       onDeleteCourse(courseId);
     }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditFormData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleCategoryChange = (selectedCategory) => {
+    setEditFormData(prevData => ({ ...prevData, category: selectedCategory }));
   };
 
   return (
@@ -82,9 +89,46 @@ const CourseList = ({
                 )}
               </td>
 
-              <td className="border px-4 py-2">{course.category}</td>
-              <td className="border px-4 py-2">{course.teacher}</td>
-              <td className="border px-4 py-2">{course.price}</td>
+              <td className="border px-4 py-2">
+                {editingCourseId === course._id ? (
+                  <CustomDropdown
+                    options={categories.map(cat => ({ value: cat, label: cat }))}
+                    selectedOption={editFormData.category}
+                    onOptionSelect={handleCategoryChange}
+                  />
+                ) : (
+                  course.category
+                )}
+              </td>
+
+              <td className="border px-4 py-2">
+                {editingCourseId === course._id ? (
+                  <input
+                    type="text"
+                    name="teacher"
+                    value={editFormData.teacher}
+                    onChange={handleInputChange}
+                    className="input mb-2 w-full p-2 border rounded"
+                  />
+                ) : (
+                  course.teacher
+                )}
+              </td>
+
+              <td className="border px-4 py-2">
+                {editingCourseId === course._id ? (
+                  <input
+                    type="number"
+                    name="price"
+                    value={editFormData.price}
+                    onChange={handleInputChange}
+                    className="input mb-2 w-full p-2 border rounded"
+                  />
+                ) : (
+                  course.price
+                )}
+              </td>
+
               <td className="border px-4 py-2">
                 <img
                   src={`http://localhost:3000${course.imageSrc}`}
@@ -92,6 +136,7 @@ const CourseList = ({
                   className="w-16 h-16 object-cover"
                 />
               </td>
+
               <td className="border px-4 py-2">
                 {editingCourseId === course._id ? (
                   <div className="flex space-x-2">
