@@ -8,6 +8,7 @@ const {
   createCourse,
   buyCourse,
   deleteCourse,
+  updateCourse,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -33,6 +34,15 @@ router.post(
   createCourse
 ); // Ruta para crear un nuevo curso con imagen (solo admin)
 router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse); // Ruta para eliminar un curso
+
+// Ruta para actualizar un curso (solo admin)
+router.put(
+  "/:courseId",
+  auth,
+  authorize(["admin"]),
+  upload.single("courseImage"),
+  updateCourse
+);
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);

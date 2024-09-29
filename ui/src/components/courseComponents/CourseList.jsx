@@ -1,13 +1,33 @@
 import React from 'react';
 import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
-const CourseList = ({ courses, onDeleteCourse, onEditCourse, toggleForm, showCreateCourseForm, handleCreateCourse, selectedCourse, handleCancel }) => {
+const CourseList = ({
+  courses,
+  onDeleteCourse,
+  onEditCourse,
+  toggleForm,
+  showCreateCourseForm,
+  handleCreateCourse,
+  selectedCourse,
+  handleCancel,
+  editingCourseId,
+  setEditingCourseId,
+  editFormData,
+  setEditFormData,
+  handleSaveChanges,
+  handleCancelEdit
+}) => {
+  
   // Función para manejar la eliminación con confirmación
   const handleDelete = (courseId) => {
     const confirmed = window.confirm('Are you sure you want to delete this course?');
     if (confirmed) {
       onDeleteCourse(courseId);
     }
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
   return (
@@ -47,7 +67,21 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse, toggleForm, showCre
           {courses.map(course => (
             <tr key={course._id}>
               <td className="border px-4 py-2">{course.customId}</td>
-              <td className="border px-4 py-2">{course.name}</td>
+
+              <td className="border px-4 py-2">
+                {editingCourseId === course._id ? (
+                  <input
+                    type="text"
+                    name="name"
+                    value={editFormData.name}
+                    onChange={handleInputChange}
+                    className="input mb-2 w-full p-2 border rounded"
+                  />
+                ) : (
+                  course.name
+                )}
+              </td>
+
               <td className="border px-4 py-2">{course.category}</td>
               <td className="border px-4 py-2">{course.teacher}</td>
               <td className="border px-4 py-2">{course.price}</td>
@@ -59,18 +93,37 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse, toggleForm, showCre
                 />
               </td>
               <td className="border px-4 py-2">
-                <button
-                  className="btn bg-red-500 text-white p-2 rounded"
-                  onClick={() => handleDelete(course._id)} // Confirmación al eliminar
-                >
-                  Delete
-                </button>
-                <button
-                  className="btn p-2 rounded ml-2"
-                  onClick={() => onEditCourse(course)}
-                >
-                  Edit
-                </button>
+                {editingCourseId === course._id ? (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleSaveChanges(course._id)}
+                      className="btn px-4 py-2 rounded"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="btn bg-gray-400 px-4 py-2 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      className="btn p-2 rounded mr-2"
+                      onClick={() => onEditCourse(course)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn bg-red-500 text-white p-2 rounded"
+                      onClick={() => handleDelete(course._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </td>
             </tr>
           ))}

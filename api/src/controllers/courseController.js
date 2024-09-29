@@ -69,6 +69,80 @@ const createCourse = async (req, res) => {
   }
 };
 
+// Actualizar un curso existente
+const updateCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { name, description, price, category, teacher } = req.body;
+
+    // Verificar si el curso existe
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Verificar si todos los campos requeridos están presentes
+    if (!name || !description || !price || !category || !teacher) {
+      return res.status(400).json({
+        error: "Validation error",
+        details:
+          "Missing required fields: name, description, price, category, teacher",
+      });
+    }
+
+    // Verificar que el precio sea un número
+    if (isNaN(price)) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: "Price must be a number",
+      });
+    }
+
+    // Actualizar los campos del curso
+    course.name = name;
+    course.description = description;
+    course.price = parseFloat(price);
+    course.category = category;
+    course.teacher = teacher;
+
+    // Verificar si hay una nueva imagen cargada
+    if (req.file) {
+      course.imageSrc = `/uploads/${req.file.filename}`;
+    }
+
+    // Guardar los cambios
+    await course.save();
+
+    res.status(200).json(course);
+  } catch (error) {
+    console.error("Error updating course:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error updating course", error: error.message });
+  }
+};
+
+// Eliminar un curso por su ID
+const deleteCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    // Buscar el curso por ID
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Eliminar el curso
+    await course.deleteOne();
+
+    res.status(200).json({ message: "Course deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting course:", error.message);
+    res.status(500).json({ message: "Error deleting course", error });
+  }
+};
+
 // Simular la compra de un curso
 const buyCourse = async (req, res) => {
   try {
@@ -108,30 +182,10 @@ const buyCourse = async (req, res) => {
   }
 };
 
-// Eliminar un curso por su ID
-const deleteCourse = async (req, res) => {
-  try {
-    const { courseId } = req.params;
-
-    // Buscar el curso por ID
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    // Eliminar el curso
-    await course.deleteOne();
-
-    res.status(200).json({ message: "Course deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting course:", error.message);
-    res.status(500).json({ message: "Error deleting course", error });
-  }
-};
-
 module.exports = {
   getCourses,
   createCourse,
   buyCourse,
   deleteCourse,
+  updateCourse,
 };

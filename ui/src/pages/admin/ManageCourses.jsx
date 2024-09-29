@@ -2,14 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CourseList from '../../components/courseComponents/CourseList';
-import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
+// import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null); // Para manejar la edición
-  const [showForm, setShowForm] = useState(false); // Controlar el formulario de edición
-  const [showCreateCourseForm, setShowCreateCourseForm] = useState(false); // Controlar el formulario de creación
-
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showCreateCourseForm, setShowCreateCourseForm] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    category: '',
+    teacher: '',
+    description: '',
+    price: '',
+  });
   const toggleForm = () => {
     setShowCreateCourseForm(prevState => !prevState);  // Alternar el formulario de creación
   };
@@ -75,8 +82,33 @@ const ManageCourses = () => {
   };
 
   const handleEditCourse = (course) => {
-    setSelectedCourse(course); // Pasar el curso a editar
-    setShowForm(true); // Mostrar el formulario de edición
+    setEditingCourseId(course._id); // Establece el curso que se va a editar
+    setEditFormData({
+      name: course.name,
+      category: course.category,
+      teacher: course.teacher,
+      description: course.description,
+      price: course.price,
+    });
+  };
+
+  const handleSaveChanges = async (courseId) => {
+    try {
+      const updatedCourse = { ...editFormData };
+      console.log("Saving course with ID:", courseId); // <-- Log para verificar el courseId
+      await axios.put(`/api/courses/${courseId}`, updatedCourse);
+      setCourses(courses.map(course =>
+        course._id === courseId ? { ...course, ...updatedCourse } : course
+      ));
+      setEditingCourseId(null); // Limpiar la edición después de guardar
+    } catch (error) {
+      console.error('Error updating course:', error);
+    }
+  };
+  
+
+  const handleCancelEdit = () => {
+    setEditingCourseId(null);
   };
 
   const handleCancel = () => {
@@ -94,14 +126,17 @@ const ManageCourses = () => {
           courses={courses}
           onDeleteCourse={handleDeleteCourse}
           onEditCourse={handleEditCourse}
-          toggleForm={toggleForm} // Pasamos la función para controlar el botón de creación
-          showCreateCourseForm={showCreateCourseForm} // Estado para alternar el texto del botón
-          handleCreateCourse={handleCreateCourse} // Para manejar la creación del curso
-          selectedCourse={selectedCourse} // Para pasar el curso seleccionado para edición
-          handleCancel={handleCancel} // Función para cancelar el formulario
+          toggleForm={toggleForm}
+          showCreateCourseForm={showCreateCourseForm}
+          handleCreateCourse={handleCreateCourse}
+          selectedCourse={selectedCourse}
+          handleCancel={handleCancel}
+          editingCourseId={editingCourseId} // Paso el ID del curso en edición
+          editFormData={editFormData}
+          setEditFormData={setEditFormData}
+          handleSaveChanges={handleSaveChanges} // Función para guardar cambios
+          handleCancelEdit={handleCancelEdit} // Función para cancelar la edición
         />
-
-        
       </div>
     </>
   );
