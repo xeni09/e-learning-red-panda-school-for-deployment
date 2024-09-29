@@ -104,8 +104,7 @@ const ManageUsers = () => {
 
   const toggleForm = (form) => {
     if (form === 'create') {
-      setShowCreateUserForm(!showCreateUserForm);    
-      setShowCreateUserForm(false);  // Close create user form
+      setShowCreateUserForm(prevState => !prevState);  // Correctly toggles the state
     }
   };
 
