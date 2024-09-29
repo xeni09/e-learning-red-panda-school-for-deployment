@@ -27,18 +27,13 @@ const ManageCourses = () => {
     fetchCourses();
   }, []);
 
-  const handleCreateCourse = async (courseData) => {
+  const handleCreateCourse = async (formData) => { // Recibimos formData directamente
     try {
-      const formData = new FormData();
-      
-      // Añadir datos al FormData
-      Object.keys(courseData).forEach(key => {
-        formData.append(key, courseData[key]);
-      });
-
+      console.log([...formData.entries()]); // Verifica el contenido de FormData antes de enviarlo
+  
       if (selectedCourse) {
         // Si estamos editando un curso
-        await axios.put(`/api/courses/${selectedCourse._id}`, formData, {
+        const response = await axios.put(`/api/courses/${selectedCourse._id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -55,12 +50,20 @@ const ManageCourses = () => {
         });
         setCourses([...courses, response.data]);
       }
-
+  
       toggleForm();  // Ocultar el formulario después de crear/editar el curso
     } catch (error) {
-      console.error('Error creating or updating course:', error);
+      if (error.response) {
+        console.error('Error en la respuesta del servidor:', error.response.data);
+      } else if (error.request) {
+        console.error('No se recibió respuesta del servidor:', error.request);
+      } else {
+        console.error('Error en la solicitud:', error.message);
+      }
     }
   };
+  
+  
 
   const handleDeleteCourse = async (courseId) => {
     try {

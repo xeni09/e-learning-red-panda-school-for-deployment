@@ -2,7 +2,7 @@ import React from "react";
 
 const TextareaInput = ({ label, name, value, onChange, error }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-1">
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label}
       </label>

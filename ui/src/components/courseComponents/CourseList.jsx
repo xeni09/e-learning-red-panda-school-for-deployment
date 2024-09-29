@@ -14,7 +14,7 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse, toggleForm, showCre
     <div className="bg-white shadow-md rounded-lg p-10 my-10">
       <div className="flex flex-col md:flex-row justify-between items-start mb-6">
         <h2 className="text-xl font-bold">Courses List</h2>
-        {/* Botón para mostrar/ocultar el formulario de creación de curso */}
+  
         <button className="btn mt-4 md:mt-0" onClick={toggleForm}>
           {showCreateCourseForm ? 'Hide Create New Course' : 'Create New Course'}
         </button>

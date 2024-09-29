@@ -17,24 +17,45 @@ const createCourse = async (req, res) => {
   try {
     const { name, description, price, category, teacher } = req.body;
 
-    // Verificar si hay un archivo de imagen
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
+    // Log request body to debug what's coming in
+    console.log("Request body:", req.body);
+
+    let imagePath = ""; // Variable for the image (empty by default)
+
+    // Verify if an image was uploaded and assign if it exists
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
     }
 
-    const imagePath = `/uploads/${req.file.filename}`;
+    // Check if all required fields are provided
+    if (!name || !description || !price || !category || !teacher) {
+      return res.status(400).json({
+        error: "Validation error",
+        details:
+          "Missing required fields: name, description, price, category, teacher",
+      });
+    }
 
-    // Obtener el último curso para determinar el próximo customId
+    // Ensure that price is a number
+    if (isNaN(price)) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: "Price must be a number",
+      });
+    }
+
+    // Get the last course to determine the next customId
     const lastCourse = await Course.findOne().sort({ customId: -1 });
     const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
 
+    // Create the new course
     const newCourse = new Course({
       customId: newCustomId,
       name,
       description,
-      price,
+      price: parseFloat(price), // Ensure price is treated as a float
       category,
-      imageSrc: imagePath,
+      imageSrc: imagePath, // Use the image if it exists
       teacher,
     });
 
@@ -42,7 +63,10 @@ const createCourse = async (req, res) => {
     res.status(201).json(newCourse);
   } catch (error) {
     console.error("Error creating course:", error.message);
-    res.status(500).json({ error: "Server error while creating course" });
+    res.status(500).json({
+      error: "Server error while creating course",
+      details: error.message,
+    });
   }
 };
 

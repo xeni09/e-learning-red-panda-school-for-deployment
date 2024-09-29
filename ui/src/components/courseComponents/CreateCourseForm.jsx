@@ -11,13 +11,12 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     category: '',
     teacher: '',
     description: '',
-    price: '',
-    courseImage: null, // El archivo de imagen se almacenará aquí
+    price: '', // Price starts as a string but will be converted to a number later
+    courseImage: null,
   });
 
-  const [errors, setErrors] = useState({}); // Estado para manejar los errores de los campos
+  const [errors, setErrors] = useState({}); 
 
-  // Rellenar el formulario si `courseToEdit` existe
   useEffect(() => {
     if (courseToEdit) {
       setNewCourse({
@@ -26,7 +25,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
         teacher: courseToEdit.teacher || '',
         description: courseToEdit.description || '',
         price: courseToEdit.price || '',
-        courseImage: courseToEdit.imageSrc || null, // Imagen existente si está disponible
+        courseImage: courseToEdit.imageSrc || null, 
       });
     }
   }, [courseToEdit]);
@@ -44,94 +43,117 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     setErrors({ ...errors, courseImage: '' });  // Limpiar errores si se sube un archivo
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
     const newErrors = {};
   
-    // Validaciones de campos
-    if (!newCourse.name) newErrors.name = 'Course name is required.';
-    if (!newCourse.category) newErrors.category = 'Category is required.';
-    if (!newCourse.teacher) newErrors.teacher = 'Teacher name is required.';
-    if (!newCourse.description) newErrors.description = 'Description is required.';
-    if (!newCourse.price) newErrors.price = 'Price is required.';
-    if (!newCourse.courseImage && !courseToEdit) newErrors.courseImage = 'Please upload an image.';
+    // Validaciones
+    if (!newCourse.name) newErrors.name = "Course name is required.";
+    if (!newCourse.category) newErrors.category = "Category is required.";
+    if (!newCourse.teacher) newErrors.teacher = "Teacher name is required.";
+    if (!newCourse.description) newErrors.description = "Description is required.";
+    if (!newCourse.price) {
+      newErrors.price = "Price is required.";
+    } else if (isNaN(newCourse.price)) {
+      newErrors.price = "Price must be a number.";
+    }
   
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
   
+    // Formatear el curso asegurando que el precio sea un número
+    const formattedCourse = {
+      ...newCourse,
+      price: parseFloat(newCourse.price), // Convertir el precio a número
+    };
+  
     // Crear FormData para enviar al backend
     const formData = new FormData();
-    formData.append("name", newCourse.name);
-    formData.append("category", newCourse.category);
-    formData.append("teacher", newCourse.teacher);
-    formData.append("description", newCourse.description);
-    formData.append("price", newCourse.price);
+    formData.append("name", formattedCourse.name);
+    formData.append("category", formattedCourse.category);
+    formData.append("teacher", formattedCourse.teacher);
+    formData.append("description", formattedCourse.description);
+    formData.append("price", formattedCourse.price); // Enviar como número
     
     // Asegurarse de que el archivo es de tipo "File"
-    if (newCourse.courseImage instanceof File) {
-      formData.append("courseImage", newCourse.courseImage); // Aquí debe ser un archivo
+    if (formattedCourse.courseImage instanceof File) {
+      formData.append("courseImage", formattedCourse.courseImage);
     }
   
-    console.log([...formData]); // Verifica que la imagen se esté añadiendo como archivo
+    // Log para ver qué se está enviando al backend
+    console.log("FormData before submitting:", [...formData.entries()]);
   
-    onSubmit(formData); // Enviar los datos al backend
+    onSubmit(formData);  // Enviar los datos al backend
   };
   
 
   return (
-    <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
-      <h2 className="text-xl font-bold">{courseToEdit ? 'Edit Course' : 'Create New Course'}</h2>
-      <div className="mb-4">
+    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+      <div>
         <TextInput
-          label="Course Name"
+          label="Course Name*"
           name="name"
           value={newCourse.name}
           onChange={handleInputChange}
           error={errors.name}
         />
+      </div>
+      <div>
         <SelectInput
-          label="Category"
+          label="Category*"
           name="category"
           value={newCourse.category}
           options={categories}
           onChange={handleInputChange}
           error={errors.category}
         />
+      </div>
+      <div>
         <TextInput
-          label="Teacher"
+          label="Teacher Name*"
           name="teacher"
           value={newCourse.teacher}
           onChange={handleInputChange}
           error={errors.teacher}
         />
+      </div>
+      <div>
+        <TextInput
+          label="Price*"
+          name="price"
+          type="number"  // Specify the input type to be number
+          value={newCourse.price}
+          onChange={handleInputChange}
+          error={errors.price}
+        />
+      </div>
+      <div className="md:col-span-2">
         <TextareaInput
-          label="Description"
+          label="Description*"
           name="description"
           value={newCourse.description}
           onChange={handleInputChange}
           error={errors.description}
         />
-        <TextInput
-          label="Price"
-          name="price"
-          value={newCourse.price}
-          onChange={handleInputChange}
-          error={errors.price}
-        />
-
-        <ImageUploader onFileChange={handleFileChange} />
-
-        <div className="flex justify-between mt-4">
-          <button onClick={handleSubmit} className="btn">
-            {courseToEdit ? 'Save Changes' : 'Create Course'}
-          </button>
-          <button onClick={onCancel} className="btn bg-gray-500 text-white">
-            Cancel
-          </button>
-        </div>
       </div>
-    </div>
+     
+      <div className="md:col-span-2 my-2">
+        <ImageUploader onFileChange={handleFileChange} />
+        {errors.courseImage && <p className="text-red-500 text-sm">{errors.courseImage}</p>}
+      </div>
+
+      <div className="md:col-span-2 flex justify-between mt-4">
+        <button type="submit" className="btn px-4 py-2 rounded bg-[var(--color-green)]">
+          {courseToEdit ? 'Save Changes' : 'Create Course'}
+        </button>
+        <button type="button" onClick={onCancel} className="btn bg-gray-500 text-white">
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 };
 
