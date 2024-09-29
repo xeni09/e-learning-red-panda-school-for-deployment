@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CourseList from '../../components/courseComponents/CourseList';
-import CourseForm from '../../components/courseComponents/CourseForm';
+import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null); // Para manejar la edición
-  const [showForm, setShowForm] = useState(false); // Controlar el formulario de creación
+  const [showForm, setShowForm] = useState(false); // Controlar el formulario de edición
+  const [showCreateCourseForm, setShowCreateCourseForm] = useState(false); // Controlar el formulario de creación
+
+  const toggleForm = () => {
+    setShowCreateCourseForm(prevState => !prevState);  // Alternar el formulario de creación
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -30,10 +35,7 @@ const ManageCourses = () => {
       Object.keys(courseData).forEach(key => {
         formData.append(key, courseData[key]);
       });
-  
-      // Log para revisar el contenido del FormData
-      console.log([...formData.entries()]);
-  
+
       if (selectedCourse) {
         // Si estamos editando un curso
         await axios.put(`/api/courses/${selectedCourse._id}`, formData, {
@@ -53,23 +55,12 @@ const ManageCourses = () => {
         });
         setCourses([...courses, response.data]);
       }
-      setShowForm(false); // Ocultar el formulario después de crear/editar
+
+      toggleForm();  // Ocultar el formulario después de crear/editar el curso
     } catch (error) {
-      if (error.response) {
-        // El servidor respondió con un estado fuera del rango 2xx
-        console.error('Error en la respuesta del servidor:', error.response.data);
-      } else if (error.request) {
-        // La solicitud fue hecha pero no hubo respuesta
-        console.error('No se recibió respuesta del servidor:', error.request);
-      } else {
-        // Algo sucedió al configurar la solicitud que provocó un error
-        console.error('Error en la solicitud:', error.message);
-      }
+      console.error('Error creating or updating course:', error);
     }
   };
-  
-  
-  
 
   const handleDeleteCourse = async (courseId) => {
     try {
@@ -82,7 +73,7 @@ const ManageCourses = () => {
 
   const handleEditCourse = (course) => {
     setSelectedCourse(course); // Pasar el curso a editar
-    setShowForm(true); // Mostrar el formulario
+    setShowForm(true); // Mostrar el formulario de edición
   };
 
   const handleCancel = () => {
@@ -94,19 +85,20 @@ const ManageCourses = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
+        <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
+
         <CourseList
           courses={courses}
           onDeleteCourse={handleDeleteCourse}
           onEditCourse={handleEditCourse}
-          setShowForm={setShowForm} // Pasamos el control de mostrar el formulario
+          toggleForm={toggleForm} // Pasamos la función para controlar el botón de creación
+          showCreateCourseForm={showCreateCourseForm} // Estado para alternar el texto del botón
+          handleCreateCourse={handleCreateCourse} // Para manejar la creación del curso
+          selectedCourse={selectedCourse} // Para pasar el curso seleccionado para edición
+          handleCancel={handleCancel} // Función para cancelar el formulario
         />
-        {showForm && (
-          <CourseForm
-            onSubmit={handleCreateCourse}
-            courseToEdit={selectedCourse}
-            onCancel={handleCancel}
-          />
-        )}
+
+        
       </div>
     </>
   );

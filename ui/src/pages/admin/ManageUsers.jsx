@@ -123,30 +123,21 @@ const ManageUsers = () => {
         <h1 className="text-3xl font-bold mb-6">Manage Users</h1>
 
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-          <div className="flex flex-col md:flex-row justify-between items-start mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start ">
             <h2 className="text-xl font-bold">User List</h2>
 
-            <div className="flex items-center space-x-4 md:space-x-4">
-              <label htmlFor="filterRole" className="mr-2 text-sm whitespace-nowrap">Filter by Role:</label>
-              <CustomDropdown
-                options={roleOptions}
-                selectedOption={filterRole}
-                onOptionSelect={setFilterRole}
-                className="w-40 md:w-48"
-              />
-            </div>
+            <div className="flex flex-col md:flex-row md:justify-end md:space-x-4 mb-6">
+
+              <button
+                className="btn"
+                onClick={() => toggleForm('create')}
+              >
+                {showCreateUserForm ? 'Hide Create New User' : 'Create New User'}
+              </button>
+
+              </div>
+              
           </div>
-
-          <div className="flex flex-col md:flex-row md:space-x-4 mb-6">
-            <button
-              className="btn"
-              onClick={() => toggleForm('create')}
-            >
-              {showCreateUserForm ? 'Hide Create New User' : 'Create New User'}
-            </button>
-
-          </div>
-
           {error && <p className="text-red-500">{error}</p>} {/* Handle global errors */}
 
         
@@ -156,7 +147,15 @@ const ManageUsers = () => {
               <CreateUserForm onCreateUser={handleCreateUser} />
             </div>
           )}
-
+          <div className="flex items-center pb-4 space-x-4 md:space-x-4">
+              <label htmlFor="filterRole" className="mr-2 text-sm whitespace-nowrap">Filter by Role:</label>
+              <CustomDropdown
+                options={roleOptions}
+                selectedOption={filterRole}
+                onOptionSelect={setFilterRole}
+                className="w-40 md:w-48"
+              />
+            </div>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
           <UserTable

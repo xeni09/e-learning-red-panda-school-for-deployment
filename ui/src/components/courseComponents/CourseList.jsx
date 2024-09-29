@@ -1,6 +1,7 @@
 import React from 'react';
+import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
-const CourseList = ({ courses, onDeleteCourse, onEditCourse, setShowForm }) => {
+const CourseList = ({ courses, onDeleteCourse, onEditCourse, toggleForm, showCreateCourseForm, handleCreateCourse, selectedCourse, handleCancel }) => {
   // Función para manejar la eliminación con confirmación
   const handleDelete = (courseId) => {
     const confirmed = window.confirm('Are you sure you want to delete this course?');
@@ -13,11 +14,23 @@ const CourseList = ({ courses, onDeleteCourse, onEditCourse, setShowForm }) => {
     <div className="bg-white shadow-md rounded-lg p-10 my-10">
       <div className="flex flex-col md:flex-row justify-between items-start mb-6">
         <h2 className="text-xl font-bold">Courses List</h2>
-        <button className="btn mt-4 md:mt-0" onClick={() => setShowForm(true)}>
-          Create New Course
+        {/* Botón para mostrar/ocultar el formulario de creación de curso */}
+        <button className="btn mt-4 md:mt-0" onClick={toggleForm}>
+          {showCreateCourseForm ? 'Hide Create New Course' : 'Create New Course'}
         </button>
       </div>
-      
+
+      {/* Mostrar el formulario de creación de cursos si está activo */}
+      {showCreateCourseForm && (
+        <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
+          <CreateCourseForm
+            onSubmit={handleCreateCourse}
+            courseToEdit={selectedCourse}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
+
       <table className="table-auto w-full mb-6">
         <thead>
           <tr>

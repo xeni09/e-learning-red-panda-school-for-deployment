@@ -5,7 +5,7 @@ import TextareaInput from './TextareaInput';
 import ImageUploader from '../sharedComponents/ImageUploader';
 import { categories } from '../sharedComponents/constants'; 
 
-const CourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
+const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
   const [newCourse, setNewCourse] = useState({
     name: '',
     category: '',
@@ -80,7 +80,7 @@ const CourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
   
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-10 my-10">
+    <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
       <h2 className="text-xl font-bold">{courseToEdit ? 'Edit Course' : 'Create New Course'}</h2>
       <div className="mb-4">
         <TextInput
@@ -135,4 +135,4 @@ const CourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
   );
 };
 
-export default CourseForm;
+export default CreateCourseForm;

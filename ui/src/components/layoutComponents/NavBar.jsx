@@ -113,6 +113,11 @@ const NavBar = ({ cartItemCount }) => {
                   <Link to="/my-account" onClick={handleLinkClick}>My Account</Link>
                   <Link to="/my-courses" onClick={handleLinkClick}>My Courses</Link>
                   <Link to="/settings" onClick={handleLinkClick}>Settings</Link>
+
+                  {user.role === 'admin' && (
+                    <Link to="/admin/dashboard" onClick={handleLinkClick}>Admin Dashboard</Link>
+                  )}
+
                   <LogoutButton onClick={handleLinkClick} />
                 </>
               ) : (
