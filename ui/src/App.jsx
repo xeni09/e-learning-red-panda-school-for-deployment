@@ -30,6 +30,8 @@ import ManageUsers from './pages/admin/ManageUsers';
 import ManageCourses from './pages/admin/ManageCourses';
 import AdminRoute from './components/adminComponents/AdminRoute';
 import Admin from './pages/Admin';
+import CourseDetails from './pages/admin/CourseDetails';
+
 
 // Authenticated Pages
 import ProtectedRoute from './components/authComponents/ProtectedRoute';
@@ -67,6 +69,7 @@ const App = () => {
                 <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                 <Route path="/admin/manage-users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
                 <Route path="/admin/manage-courses" element={<AdminRoute><ManageCourses /></AdminRoute>} />
+                <Route path="/admin/manage-courses/:courseId" element={<AdminRoute><CourseDetails /></AdminRoute>} />
 
                 {/* Authenticated Routes */}
                 <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />

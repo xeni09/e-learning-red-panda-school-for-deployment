@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
+const Course = require("../models/Course");
 
 const {
   getCourses,
@@ -9,6 +10,7 @@ const {
   buyCourse,
   deleteCourse,
   updateCourse,
+  getCourseById,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -43,6 +45,9 @@ router.put(
   upload.single("courseImage"),
   updateCourse
 );
+
+// Ruta para obtener los detalles de un curso por su ID (solo accesible para administradores)
+router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);

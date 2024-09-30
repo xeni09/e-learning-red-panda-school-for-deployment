@@ -39,7 +39,7 @@ const CourseTable = ({
             handleSaveChanges={handleSaveChanges}
             handleCancelEdit={handleCancelEdit}
             onEditCourse={onEditCourse}
-            handleDelete={onDeleteCourse}
+            onDeleteCourse={onDeleteCourse} 
           />
         ))}
       </tbody>

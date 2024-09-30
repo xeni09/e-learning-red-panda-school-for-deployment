@@ -216,10 +216,28 @@ const buyCourse = async (req, res) => {
   }
 };
 
+// Obtener los detalles de un curso por su ID
+const getCourseById = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId); // Obtener curso por ID
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.status(200).json(course); // Devolver los datos del curso
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { getCourseById };
+
 module.exports = {
   getCourses,
   createCourse,
   buyCourse,
   deleteCourse,
   updateCourse,
+  getCourseById,
 };
