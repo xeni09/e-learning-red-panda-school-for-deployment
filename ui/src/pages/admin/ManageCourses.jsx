@@ -72,14 +72,19 @@ const ManageCourses = () => {
   
   
 
-  const handleDeleteCourse = async (courseId, shouldDeleteImage) => {
+  const handleDeleteCourse = async (courseId) => {
+    // Preguntar si se quiere eliminar el curso
+    const confirmed = window.confirm('Are you sure you want to delete this course?');
+    if (!confirmed) return;  // Si no se confirma, no eliminar
+  
     try {
       await axios.delete(`/api/courses/${courseId}`, { data: { deleteImage: shouldDeleteImage } });
-      setCourses(courses.filter(course => course._id !== courseId));
+      setCourses(courses.filter(course => course._id !== courseId));  // Actualizar el estado local eliminando el curso
     } catch (error) {
       console.error('Error deleting course:', error);
     }
   };
+  
 
   const handleEditCourse = (course) => {
     setEditingCourseId(course._id); // Establece el curso que se va a editar
@@ -91,6 +96,17 @@ const ManageCourses = () => {
       price: course.price,
     });
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+  
+    // Actualiza el campo correspondiente en `editFormData`
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
 
   const handleSaveChanges = async (courseId) => {
     try {
@@ -136,6 +152,7 @@ const ManageCourses = () => {
           setEditFormData={setEditFormData}
           handleSaveChanges={handleSaveChanges} // Función para guardar cambios
           handleCancelEdit={handleCancelEdit} // Función para cancelar la edición
+          handleInputChange={handleInputChange}
         />
       </div>
     </>

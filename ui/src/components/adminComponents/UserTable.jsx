@@ -59,7 +59,7 @@ const UserTable = ({
                   value={editFormData.name}
                   onChange={handleInputChange}
                   placeholder= {user.name}
-                  className="input mb-2 w-full p-2 border rounded"
+                  className="input mb-2 w-full p-2 border rounded border-gray-300 rounded"
                 />
               ) : (
                 user.name
