@@ -125,18 +125,20 @@ const CreateUserForm = ({ onCreateUser }) => {
           />
           {formErrors.password && <p className="text-red-500 text-sm">{formErrors.password}</p>}
         </div>
-        <div className="flex items-center space-x-2">
-          <label htmlFor="role" className="block mb-1 font-semibold">Role:*</label>
-          <CustomDropdown
-            options={roleOptions}
-            selectedOption={formData.role}
-            onOptionSelect={handleRoleChange}
-          />
-        </div>
+        <div>
+  <label htmlFor="role" className="block mb-1 font-semibold">Role*</label>
+  <CustomDropdown
+    options={roleOptions}
+    selectedOption={formData.role}
+    onOptionSelect={handleRoleChange}
+    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-[var(--color-yellow)]"
+  />
+  {formErrors.role && <p className="text-red-500 text-sm">{formErrors.role}</p>}
+</div>
         <div className="md:col-span-2">
           <button
             type="submit"
-            className="btn px-4 py-2 rounded w-full bg-[var(--color-green)]"
+            className="btn px-4 py-2 rounded  bg-[var(--color-green)]"
           >
             Create User
           </button>

@@ -2,15 +2,15 @@ import React from "react";
 
 const TextareaInput = ({ label, name, value, onChange, error }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+    <div className="mb-1">
+      <label className="block mb-1 font-semibold w-full">
         {label}
       </label>
       <textarea
         name={name}
         value={value}
         onChange={onChange}
-        className="textarea mb-1 w-full p-2 border rounded"
+        className="textarea mb-0 w-full mt-1 border border-gray-300 rounded"
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

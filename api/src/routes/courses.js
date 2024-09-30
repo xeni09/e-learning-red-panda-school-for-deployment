@@ -2,12 +2,15 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
+const Course = require("../models/Course");
 
 const {
   getCourses,
   createCourse,
   buyCourse,
   deleteCourse,
+  updateCourse,
+  getCourseById,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -33,6 +36,18 @@ router.post(
   createCourse
 ); // Ruta para crear un nuevo curso con imagen (solo admin)
 router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse); // Ruta para eliminar un curso
+
+// Ruta para actualizar un curso (solo admin)
+router.put(
+  "/:courseId",
+  auth,
+  authorize(["admin"]),
+  upload.single("courseImage"),
+  updateCourse
+);
+
+// Ruta para obtener los detalles de un curso por su ID (solo accesible para administradores)
+router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);
