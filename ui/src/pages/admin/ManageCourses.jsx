@@ -72,9 +72,9 @@ const ManageCourses = () => {
   
   
 
-  const handleDeleteCourse = async (courseId) => {
+  const handleDeleteCourse = async (courseId, shouldDeleteImage) => {
     try {
-      await axios.delete(`/api/courses/${courseId}`);
+      await axios.delete(`/api/courses/${courseId}`, { data: { deleteImage: shouldDeleteImage } });
       setCourses(courses.filter(course => course._id !== courseId));
     } catch (error) {
       console.error('Error deleting course:', error);

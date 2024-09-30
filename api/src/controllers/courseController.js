@@ -1,5 +1,10 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
+const fs = require("fs");
+const path = require("path");
+const util = require("util");
+const unlinkAsync = util.promisify(fs.unlink);
+const fsExistsAsync = util.promisify(fs.exists);
 
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
@@ -107,12 +112,19 @@ const updateCourse = async (req, res) => {
 
     // Verificar si hay una nueva imagen cargada
     if (req.file) {
+      // Eliminar la imagen anterior
+      const oldImagePath = path.join(__dirname, `../public${course.imageSrc}`);
+      const fileExists = await fsExistsAsync(oldImagePath);
+      if (fileExists) {
+        await unlinkAsync(oldImagePath);
+      }
+
+      // Asignar la nueva imagen
       course.imageSrc = `/uploads/${req.file.filename}`;
     }
 
     // Guardar los cambios
     await course.save();
-
     res.status(200).json(course);
   } catch (error) {
     console.error("Error updating course:", error.message);
@@ -122,20 +134,42 @@ const updateCourse = async (req, res) => {
   }
 };
 
-// Eliminar un curso por su ID
+// Eliminar un curso existente y su imagen asociada
 const deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
+    const { deleteImage } = req.body; // Recibir un parámetro para verificar si se elimina la imagen o no.
 
-    // Buscar el curso por ID
+    // Buscar el curso por su ID
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Eliminar el curso
-    await course.deleteOne();
+    // Obtener la ruta de la imagen
+    const imagePath = path.join(__dirname, `../public${course.imageSrc}`);
 
+    if (deleteImage) {
+      // Solo eliminar la imagen si deleteImage es verdadero
+      const fileExists = await fsExistsAsync(imagePath);
+      if (fileExists) {
+        // Eliminar el archivo de imagen
+        try {
+          await unlinkAsync(imagePath);
+          console.log("Course image deleted successfully");
+        } catch (err) {
+          console.error("Error deleting image file:", err);
+          return res
+            .status(500)
+            .json({ message: "Error deleting course image" });
+        }
+      } else {
+        console.log("Image file does not exist");
+      }
+    }
+
+    // Eliminar el curso de la base de datos
+    await course.deleteOne();
     res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
     console.error("Error deleting course:", error.message);

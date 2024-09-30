@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const ImageUploader = ({ onFileChange }) => {
-  const [previewImage, setPreviewImage] = useState(null);
-
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPreviewImage(URL.createObjectURL(file));
       onFileChange(file);
-    } else {
-      setPreviewImage(null);
-      onFileChange(null);
     }
   };
 
@@ -28,15 +22,6 @@ const ImageUploader = ({ onFileChange }) => {
         className="hidden"
         aria-label="Upload course image"
       />
-      {/* {previewImage && (
-        <div className="my-4">
-          <img
-            src={previewImage}
-            alt="Image preview"
-            className="max-w-xs rounded shadow-lg max-h-40 object-cover"
-          />
-        </div>
-      )} */}
     </div>
   );
 };

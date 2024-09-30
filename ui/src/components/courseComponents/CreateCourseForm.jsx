@@ -8,7 +8,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     category: '',
     teacher: '',
     description: '',
-    price: '', 
+    price: '',
     courseImage: null,
   });
 
@@ -57,12 +57,13 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
 
   const handleCropComplete = (croppedImageDataUrl) => {
     setCroppedImage(croppedImageDataUrl);
+    setCroppingImage(null);  // Oculta el cropper después de recortar pero mantiene el preview
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    
+
     const newErrors = {};
 
     if (!newCourse.name) newErrors.name = "Course name is required.";
@@ -129,6 +130,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
         handleCropComplete={handleCropComplete}
         errors={errors}
         croppingImage={croppingImage}
+        croppedImage={croppedImage}
       />
 
       <div className="md:col-span-2 flex justify-between mt-4">
