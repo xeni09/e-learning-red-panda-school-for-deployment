@@ -78,7 +78,7 @@ const createCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { name, description, price, category, teacher } = req.body;
+    const { name, description, price, category, teacher, sections } = req.body;
 
     // Verificar si el curso existe
     const course = await Course.findById(courseId);
@@ -110,9 +110,14 @@ const updateCourse = async (req, res) => {
     course.category = category;
     course.teacher = teacher;
 
+    // Actualizar las secciones si están presentes
+    if (sections) {
+      course.sections = sections; // Sobrescribe las secciones actuales
+    }
+
     // Verificar si hay una nueva imagen cargada
     if (req.file) {
-      // Eliminar la imagen anterior
+      // Eliminar la imagen anterior si existe
       const oldImagePath = path.join(__dirname, `../public${course.imageSrc}`);
       const fileExists = await fsExistsAsync(oldImagePath);
       if (fileExists) {
@@ -231,7 +236,39 @@ const getCourseById = async (req, res) => {
   }
 };
 
-module.exports = { getCourseById };
+const getCourseSections = async (req, res) => {
+  const { courseId } = req.params;
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    res.json(course.sections); // Devolver solo las secciones
+  } catch (error) {
+    console.error("Error fetching sections:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Agregar una sección a un curso
+const addCourseSection = async (req, res) => {
+  const { courseId } = req.params;
+  const { title, description, videoUrl } = req.body;
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    // Añadir la nueva sección
+    const newSection = { title, description, videoUrl };
+    course.sections.push(newSection);
+    await course.save();
+    res.status(201).json(course.sections); // Devolver las secciones actualizadas
+  } catch (error) {
+    console.error("Error adding section:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   getCourses,
@@ -240,4 +277,6 @@ module.exports = {
   deleteCourse,
   updateCourse,
   getCourseById,
+  getCourseSections,
+  addCourseSection,
 };

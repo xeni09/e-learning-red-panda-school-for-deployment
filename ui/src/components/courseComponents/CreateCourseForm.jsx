@@ -134,10 +134,10 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
       />
 
       <div className="md:col-span-2 flex justify-between mt-4">
-        <button type="submit" className="btn px-4 py-2 rounded bg-[var(--color-green)]">
+        <button type="submit" className="btn-save">
           {courseToEdit ? 'Save Changes' : 'Create Course'}
         </button>
-        <button type="button" onClick={onCancel} className="btn bg-gray-500 text-white">
+        <button type="button" onClick={onCancel} className="btn-cancel">
           Cancel
         </button>
       </div>

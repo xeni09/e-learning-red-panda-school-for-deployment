@@ -70,7 +70,7 @@ const Settings = () => {
           {isEditing && (
             <button 
               type="button" 
-              className="btn bg-[var(--color-orange)] hover:bg-gray-900"
+              className="btn-cancel"
               onClick={cancelEdit}>
               Cancel
             </button>

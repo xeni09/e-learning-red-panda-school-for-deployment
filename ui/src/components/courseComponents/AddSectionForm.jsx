@@ -11,8 +11,7 @@ const AddSectionForm = ({ newSection, setNewSection, handleAddSection }) => {
 
   return (
     <div className="mb-6">
-      <p className="text-3xl font-semibold mt-6 mb-4">Add New Section</p>
-
+      <h3 className="text-2xl font-semibold mb-4">Add New Section</h3>
       <div className="mb-4">
         <label className="block mb-2 font-medium text-gray-700">Section Title</label>
         <input 
@@ -47,7 +46,7 @@ const AddSectionForm = ({ newSection, setNewSection, handleAddSection }) => {
 
       <button 
         onClick={handleAddSection} 
-        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300"
+        className="btn"
       >
         Add Section
       </button>

@@ -26,7 +26,7 @@ const CourseRow = ({
             name="name"
             value={editFormData.name}
             onChange={handleInputChange}
-            className="input text-center w-full p-2 border border-gray-300 rounded"
+            className="input text-center w-full p-2 border border-gray-300 "
           />
         ) : (
           // Enlace a los detalles del curso
@@ -55,7 +55,7 @@ const CourseRow = ({
             name="teacher"
             value={editFormData.teacher}
             onChange={handleInputChange}
-            className="input text-center w-full p-2 border border-gray-300 rounded"
+            className="input text-center w-full p-2 border border-gray-300 "
           />
         ) : (
           course.teacher
@@ -70,7 +70,7 @@ const CourseRow = ({
               name="price"
               value={editFormData.price}
               onChange={handleInputChange}
-              className="input text-center w-full p-2 pr-8 border border-gray-300 rounded" 
+              className="input text-center w-full p-2 pr-8 border border-gray-300 " 
             />
             <span className="absolute inset-y-0 right-0 pr-3 pb-2 flex items-center text-gray-500">€</span> 
           </div>
@@ -92,13 +92,13 @@ const CourseRow = ({
           <div className="flex flex-col lg:flex-row justify-center space-x-1">
             <button
               onClick={() => handleSaveChanges(course._id)}
-              className="btn my-2 rounded"
+              className="btn-save "
             >
               Save
             </button>
             <button
               onClick={handleCancelEdit}
-              className="btn my-2 bg-gray-400 rounded"
+              className="btn-cancel bg-gray-400 "
             >
               Cancel
             </button>
@@ -106,13 +106,13 @@ const CourseRow = ({
         ) : (
           <div className="flex flex-col lg:flex-row justify-center ">
             <button
-              className="btn my-2 mx-2 rounded"
+              className="btn"
               onClick={() => onEditCourse(course)}
             >
               Edit
             </button>
             <button
-              className="btn my-2 mx-2 bg-red-500 text-white rounded"
+              className="btn-delete"
               onClick={() => handleDelete(course._id)}
             >
               Delete
