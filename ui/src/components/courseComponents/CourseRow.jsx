@@ -90,27 +90,27 @@ const CourseRow = ({
       <div className="flex flex-col lg:flex-row  justify-center space-x-1">
         <button
           onClick={() => handleSaveChanges(course._id)}
-          className="btn rounded"
+          className="btn my-2 rounded"
         >
           Save
         </button>
         <button
           onClick={handleCancelEdit}
-          className="btn bg-gray-400 rounded"
+          className="btn my-2 bg-gray-400 rounded"
         >
           Cancel
         </button>
       </div>
     ) : (
-      <div className="flex flex-col lg:flex-row  justify-center space-x-1">
+      <div className="flex flex-col lg:flex-row justify-center ">
         <button
-          className="btn rounded"
+          className="btn my-2 mx-2 rounded"
           onClick={() => onEditCourse(course)}
         >
           Edit
         </button>
         <button
-          className="btn bg-red-500 text-white rounded"
+          className="btn my-2 mx-2 bg-red-500 text-white rounded"
           onClick={() => handleDelete(course._id)}
         >
           Delete
