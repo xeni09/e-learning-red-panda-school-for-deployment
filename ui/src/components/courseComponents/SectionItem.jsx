@@ -63,10 +63,18 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
     setCroppingImage(null); // Limpiar la imagen cargada para recortar
   };
 
+  // Confirmación antes de eliminar
+  const handleDeleteClick = () => {
+    const confirmed = window.confirm("Are you sure you want to delete this section?");
+    if (confirmed) {
+      onDeleteClick(); // Llamar a la función de eliminación si el usuario confirma
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row border border-gray-300 p-4 mb-4 bg-white rounded-md shadow-sm">
       <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-4">
-        {section.videoUrl ? (
+        {section.videoUrl || croppedImage ? (
           <img
             src={thumbnailUrl}
             alt="Video Thumbnail"
@@ -84,7 +92,7 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
         {isEditing ? (
           <>
             <label htmlFor="title" className="block text-gray-700 font-medium">
-              Title
+              Title:
             </label>
             <input
               type="text"
@@ -96,7 +104,7 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
 
             <div>
               <label htmlFor="description" className="block text-gray-700 mt-2 font-medium">
-                Description
+                Description:
               </label>
               <textarea
                 name="description"
@@ -155,7 +163,7 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
             <button onClick={() => setIsEditing(true)} className="btn ml-0">
               Edit
             </button>
-            <button onClick={onDeleteClick} className="btn-delete ml-0">
+            <button onClick={handleDeleteClick} className="btn-delete ml-0">
               Delete
             </button>
           </>

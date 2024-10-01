@@ -82,7 +82,7 @@ const CourseDetails = () => {
 
       <div className="container mx-auto p-4 pt-20">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Course Details</h1>
+          <h1 className="text-3xl font-bold">Course Details (Editor view)</h1>
           <Link to="/admin/manage-courses" className="text-[var(--color-orange)] hover:underline">
             &larr; Back to Courses List
           </Link>
