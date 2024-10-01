@@ -129,7 +129,7 @@ const ManageUsers = () => {
             <div className="flex flex-col md:flex-row md:justify-end md:space-x-4 mb-6">
 
               <button
-                className="btn"
+                className="btn-orange"
                 onClick={() => toggleForm('create')}
               >
                 {showCreateUserForm ? 'Hide Create New User' : 'Create New User'}

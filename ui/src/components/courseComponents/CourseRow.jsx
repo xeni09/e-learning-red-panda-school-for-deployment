@@ -17,7 +17,15 @@ const CourseRow = ({
 }) => {
   return (
     <tr key={course._id}>
-      <td className="border px-4 py-2 text-center">{course.customId}</td>
+
+
+
+      <td className="border px-4 py-2 text-center">
+      <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
+            {course.customId}
+          </Link>
+
+      </td>
 
       <td className="border px-4 py-2 text-center">
         {editingCourseId === course._id ? (
@@ -30,7 +38,7 @@ const CourseRow = ({
           />
         ) : (
           // Enlace a los detalles del curso
-          <Link to={`/admin/manage-courses/${course._id}`} className="text-blue-500">
+          <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
             {course.name}
           </Link>
         )}

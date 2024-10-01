@@ -27,7 +27,7 @@ const CourseList = ({
       <div className="flex flex-col md:flex-row justify-between items-start mb-6">
         <h2 className="text-xl font-bold">Courses List</h2>
 
-        <button className="btn mt-4 md:mt-0" onClick={toggleForm}>
+        <button className="btn-orange mt-4 md:mt-0" onClick={toggleForm}>
           {showCreateCourseForm ? 'Hide Create New Course' : 'Create New Course'}
         </button>
       </div>

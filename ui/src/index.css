@@ -194,7 +194,9 @@ select:focus {
 .btn {
   @apply btn-base py-2 px-4 whitespace-nowrap w-full sm:w-auto text-center mx-1 my-1;
 }
-
+.btn-orange {
+  @apply btn btn bg-[var(--color-orange)] py-2 px-4 whitespace-nowrap w-full sm:w-auto text-center mx-1 my-1 !important;
+}
 .btn-cancel {
   @apply btn bg-[var(--color-grey)] text-white hover:bg-gray-500 !important;
 }
