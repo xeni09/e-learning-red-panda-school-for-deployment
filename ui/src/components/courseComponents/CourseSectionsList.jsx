@@ -6,6 +6,10 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
 
+  const handleSaveClick = (updatedSection, index) => {
+    onEditSection(updatedSection, index); // Guardar sección editada
+  };
+
   const handleWatchVideoClick = (videoUrl) => {
     setCurrentVideoUrl(videoUrl);
     setShowVideoModal(true);
@@ -16,10 +20,6 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
     setCurrentVideoUrl('');
   };
 
-  const handleSaveClick = (updatedSection, index) => {
-    onEditSection(updatedSection, index); // Guardar sección editada
-  };
-
   return (
     <div>
       <h2 className="text-2xl font-semibold my-4">Course Sections</h2>
@@ -28,13 +28,11 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
         <SectionItem
           key={index}
           section={section}
-          onEditClick={() => {}}
           onDeleteClick={() => onDeleteSection(index)}
           onSaveClick={(updatedSection) => handleSaveClick(updatedSection, index)}
         />
       ))}
 
-      {/* Modal para mostrar el video */}
       {showVideoModal && (
         <VideoModal videoUrl={currentVideoUrl} onClose={handleCloseModal} />
       )}

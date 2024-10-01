@@ -143,7 +143,7 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { deleteImage } = req.body; // Recibir un parámetro para verificar si se elimina la imagen o no.
+    const { deleteImage } = req.body;
 
     // Buscar el curso por su ID
     const course = await Course.findById(courseId);
@@ -151,29 +151,16 @@ const deleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Obtener la ruta de la imagen
+    // Eliminar la imagen si se solicita
     const imagePath = path.join(__dirname, `../public${course.imageSrc}`);
-
     if (deleteImage) {
-      // Solo eliminar la imagen si deleteImage es verdadero
       const fileExists = await fsExistsAsync(imagePath);
       if (fileExists) {
-        // Eliminar el archivo de imagen
-        try {
-          await unlinkAsync(imagePath);
-          console.log("Course image deleted successfully");
-        } catch (err) {
-          console.error("Error deleting image file:", err);
-          return res
-            .status(500)
-            .json({ message: "Error deleting course image" });
-        }
-      } else {
-        console.log("Image file does not exist");
+        await unlinkAsync(imagePath);
       }
     }
 
-    // Eliminar el curso de la base de datos
+    // Eliminar el curso
     await course.deleteOne();
     res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
@@ -188,29 +175,22 @@ const buyCourse = async (req, res) => {
     const userId = req.user._id; // Usuario autenticado
     const { courseId } = req.body;
 
-    // Verificar si el curso existe
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Buscar al usuario
     const user = await User.findById(userId);
-
-    // Verificar si el usuario ya compró el curso
     if (user.courses.includes(courseId)) {
       return res
         .status(400)
         .json({ message: "You already purchased this course" });
     }
 
-    // Agregar el ObjectId del curso al array de cursos del usuario
+    // Agregar curso al usuario y aumentar participantes
     user.courses.push(courseId);
-
-    // Incrementar el número de participantes del curso
     course.participants += 1;
 
-    // Guardar los cambios tanto en el usuario como en el curso
     await user.save();
     await course.save();
 
@@ -224,18 +204,17 @@ const buyCourse = async (req, res) => {
 // Obtener los detalles de un curso por su ID
 const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId); // Obtener curso por ID
-
+    const course = await Course.findById(req.params.courseId);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
-
-    res.status(200).json(course); // Devolver los datos del curso
+    res.status(200).json(course);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
+// Obtener las secciones de un curso
 const getCourseSections = async (req, res) => {
   const { courseId } = req.params;
   try {
@@ -243,30 +222,89 @@ const getCourseSections = async (req, res) => {
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
-    res.json(course.sections); // Devolver solo las secciones
+    res.json(course.sections);
   } catch (error) {
     console.error("Error fetching sections:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Agregar una sección a un curso
+// Agregar una nueva sección a un curso
 const addCourseSection = async (req, res) => {
   const { courseId } = req.params;
-  const { title, description, videoUrl } = req.body;
+  const { title, description, videoUrl, thumbnail } = req.body;
   try {
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
-    // Añadir la nueva sección
-    const newSection = { title, description, videoUrl };
+
+    const newSection = { title, description, videoUrl, thumbnail };
     course.sections.push(newSection);
+
     await course.save();
-    res.status(201).json(course.sections); // Devolver las secciones actualizadas
+    res.status(201).json(course.sections);
   } catch (error) {
     console.error("Error adding section:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Actualizar una sección existente
+const updateCourseSection = async (req, res) => {
+  const { courseId, sectionId } = req.params;
+  const { title, description, videoUrl, thumbnail } = req.body;
+
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const section = course.sections.id(sectionId);
+    if (!section) {
+      return res.status(404).json({ message: "Section not found" });
+    }
+
+    section.title = title;
+    section.description = description;
+    section.videoUrl = videoUrl;
+    section.thumbnail = thumbnail;
+
+    await course.save();
+    res.status(200).json(course);
+  } catch (error) {
+    console.error("Error updating section:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error updating section", error: error.message });
+  }
+};
+
+// Eliminar una sección de un curso
+const deleteCourseSection = async (req, res) => {
+  const { courseId, sectionId } = req.params;
+
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const section = course.sections.id(sectionId);
+    if (!section) {
+      return res.status(404).json({ message: "Section not found" });
+    }
+
+    section.remove();
+    await course.save();
+
+    res.status(200).json({ message: "Section deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting section:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting section", error: error.message });
   }
 };
 
@@ -279,4 +317,6 @@ module.exports = {
   getCourseById,
   getCourseSections,
   addCourseSection,
+  updateCourseSection,
+  deleteCourseSection,
 };

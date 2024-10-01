@@ -13,6 +13,10 @@ const SectionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  thumbnail: {
+    type: String,
+    required: false,
+  },
 });
 
 const CourseSchema = new mongoose.Schema({

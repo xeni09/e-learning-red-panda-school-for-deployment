@@ -65,6 +65,15 @@ router.post(
   addCourseSection
 ); // Agregar una nueva sección
 
+// Agregar la capacidad de subir una imagen al agregar una sección
+router.post(
+  "/:courseId/sections",
+  auth,
+  authorize(["admin"]),
+  upload.single("sectionImage"), // Permitir la subida de una imagen para la sección
+  addCourseSection
+);
+
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);
 
