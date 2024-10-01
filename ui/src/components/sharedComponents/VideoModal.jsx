@@ -1,8 +1,14 @@
 import React from 'react';
 
+const getYouTubeEmbedUrl = (url) => {
+  const videoIdMatch = url.match(/(?:youtube\.com.*(?:\?|&)v=|youtu\.be\/)([^&\n?]+)/);
+  return videoIdMatch
+    ? `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1`
+    : url;
+};
+
 const VideoModal = ({ videoUrl, onClose }) => {
-  // Añadimos ?autoplay=1 al videoUrl si no lo tiene para activar autoplay
-  const autoPlayUrl = videoUrl.includes('?') ? `${videoUrl}&autoplay=1` : `${videoUrl}?autoplay=1`;
+  const embedUrl = getYouTubeEmbedUrl(videoUrl);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
@@ -15,11 +21,11 @@ const VideoModal = ({ videoUrl, onClose }) => {
           Close
         </button>
         
-        {/* Iframe del video con autoplay */}
+        {/* Iframe del video usando la URL embed de YouTube con autoplay y mute */}
         <iframe
           width="100%"
           height="400"
-          src={autoPlayUrl}
+          src={embedUrl}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
