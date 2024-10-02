@@ -87,11 +87,11 @@ const CourseRow = ({
         )}
       </td>
 
-      <td className="border px-4 py-2 text-center">
+      <td className="border px-0 py-0 text-center">
         <img
           src={`http://localhost:3000${course.imageSrc}`}
           alt={course.name}
-          className="w-16 h-16 object-cover mx-auto"
+          className="w-auto h-auto object-cover mx-auto"
         />
       </td>
 
@@ -112,15 +112,27 @@ const CourseRow = ({
             </button>
           </div>
         ) : (
+
+
+
+
           <div className="flex flex-col lg:flex-row justify-center ">
+
+  <Link to={`/admin/manage-courses/${course._id}`}>
+              <button className="btn m-1">
+                Edit
+              </button>
+            </Link>
+
+
             <button
-              className="btn"
+              className="btn m-1"
               onClick={() => onEditCourse(course)}
             >
-              Edit
+              Quick Edit
             </button>
             <button
-              className="btn-delete"
+              className="btn-delete m-1"
               onClick={() => onDeleteCourse(course._id)}
             >
               Delete

@@ -46,7 +46,7 @@ const CourseFormFields = ({ newCourse, handleInputChange, handleCategoryChange, 
           error={errors.price}
         />
       </div>
-      <div className="md:col-span-2 ">
+      <div className="">
         <TextareaInput
           label="Description*"
           name="description"
