@@ -14,8 +14,6 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [croppingImage, setCroppingImage] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(null);
 
   useEffect(() => {
     if (courseToEdit) {
@@ -38,26 +36,11 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     }
   };
 
-  const handleFileChange = (file) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCroppingImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleCategoryChange = (selectedCategory) => {
     setNewCourse({ ...newCourse, category: selectedCategory });
     if (isSubmitted) {
       setErrors({ ...errors, category: '' });
     }
-  };
-
-  const handleCropComplete = (croppedImageDataUrl) => {
-    setCroppedImage(croppedImageDataUrl);
-    setCroppingImage(null);  // Oculta el cropper después de recortar pero mantiene el preview
   };
 
   const handleSubmit = (e) => {
@@ -75,7 +58,9 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     } else if (isNaN(newCourse.price)) {
       newErrors.price = "Price must be a number.";
     }
-    if (!croppedImage) {
+
+    // Validar si hay una imagen seleccionada (esto se puede manejar dentro de CourseImageUploadAndCrop)
+    if (!newCourse.courseImage) {
       newErrors.courseImage = "Course image is required.";
     }
 
@@ -96,8 +81,8 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     formData.append("description", formattedCourse.description);
     formData.append("price", formattedCourse.price);
 
-    if (croppedImage) {
-      const blob = dataURLtoBlob(croppedImage);
+    if (newCourse.courseImage) {
+      const blob = dataURLtoBlob(newCourse.courseImage);
       formData.append("courseImage", blob, 'croppedImage.jpeg');
     }
 
@@ -125,12 +110,11 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
         errors={errors}
       />
 
+      {/* Toda la lógica de la imagen se maneja en CourseImageUploadAndCrop */}
       <CourseImageUploadAndCrop
-        handleFileChange={handleFileChange}
-        handleCropComplete={handleCropComplete}
         errors={errors}
-        croppingImage={croppingImage}
-        croppedImage={croppedImage}
+        setNewCourse={setNewCourse} // Pasar setNewCourse para actualizar la imagen
+        newCourse={newCourse} // Pasar newCourse para obtener la imagen actual
       />
 
       <div className="md:col-span-2 flex justify-between mt-4">

@@ -10,9 +10,13 @@ const CourseTable = ({
   setEditFormData,
   handleSaveChanges,
   handleCancelEdit,
-  handleInputChange,
-  handleCategoryChange
+  handleInputChange
 }) => {
+  // Definir handleCategoryChange dentro del componente
+  const handleCategoryChange = (selectedCategory) => {
+    setEditFormData({ ...editFormData, category: selectedCategory });
+  };
+
   return (
     <table className="table-auto w-full mb-6">
       <thead>
@@ -27,7 +31,7 @@ const CourseTable = ({
         </tr>
       </thead>
       <tbody>
-        {courses.map(course => (
+        {courses.map((course) => (
           <CourseRow
             key={course._id}
             course={course}
@@ -35,11 +39,11 @@ const CourseTable = ({
             editFormData={editFormData}
             setEditFormData={setEditFormData}
             handleInputChange={handleInputChange}
-            handleCategoryChange={handleCategoryChange}
+            handleCategoryChange={handleCategoryChange} // Ahora tiene la referencia correcta
             handleSaveChanges={handleSaveChanges}
             handleCancelEdit={handleCancelEdit}
             onEditCourse={onEditCourse}
-            onDeleteCourse={onDeleteCourse} 
+            onDeleteCourse={onDeleteCourse}
           />
         ))}
       </tbody>

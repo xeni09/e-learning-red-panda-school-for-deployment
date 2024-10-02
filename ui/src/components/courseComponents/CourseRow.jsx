@@ -3,6 +3,8 @@ import CustomDropdown from '../../components/adminComponents/CustomDropdown';
 import { categories } from '../sharedComponents/constants';
 import { Link } from 'react-router-dom';
 
+
+
 const CourseRow = ({
   course,
   editingCourseId,
@@ -18,13 +20,10 @@ const CourseRow = ({
   return (
     <tr key={course._id}>
 
-
-
       <td className="border px-4 py-2 text-center">
-      <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
-            {course.customId}
-          </Link>
-
+        <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
+          {course.customId}
+        </Link>
       </td>
 
       <td className="border px-4 py-2 text-center">
@@ -37,7 +36,6 @@ const CourseRow = ({
             className="input text-center w-full p-2 border border-gray-300 "
           />
         ) : (
-          // Enlace a los detalles del curso
           <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
             {course.name}
           </Link>
@@ -49,7 +47,7 @@ const CourseRow = ({
           <CustomDropdown
             options={categories.map(cat => ({ value: cat, label: cat }))}
             selectedOption={editFormData.category}
-            onOptionSelect={handleCategoryChange}
+            onOptionSelect={handleCategoryChange}  // Asegúrate de que esta función está presente
           />
         ) : (
           course.category
@@ -112,18 +110,12 @@ const CourseRow = ({
             </button>
           </div>
         ) : (
-
-
-
-
           <div className="flex flex-col lg:flex-row justify-center ">
-
-  <Link to={`/admin/manage-courses/${course._id}`}>
+            <Link to={`/admin/manage-courses/${course._id}`}>
               <button className="btn m-1">
                 Edit
               </button>
             </Link>
-
 
             <button
               className="btn m-1"
