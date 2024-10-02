@@ -1,80 +1,95 @@
 import React, { useState, useEffect } from 'react';
 import CourseImageUploadAndCrop from '../../components/courseComponents/CourseImageUploadAndCrop';
 
-const AddSectionForm = ({ newSection, setNewSection, handleAddSection }) => {
-  const [croppingImage, setCroppingImage] = useState(null); // Imagen para recortar
-  const [croppedImage, setCroppedImage] = useState(null); // Imagen recortada final
-  const [errors, setErrors] = useState({}); // Estado para manejar errores
+const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
+  const [newSection, setNewSection] = useState({
+    title: '',
+    description: '',
+    videoUrl: '',
+    thumbnail: null,
+  });
+
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [croppingImage, setCroppingImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
+
+  useEffect(() => {
+    if (sectionToEdit) {
+      setNewSection({
+        title: sectionToEdit.title || '',
+        description: sectionToEdit.description || '',
+        videoUrl: sectionToEdit.videoUrl || '',
+        thumbnail: sectionToEdit.thumbnail || null,
+      });
+    }
+  }, [sectionToEdit]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewSection((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setNewSection({ ...newSection, [name]: value });
+    if (isSubmitted) {
+      setErrors({ ...errors, [name]: '' });
+    }
   };
 
   const handleFileChange = (file) => {
-    console.log("File selected: ", file.name); // Mostrar solo el nombre del archivo
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setCroppingImage(reader.result); // Mostrar la imagen cargada para recortar
-      console.log("Image for cropping loaded: (size: ", reader.result.length, ")"); // Mostrar el tamaño del resultado, no la imagen completa
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleCropComplete = (croppedImageUrl) => {
-    setCroppedImage(croppedImageUrl); // Guardar la imagen recortada final
-    setCroppingImage(null); // Limpiar la imagen cargada para recortar
-    console.log("Cropped image saved (size: ", croppedImageUrl.length, ")"); // Mostrar el tamaño del resultado
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!newSection.title) {
-      newErrors.title = 'Title is required.';
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCroppingImage(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
-    if (!newSection.description) {
-      newErrors.description = 'Description is required.';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Si no hay errores, retorna `true`.
   };
 
-  const handleFormSubmit = (e) => {
+  const handleCropComplete = (croppedImageDataUrl) => {
+    setCroppedImage(croppedImageDataUrl);
+    setCroppingImage(null);  // Oculta el cropper después de recortar pero mantiene el preview
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
-    if (!validateForm()) {
+    const newErrors = {};
+
+    if (!newSection.title) newErrors.title = "Section title is required.";
+    if (!newSection.description) newErrors.description = "Description is required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    console.log("Form data before submission: ", {
-      ...newSection,
-      thumbnail: croppedImage ? `Image size: ${croppedImage.length}` : "No image",
-    });
+    const formData = new FormData();
+    formData.append("title", newSection.title);
+    formData.append("description", newSection.description);
+    formData.append("videoUrl", newSection.videoUrl);
 
-    handleAddSection({ ...newSection, thumbnail: croppedImage || null });
+    if (croppedImage) {
+      const blob = dataURLtoBlob(croppedImage);
+      formData.append("thumbnail", blob, 'thumbnail.jpeg');
+    }
 
-    // Limpiar el formulario y los estados después de agregar la sección
-    setNewSection({
-      title: '',
-      description: '',
-      videoUrl: '',
-    });
-    setCroppedImage(null);
-    setErrors({});
+    handleAddSection(formData);
   };
 
-  useEffect(() => {
-    // Limpiar el estado de la imagen cuando se limpia el formulario
-    return () => {
-      setCroppedImage(null);
-    };
-  }, []);
+  const dataURLtoBlob = (dataurl) => {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   return (
-    <form onSubmit={handleFormSubmit} className="mb-6">
+    <form onSubmit={handleSubmit} className="mb-6">
       <h3 className="text-2xl font-semibold mb-4">Add New Section</h3>
 
       <div className="mb-4">
@@ -111,7 +126,13 @@ const AddSectionForm = ({ newSection, setNewSection, handleAddSection }) => {
         />
       </div>
 
-     
+      <CourseImageUploadAndCrop
+        handleFileChange={handleFileChange}
+        handleCropComplete={handleCropComplete}
+        croppingImage={croppingImage}
+        croppedImage={croppedImage}
+        errors={errors}
+      />
 
       <button 
         type="submit" 

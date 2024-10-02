@@ -20,6 +20,19 @@ const MyCourses = () => {
     return <p>Loading...</p>;
   }
 
+ // Agrega un console.log para verificar los datos del usuario
+ useEffect(() => {
+  if (user) {
+    console.log('User data:', user);
+  }
+}, [user]);
+
+if (isLoading || !user) {
+  return <p>Loading...</p>;
+}
+
+
+
   return (
     <>
       <SubMenu />

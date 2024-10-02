@@ -30,19 +30,26 @@ const CourseDetails = () => {
     fetchCourseDetails();
   }, [courseId]);
 
-  const handleAddSection = async () => {
+  const handleAddSection = async (formData) => {
     try {
-      const updatedSections = [...sections, newSection];
-      const updatedCourse = { ...courseData, sections: updatedSections };
-
-      await axios.put(`/api/courses/${courseId}`, updatedCourse);
-
-      setSections(updatedSections);
+      // Aquí se envía una solicitud POST a la ruta para agregar una nueva sección
+      const response = await axios.post(`/api/courses/${courseId}/sections`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      // Actualiza el estado con las nuevas secciones devueltas por el servidor
+      setSections([...sections, response.data]);
+  
+      // Limpiar el formulario
       setNewSection({ title: '', description: '', videoUrl: '' });
+      setShowAddSectionForm(false); // Ocultar el formulario después de agregar la sección
     } catch (error) {
       console.error('Error adding section:', error);
     }
   };
+  
 
   const handleEditSection = async (updatedSection, index) => {
     try {
@@ -108,12 +115,11 @@ const CourseDetails = () => {
             </button>
 
             {showAddSectionForm && (
-              <AddSectionForm 
-                newSection={newSection}
-                setNewSection={setNewSection}
-                handleAddSection={handleAddSection}
-              />
-            )}
+  <AddSectionForm 
+    handleAddSection={handleAddSection}
+  />
+)}
+
           </div>
         </div>
       </div>

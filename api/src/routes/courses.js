@@ -13,6 +13,7 @@ const {
   getCourseById,
   getCourseSections,
   addCourseSection,
+  deleteCourseSection,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -57,21 +58,22 @@ router.get(
   auth,
   authorize(["admin"]),
   getCourseSections
-); // Obtener secciones de un curso
-router.post(
-  "/:courseId/sections",
-  auth,
-  authorize(["admin"]),
-  addCourseSection
-); // Agregar una nueva sección
+);
 
-// Agregar la capacidad de subir una imagen al agregar una sección
+// Agregar una nueva sección con subida de imagen
 router.post(
   "/:courseId/sections",
   auth,
   authorize(["admin"]),
-  upload.single("sectionImage"), // Permitir la subida de una imagen para la sección
+  upload.single("thumbnail"), // Permitir la subida de una imagen para la sección
   addCourseSection
+);
+// Rutapara eliminar una sección de un curso
+router.delete(
+  "/:courseId/sections/:sectionId",
+  auth,
+  authorize(["admin"]),
+  deleteCourseSection
 );
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)

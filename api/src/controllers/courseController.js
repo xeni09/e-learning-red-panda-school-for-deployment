@@ -8,6 +8,15 @@ const util = require("util");
 const unlinkAsync = util.promisify(fs.unlink);
 const fsExistsAsync = util.promisify(fs.exists);
 
+const fileExists = async (filePath) => {
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK); // Verificar si el archivo existe
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
@@ -153,12 +162,32 @@ const deleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Eliminar la imagen si se solicita
-    const imagePath = path.join(__dirname, `../public${course.imageSrc}`);
-    if (deleteImage) {
-      const fileExists = await fsExistsAsync(imagePath);
-      if (fileExists) {
-        await unlinkAsync(imagePath);
+    // Verificar que deleteImage y course.imageSrc existen
+    console.log("Delete image flag:", deleteImage);
+    console.log("Course image source:", course.imageSrc);
+
+    // Eliminar la imagen si se solicita y existe
+    if (deleteImage && course.imageSrc) {
+      // Usar una ruta relativa desde el directorio del proyecto (api/public/uploads)
+      const imagePath = path.join(
+        process.cwd(), // Esto apunta al directorio raíz del proyecto
+        "public", // Cambia esta parte si tu estructura es diferente
+        course.imageSrc // Mantener la ruta relativa que guardaste en la base de datos
+      );
+      console.log("Resolved image path:", imagePath); // Verifica la ruta de la imagen
+
+      const exists = await fileExists(imagePath);
+      console.log("File exists:", exists); // Verificar si el archivo existe
+
+      if (exists) {
+        try {
+          await unlinkAsync(imagePath);
+          console.log("Image deleted:", imagePath); // Verificar que la imagen ha sido eliminada
+        } catch (err) {
+          console.error("Error deleting image:", err.message); // Mostrar el error si ocurre
+        }
+      } else {
+        console.log("Image file does not exist:", imagePath); // Si no existe, muestra este mensaje
       }
     }
 
@@ -249,7 +278,13 @@ const addCourseSection = async (req, res) => {
       const resizedImagePath = `/uploads/resized_${req.file.filename}`;
       await sharp(req.file.path)
         .resize(300, 200) // Cambiar las dimensiones según sea necesario
-        .toFile(path.join(__dirname, `../../public${resizedImagePath}`));
+        .toFile(
+          path.join(
+            __dirname,
+            "../../public/uploads",
+            `resized_${req.file.filename}`
+          )
+        ); // Asegurar que el path esté correctamente formado
 
       // Borrar la imagen original si no es necesaria
       fs.unlinkSync(req.file.path);
@@ -315,8 +350,10 @@ const deleteCourseSection = async (req, res) => {
       return res.status(404).json({ message: "Section not found" });
     }
 
-    section.remove();
-    await course.save();
+    // Usar el método pull para eliminar la sección
+    course.sections.pull({ _id: sectionId });
+
+    await course.save(); // Guardar los cambios en la base de datos
 
     res.status(200).json({ message: "Section deleted successfully" });
   } catch (error) {

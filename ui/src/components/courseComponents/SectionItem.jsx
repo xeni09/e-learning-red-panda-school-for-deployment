@@ -3,6 +3,8 @@ import VideoModal from '../../components/sharedComponents/VideoModal';
 import CourseImageUploadAndCrop from '../../components/courseComponents/CourseImageUploadAndCrop';
 
 const getYouTubeVideoId = (url) => {
+  if (!url) return null; // Si la URL es nula o vacía, retorna null
+
   const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
   const match = url.match(regExp);
   return match ? match[1] : null;
@@ -15,10 +17,10 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
   const [croppingImage, setCroppingImage] = useState(null); // Imagen para recortar
   const [croppedImage, setCroppedImage] = useState(section.thumbnail || null); // Imagen recortada
 
-  const videoId = getYouTubeVideoId(section.videoUrl);
-  const thumbnailUrl = croppedImage || (videoId
+  const videoId = getYouTubeVideoId(section.videoUrl); // Obtener el ID de YouTube, si existe
+  const thumbnailUrl = videoId
     ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-    : 'https://via.placeholder.com/150?text=Video'); // Placeholder si no es un video de YouTube
+    : section.thumbnail || 'https://via.placeholder.com/150?text=No+Video'; // Placeholder si no hay video
 
   const handleWatchVideoClick = () => {
     setShowVideoModal(true);
@@ -50,12 +52,9 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
 
   // Manejar la carga de archivos
   const handleFileChange = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setCroppingImage(reader.result); // Mostrar la imagen cargada para recortar
-    };
-    reader.readAsDataURL(file);
+    setCroppingImage(file); 
   };
+  
 
   // Manejar la imagen recortada
   const handleCropComplete = (croppedImageUrl) => {

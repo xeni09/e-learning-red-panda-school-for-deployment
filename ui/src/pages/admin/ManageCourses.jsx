@@ -73,17 +73,23 @@ const ManageCourses = () => {
   
 
   const handleDeleteCourse = async (courseId) => {
-    // Preguntar si se quiere eliminar el curso
     const confirmed = window.confirm('Are you sure you want to delete this course?');
-    if (!confirmed) return;  // Si no se confirma, no eliminar
+    if (!confirmed) return;
+  
+    const shouldDeleteImage = true;
   
     try {
-      await axios.delete(`/api/courses/${courseId}`, { data: { deleteImage: shouldDeleteImage } });
-      setCourses(courses.filter(course => course._id !== courseId));  // Actualizar el estado local eliminando el curso
+      await axios({
+        method: 'delete',
+        url: `/api/courses/${courseId}`,
+        data: { deleteImage: shouldDeleteImage },
+      });
+      setCourses(courses.filter(course => course._id !== courseId));
     } catch (error) {
       console.error('Error deleting course:', error);
     }
   };
+  
   
 
   const handleEditCourse = (course) => {

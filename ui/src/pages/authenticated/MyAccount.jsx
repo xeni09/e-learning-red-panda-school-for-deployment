@@ -25,6 +25,10 @@ const MyAccount = () => {
     return <p>Loading...</p>;
   }
 
+  if (!isAuthenticated || !user) {
+    return <div>Please log in to view your account.</div>;
+  }
+
   return (
     <>
       <SubMenu />
@@ -43,18 +47,22 @@ const MyAccount = () => {
         {/* Información de los cursos */}
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
           <h2 className="text-2xl mb-4">My Courses</h2>
+
+
+
           {user.courses && user.courses.length > 0 ? (
             <ul>
               {user.courses.map((course) => (
                 <li key={course._id} className="mb-4">
-                  <strong>{course.name}</strong> {/* Ajustamos para usar 'name' */}
+                  <strong>{course.name}</strong> 
                   <p>Course ID: {course._id}</p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>You haven't bought any courses yet.</p>
-          )}
+  <p>You haven't bought any courses yet.</p>
+)}
+
         </div>
       </div>
     </>

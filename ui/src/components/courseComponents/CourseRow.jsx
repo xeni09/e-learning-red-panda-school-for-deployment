@@ -13,7 +13,7 @@ const CourseRow = ({
   handleSaveChanges,
   handleCancelEdit,
   onEditCourse,
-  handleDelete
+  onDeleteCourse
 }) => {
   return (
     <tr key={course._id}>
@@ -121,7 +121,7 @@ const CourseRow = ({
             </button>
             <button
               className="btn-delete"
-              onClick={() => handleDelete(course._id)}
+              onClick={() => onDeleteCourse(course._id)}
             >
               Delete
             </button>

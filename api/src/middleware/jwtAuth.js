@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const auth = (req, res, next) => {
-  console.log("Checking token in cookies", req.cookies);
   const token = req.cookies.token;
   if (!token) {
     console.log("No token found in cookies");
@@ -11,7 +10,7 @@ const auth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    console.log("Token decoded successfully", decoded);
+
     next();
   } catch (error) {
     console.log("Invalid token", error.message);
@@ -21,7 +20,6 @@ const auth = (req, res, next) => {
 
 // Role-based authorization middleware
 const authorize = (roles) => (req, res, next) => {
-  console.log("User role:", req.user.role);
   if (!roles.includes(req.user.role)) {
     console.log("Access denied. Insufficient role");
     return res
