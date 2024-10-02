@@ -3,19 +3,16 @@ require("dotenv").config();
 
 const auth = (req, res, next) => {
   console.log("Checking token in cookies", req.cookies);
-
-  const token = req.cookies.token; // Extraer el token de las cookies
-
+  const token = req.cookies.token;
   if (!token) {
     console.log("No token found in cookies");
     return res.status(401).send({ error: "Access denied. No token provided." });
   }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token
-    req.user = decoded; // Adjuntar la información decodificada del usuario
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     console.log("Token decoded successfully", decoded);
-    next(); // Continuar al siguiente middleware o controlador
+    next();
   } catch (error) {
     console.log("Invalid token", error.message);
     return res.status(401).send({ error: "Invalid token." });

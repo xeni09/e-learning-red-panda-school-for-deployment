@@ -1,5 +1,7 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
+const sharp = require("sharp");
+
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
@@ -232,11 +234,28 @@ const getCourseSections = async (req, res) => {
 // Agregar una nueva sección a un curso
 const addCourseSection = async (req, res) => {
   const { courseId } = req.params;
-  const { title, description, videoUrl, thumbnail } = req.body;
+  const { title, description, videoUrl } = req.body;
+
   try {
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
+    }
+
+    let thumbnail = null;
+
+    if (req.file) {
+      // Usar sharp para redimensionar la imagen y optimizar su tamaño
+      const resizedImagePath = `/uploads/resized_${req.file.filename}`;
+      await sharp(req.file.path)
+        .resize(300, 200) // Cambiar las dimensiones según sea necesario
+        .toFile(path.join(__dirname, `../../public${resizedImagePath}`));
+
+      // Borrar la imagen original si no es necesaria
+      fs.unlinkSync(req.file.path);
+
+      // Asignar la imagen redimensionada al thumbnail
+      thumbnail = resizedImagePath;
     }
 
     const newSection = { title, description, videoUrl, thumbnail };

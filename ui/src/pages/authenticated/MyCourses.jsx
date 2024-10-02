@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import SubMenu from '../../components/layoutComponents/SubMenu';
 import { useAuth } from '../../context/AuthProvider';
+import { Link } from 'react-router-dom';
 
 const MyCourses = () => {
   const { user, updateUser, isAuthenticated, isLoading } = useAuth();  // Obtener los datos del contexto
@@ -29,9 +30,11 @@ const MyCourses = () => {
         {user.courses && user.courses.length > 0 ? (
           <ul>
             {user.courses.map((course) => (
-              <li key={course.id} className="mb-4">
-                <strong>{course.name}</strong> {/* Ajustamos para usar 'name' */}
-                <p>Course ID: {course.id}</p>
+              <li key={course._id} className="mb-4">
+                <Link to={`/courses/${course._id}`}>
+                  <strong>{course.name}</strong>
+                </Link>
+                <p>Course ID: {course._id}</p>
               </li>
             ))}
           </ul>

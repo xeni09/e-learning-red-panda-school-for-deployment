@@ -8,7 +8,7 @@ const CheckoutSummary = ({ cart, removeCourse }) => {
       <div>
         <ul>
           {cart.map((course) => (
-            <li key={course.id} className="flex items-center mb-4">
+            <li key={course._id} className="flex items-center mb-4">
               <img src={course.posterUrl} alt={course.name} className="w-16 h-16 rounded-lg shadow-md mr-4" />
               <div className="flex-1">
                 <h4 className="font-bold text-xl">{course.name}</h4>

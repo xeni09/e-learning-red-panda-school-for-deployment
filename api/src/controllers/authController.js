@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 // Controlador para registrar un nuevo usuario
@@ -16,13 +16,16 @@ const registerUser = async (req, res) => {
     const lastUser = await User.findOne().sort({ customId: -1 });
     const newCustomId = lastUser ? lastUser.customId + 1 : 1;
 
-    // Crear nuevo usuario con customId
+    // Hashear la contraseña en el controlador
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    // Crear nuevo usuario con la contraseña hasheada
     user = new User({
       name,
       email,
-      password,
+      password: hashedPassword, // Contraseña hasheada aquí
       role: role || "user",
-      customId: newCustomId, // Asignar el nuevo customId
+      customId: newCustomId,
     });
 
     // Guardar el usuario en la base de datos
@@ -48,6 +51,7 @@ const login = async (req, res) => {
 
     // Comparar la contraseña ingresada con la almacenada
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(401).json({ error: "Incorrect password" });
     }
@@ -75,7 +79,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        courses: user.courses, // Aquí devolvemos los cursos populados
+        courses: user.courses,
       },
     });
   } catch (err) {

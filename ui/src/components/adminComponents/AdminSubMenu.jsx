@@ -37,6 +37,22 @@ const AdminSubMenu = () => {
         >
           Manage Users
         </NavLink>
+
+
+        <NavLink
+          to="/my-account"  // Cambia esta ruta si es necesario
+          className={({ isActive }) =>
+            `py-2 transform transition-transform duration-200 hover:text-[var(--color-white)] hover:border-b-[2px] hover:border-[var(--color-primary)] font-bold ${
+              isActive ? 'text-[var(--color-white)] border-b-[2px] border-[var(--color-primary)] inline-block' : 'text-[var(--color-white)] inline-block'
+            }`
+          }
+        >
+          Back to My Account
+        </NavLink>
+
+
+
+
       </div>
     </div>
   );

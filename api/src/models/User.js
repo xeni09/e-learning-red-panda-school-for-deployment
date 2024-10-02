@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 // Esquema de usuario
 const userSchema = new mongoose.Schema({
@@ -27,21 +27,10 @@ const userSchema = new mongoose.Schema({
   },
   courses: [
     {
-      type: mongoose.Schema.Types.ObjectId, // Solo el ObjectId del curso
-      ref: "Course", // Referencia al modelo Course
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
     },
   ],
-});
-
-// Middleware para hashear la contraseña antes de guardar
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return next();
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
 });
 
 // Método para comparar contraseñas
