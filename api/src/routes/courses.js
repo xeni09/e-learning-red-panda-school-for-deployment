@@ -30,15 +30,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Rutas para gestionar los cursos
-router.get("/", auth, authorize(["admin"]), getCourses); // Ruta para obtener cursos (solo admin)
+router.get("/", auth, authorize(["admin"]), getCourses);
+
+// Ruta para crear un nuevo curso con imagen (solo admin)
 router.post(
   "/",
   auth,
   authorize(["admin"]),
   upload.single("courseImage"),
   createCourse
-); // Ruta para crear un nuevo curso con imagen (solo admin)
-router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse); // Ruta para eliminar un curso
+);
+
+// Ruta para eliminar un curso
+router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse);
 
 // Ruta para actualizar un curso (solo admin)
 router.put(

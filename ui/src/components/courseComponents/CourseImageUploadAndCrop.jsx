@@ -2,39 +2,39 @@ import React, { useState, useEffect } from 'react';
 import ImageUploader from '../sharedComponents/ImageUploader';
 import ImageCropper from '../sharedComponents/ImageCropper';
 
-const CourseImageUploadAndCrop = ({ errors, setNewCourse }) => {
+const CourseImageUploadAndCrop = ({ errors, setTemporaryImage }) => {
   const [croppingImage, setCroppingImage] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null); // Cropped image preview
 
   const handleFileChange = (file) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setCroppingImage(reader.result);
-        setCroppedImage(null);  // Reinicia la imagen recortada para permitir el crop de la nueva imagen
+        setCroppingImage(reader.result); // Set image for cropping
+        setCroppedImage(null); // Reset cropped image
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleCropComplete = (croppedImageDataUrl) => {
-    setCroppedImage(croppedImageDataUrl);
-    setCroppingImage(null);  // Oculta el cropper después de recortar
+    fetch(croppedImageDataUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        // Convert the cropped image to a file and pass it to the parent component
+        const croppedFile = new File([blob], 'croppedImage.jpeg', { type: blob.type });
+        setTemporaryImage(croppedFile); // Pass the File object to the parent component
+      });
+
+    setCroppedImage(croppedImageDataUrl); // Set the cropped image preview
+    setCroppingImage(null); // Hide the cropper
   };
 
   const resetImage = () => {
     setCroppingImage(null);
     setCroppedImage(null);
+    setTemporaryImage(null); // Clear the image in the parent component
   };
-
-  useEffect(() => {
-    if (croppedImage) {
-      setNewCourse((prevCourse) => ({
-        ...prevCourse,
-        courseImage: croppedImage,
-      }));
-    }
-  }, [croppedImage, setNewCourse]);
 
   return (
     <>
@@ -52,9 +52,9 @@ const CourseImageUploadAndCrop = ({ errors, setNewCourse }) => {
         {!croppedImage && !croppingImage && <ImageUploader onFileChange={handleFileChange} />}
         {croppedImage && (
           <div className="relative my-4 inline-block">
-            <p>Cropped Image Preview:</p>
+            <p className="block mb-2 font-medium text-gray-700">Cropped Image Preview:</p>
             <img src={croppedImage} alt="Cropped Preview" className="max-w-xs rounded shadow-lg" />
-            {/* Icono "X" para eliminar la imagen */}
+            {/* Remove Image Button */}
             <button
               type="button"
               onClick={resetImage}
@@ -63,11 +63,10 @@ const CourseImageUploadAndCrop = ({ errors, setNewCourse }) => {
             >
               ✕
             </button>
-
-            {/* Botón para cambiar la imagen */}
+            {/* Change Image Button */}
             <button
               type="button"
-              onClick={() => document.getElementById('fileInput').click()} // Simula la apertura del input file
+              onClick={() => document.getElementById('fileInput').click()}
               className="btn mt-4"
             >
               Change Image
@@ -77,7 +76,7 @@ const CourseImageUploadAndCrop = ({ errors, setNewCourse }) => {
         {errors?.courseImage && <p className="text-red-500 text-sm mt-3">{errors.courseImage}</p>}
       </div>
 
-      {/* Hidden file input for "Change Image" button */}
+      {/* Hidden file input */}
       <input
         id="fileInput"
         type="file"

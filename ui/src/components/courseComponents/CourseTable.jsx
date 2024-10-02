@@ -12,7 +12,7 @@ const CourseTable = ({
   handleCancelEdit,
   handleInputChange
 }) => {
-  // Definir handleCategoryChange dentro del componente
+
   const handleCategoryChange = (selectedCategory) => {
     setEditFormData({ ...editFormData, category: selectedCategory });
   };
@@ -39,7 +39,7 @@ const CourseTable = ({
             editFormData={editFormData}
             setEditFormData={setEditFormData}
             handleInputChange={handleInputChange}
-            handleCategoryChange={handleCategoryChange} // Ahora tiene la referencia correcta
+            handleCategoryChange={handleCategoryChange} 
             handleSaveChanges={handleSaveChanges}
             handleCancelEdit={handleCancelEdit}
             onEditCourse={onEditCourse}

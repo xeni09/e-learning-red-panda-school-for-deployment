@@ -12,6 +12,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     courseImage: null,
   });
 
+  const [temporaryImage, setTemporaryImage] = useState(null); // Estado para la imagen temporal
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -59,8 +60,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
       newErrors.price = "Price must be a number.";
     }
 
-    // Validar si hay una imagen seleccionada (esto se puede manejar dentro de CourseImageUploadAndCrop)
-    if (!newCourse.courseImage) {
+    if (!newCourse.courseImage && !temporaryImage) {
       newErrors.courseImage = "Course image is required.";
     }
 
@@ -72,6 +72,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     const formattedCourse = {
       ...newCourse,
       price: parseFloat(newCourse.price),
+      courseImage: temporaryImage || newCourse.courseImage, // Utilizar la imagen temporal si se ha subido
     };
 
     const formData = new FormData();
@@ -81,24 +82,11 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     formData.append("description", formattedCourse.description);
     formData.append("price", formattedCourse.price);
 
-    if (newCourse.courseImage) {
-      const blob = dataURLtoBlob(newCourse.courseImage);
-      formData.append("courseImage", blob, 'croppedImage.jpeg');
+    if (temporaryImage) {
+      formData.append("courseImage", temporaryImage); // Añadir imagen temporal si existe
     }
 
     onSubmit(formData);
-  };
-
-  const dataURLtoBlob = (dataurl) => {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
   };
 
   return (
@@ -110,11 +98,10 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
         errors={errors}
       />
 
-      {/* Toda la lógica de la imagen se maneja en CourseImageUploadAndCrop */}
       <CourseImageUploadAndCrop
         errors={errors}
-        setNewCourse={setNewCourse} // Pasar setNewCourse para actualizar la imagen
-        newCourse={newCourse} // Pasar newCourse para obtener la imagen actual
+        setTemporaryImage={setTemporaryImage} // Pasar setTemporaryImage para actualizar la imagen temporal
+        newCourse={newCourse} 
       />
 
       <div className="md:col-span-2 flex justify-between mt-4">

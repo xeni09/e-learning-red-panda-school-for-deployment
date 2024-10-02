@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import CustomDropdown from '../../components/adminComponents/CustomDropdown'; // Si tienes un dropdown para categorías
-import { categories } from '../sharedComponents/constants'; // Las categorías predefinidas
+import CustomDropdown from '../../components/adminComponents/CustomDropdown';
+import { categories } from '../sharedComponents/constants'; 
 import axios from '../../services/axiosConfig';
+import CourseImageUploadAndCrop from './CourseImageUploadAndCrop'; 
 
 const CourseInfo = ({ courseId }) => {
-  const [courseData, setCourseData] = useState(null); // Estado para los datos del curso
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modo edición
+  const [courseData, setCourseData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isChangingImage, setIsChangingImage] = useState(false);
+  const [temporaryImage, setTemporaryImage] = useState(null); // Temporary image as a file
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -19,7 +22,6 @@ const CourseInfo = ({ courseId }) => {
     fetchCourseDetails();
   }, [courseId]);
 
-  // Manejar cambios en los campos de edición
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCourseData((prevData) => ({
@@ -28,37 +30,73 @@ const CourseInfo = ({ courseId }) => {
     }));
   };
 
-  // Guardar los cambios
   const handleSaveChanges = async () => {
     try {
-      await axios.put(`/api/courses/${courseId}`, courseData);
-      setIsEditing(false); // Salir del modo de edición
+      const formData = new FormData();
+      formData.append("name", courseData.name);
+      formData.append("category", courseData.category);
+      formData.append("teacher", courseData.teacher);
+      formData.append("description", courseData.description);
+      formData.append("price", courseData.price);
+
+      // If a new image was uploaded, add it to the FormData
+      if (temporaryImage) {
+        formData.append("courseImage", temporaryImage, 'croppedImage.jpeg');
+      }
+
+      // Send the request to update the course
+      const response = await axios.put(`/api/courses/${courseId}`, formData);
+      setCourseData(response.data); // Update with the new course data
+      setIsEditing(false);
+      setIsChangingImage(false);
     } catch (error) {
       console.error('Error saving course details:', error);
     }
   };
 
-  // Cancelar edición
   const handleCancelEdit = () => {
     setIsEditing(false);
+    setIsChangingImage(false);
   };
 
   if (!courseData) {
-    return <p>Loading course details...</p>; // Mostrar un mensaje de carga mientras los datos se obtienen
+    return <p>Loading course details...</p>;
   }
 
   return (
-    <div>
-      {/* Mostrar la imagen en full width */}
-      <div className="mb-6">
+    <div className="bg-white">
+      <div className="mb-0 p-4">
         <img
-          src={`http://localhost:3000${courseData.imageSrc}`} // Concatenar la URL base del servidor
+          src={
+            temporaryImage 
+              ? URL.createObjectURL(temporaryImage)
+              : `http://localhost:3000${courseData.imageSrc}`
+          }
           alt={courseData.name}
           className="w-full h-auto object-cover rounded-md"
         />
       </div>
 
-      {/* Mostrar la información en dos columnas */}
+      {isEditing && (
+        <div className="p-4">
+          {!isChangingImage && (
+            <button
+              onClick={() => setIsChangingImage(true)}
+              className="btn mt-2"
+            >
+              Change Image
+            </button>
+          )}
+
+          {isChangingImage && (
+            <CourseImageUploadAndCrop
+              errors={{}} 
+              setTemporaryImage={setTemporaryImage} // Handle the cropped image as a file
+            />
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6 mb-6">
         <div>
           <label className="block mb-2 font-medium text-gray-700">Course Name</label>
@@ -121,49 +159,31 @@ const CourseInfo = ({ courseId }) => {
           )}
         </div>
 
-        {/* Campo de Descripción */}
-<div className="col-span-1 md:col-span-2">
-  <label className="block mb-2 font-medium text-gray-700">Description</label>
-  {isEditing ? (
-    <textarea
-      name="description"
-      value={courseData.description}
-      onChange={handleInputChange}
-      className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-    />
-  ) : (
-    <p className="border px-4 py-2 w-full rounded-md bg-gray-100" style={{ whiteSpace: 'pre-line' }}>
-      {courseData.description}
-    </p>
-  )}
-</div>
-
+        <div className="col-span-1 md:col-span-2">
+          <label className="block mb-2 font-medium text-gray-700">Description</label>
+          {isEditing ? (
+            <textarea
+              name="description"
+              value={courseData.description}
+              onChange={handleInputChange}
+              className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+            />
+          ) : (
+            <p className="border px-4 py-2 w-full rounded-md bg-gray-100" style={{ whiteSpace: 'pre-line' }}>
+              {courseData.description}
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* Botones para editar o guardar cambios */}
       <div className="flex justify-start space-x-4">
         {isEditing ? (
           <>
-            <button
-              onClick={handleSaveChanges}
-              className="btn-save "
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={handleCancelEdit}
-              className="btn-cancel"
-            >
-              Cancel
-            </button>
+            <button onClick={handleSaveChanges} className="btn-save">Save Changes</button>
+            <button onClick={handleCancelEdit} className="btn-cancel">Cancel</button>
           </>
         ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="btn transition duration-300"
-          >
-            Edit Course
-          </button>
+          <button onClick={() => setIsEditing(true)} className="btn transition duration-300">Edit Course</button>
         )}
       </div>
     </div>
