@@ -78,24 +78,20 @@ const CourseInfo = ({ courseId }) => {
       </div>
 
       {isEditing && (
-        <div className="p-4">
-          {!isChangingImage && (
-            <button
-              onClick={() => setIsChangingImage(true)}
-              className="btn mt-2"
-            >
-              Change Image
-            </button>
-          )}
+  <div className="p-4">
+    {!isChangingImage && (
+      // Directamente mostrar el componente de carga y recorte de imagen
+      <CourseImageUploadAndCrop
+        errors={{}} 
+        setTemporaryImage={(file) => {
+          setTemporaryImage(file); // Guardar la imagen temporal
+          handleSaveClick(); // Automáticamente guardar los cambios una vez la imagen ha sido recortada
+        }} // Guardar la imagen recortada directamente
+      />
+    )}
+  </div>
+)}
 
-          {isChangingImage && (
-            <CourseImageUploadAndCrop
-              errors={{}} 
-              setTemporaryImage={setTemporaryImage} // Handle the cropped image as a file
-            />
-          )}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6 mb-6">
         <div>
@@ -174,9 +170,7 @@ const CourseInfo = ({ courseId }) => {
             </p>
           )}
         </div>
-      </div>
-
-      <div className="flex justify-start space-x-4">
+        <div className="flex justify-start space-x-4">
         {isEditing ? (
           <>
             <button onClick={handleSaveChanges} className="btn-save">Save Changes</button>
@@ -186,6 +180,9 @@ const CourseInfo = ({ courseId }) => {
           <button onClick={() => setIsEditing(true)} className="btn transition duration-300">Edit Course</button>
         )}
       </div>
+      </div>
+
+      
     </div>
   );
 };

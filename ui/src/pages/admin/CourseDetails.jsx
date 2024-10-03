@@ -55,16 +55,29 @@ const CourseDetails = () => {
     try {
       const updatedSections = [...sections];
       updatedSections[index] = updatedSection;
-
-      const updatedCourse = { ...courseData, sections: updatedSections };
-
-      await axios.put(`/api/courses/${courseId}`, updatedCourse);
-
+  
+      const formData = new FormData();
+      formData.append("title", updatedSection.title);
+      formData.append("description", updatedSection.description);
+      formData.append("videoUrl", updatedSection.videoUrl);
+  
+      // Si hay una imagen recortada, añádela al FormData
+      if (updatedSection.thumbnail instanceof File) {
+        formData.append("thumbnail", updatedSection.thumbnail);
+      }
+  
+      await axios.put(`/api/courses/${courseId}/sections/${updatedSection._id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
       setSections(updatedSections);
     } catch (error) {
       console.error('Error updating section:', error);
     }
   };
+  
 
   const handleDeleteSection = async (index) => {
     try {
@@ -89,12 +102,13 @@ const CourseDetails = () => {
 
       <div className="container mx-auto p-4 pt-20">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Course Details (Editor view)</h1>
+          <h1 className="">Course Details <span className='text-lg'>(Editor view)</span></h1>
+          
           <Link to="/admin/manage-courses" className="text-[var(--color-orange)] hover:underline">
             &larr; Back to Courses List
           </Link>
         </div>
-
+      
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <CourseInfo courseId={courseId} />
