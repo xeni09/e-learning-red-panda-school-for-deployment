@@ -26,6 +26,7 @@ const CourseTable = ({
           <th className="px-4 py-2">Category</th>
           <th className="px-4 py-2">Teacher</th>
           <th className="px-4 py-2">Price</th>
+          <th className="px-4 py-2">Users Registered</th> 
           <th className="px-4 py-2">Course Image</th>
           <th className="px-4 py-2">Actions</th>
         </tr>

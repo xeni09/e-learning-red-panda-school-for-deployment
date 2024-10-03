@@ -105,8 +105,11 @@ app.use(
       ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "none",
+      secure: false, // Solo para localhost, asegúrate de que esto sea `false`
+      sameSite: "lax", // Asegúrate que esté en `lax` o `strict` para desarrollo
+
       httpOnly: true,
     },
   })

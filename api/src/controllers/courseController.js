@@ -18,11 +18,19 @@ const fileExists = async (filePath) => {
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name");
-    res.json(courses);
+    const courses = await Course.find()
+      .populate("teacher", "name")
+      .populate("students", "_id"); // Poblar los estudiantes
+
+    const coursesWithCount = courses.map((course) => ({
+      ...course.toObject(),
+      userCount: course.students.length, // Agregar la cuenta de usuarios registrados
+    }));
+
+    res.json(coursesWithCount);
   } catch (error) {
-    console.error("Error fetching courses:", error.message);
-    res.status(500).send("Server error");
+    console.error("Error fetching courses with user count:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -103,6 +111,7 @@ const buyCourse = async (req, res) => {
 
     // Agregar curso al usuario y aumentar participantes
     user.courses.push(courseId);
+    course.students.push(userId); // Agregar el usuario a los estudiantes del curso
     course.participants += 1;
 
     await user.save();

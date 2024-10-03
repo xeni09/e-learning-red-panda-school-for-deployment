@@ -85,6 +85,10 @@ const CourseRow = ({
         )}
       </td>
 
+      <td className="border px-4 py-2 text-center">
+        {course.userCount}
+      </td>
+
       <td className="border px-0 py-0 text-center">
         <img
           src={`http://localhost:3000${course.imageSrc}`}
