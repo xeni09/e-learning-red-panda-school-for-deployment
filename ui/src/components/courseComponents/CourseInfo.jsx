@@ -84,9 +84,8 @@ const CourseInfo = ({ courseId }) => {
       <CourseImageUploadAndCrop
         errors={{}} 
         setTemporaryImage={(file) => {
-          setTemporaryImage(file); // Guardar la imagen temporal
-          handleSaveClick(); // Automáticamente guardar los cambios una vez la imagen ha sido recortada
-        }} // Guardar la imagen recortada directamente
+          setTemporaryImage(file); 
+        }} 
       />
     )}
   </div>
