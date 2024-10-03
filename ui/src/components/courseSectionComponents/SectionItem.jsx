@@ -4,8 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import VideoModal from '../sharedComponents/VideoModal';
 import CourseImageUploadAndCrop from '../courseComponents/CourseImageUploadAndCrop';
 
+// Si la URL es nula o vacía, retorna null
 const getYouTubeVideoId = (url) => {
-  if (!url) return null; // Si la URL es nula o vacía, retorna null
+  if (!url) return null; 
 
   const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
   const match = url.match(regExp);
@@ -17,11 +18,12 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedSection, setEditedSection] = useState(section);
-  const [croppingImage, setCroppingImage] = useState(null); // Imagen para recortar
-  const [croppedImage, setCroppedImage] = useState(section.thumbnail || null); // Imagen recortada
+  const [croppingImage, setCroppingImage] = useState(null); 
+  const [croppedImage, setCroppedImage] = useState(section.thumbnail || null); 
   const [temporaryImage, setTemporaryImage] = useState(null);
 
-  const videoId = getYouTubeVideoId(section.videoUrl); // Obtener el ID de YouTube, si existe
+  // Obtener el ID de YouTube, si existe
+  const videoId = getYouTubeVideoId(section.videoUrl); 
 
   const thumbnailUrl = croppedImage 
   ? croppedImage 
@@ -49,18 +51,18 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
   const handleSaveClick = () => {
     const updatedSection = {
       ...editedSection,
-      thumbnail: temporaryImage || croppedImage || section.thumbnail, // Usar la imagen recortada o la original
+      thumbnail: temporaryImage || croppedImage || section.thumbnail,
     };
-    onSaveClick(updatedSection); // Pasar la sección actualizada al padre
+    onSaveClick(updatedSection);
     setIsEditing(false);
   };
   
   
-
+// Restablecer la imagen si se cancela la edición
   const handleCancelClick = () => {
     setIsEditing(false);
     setEditedSection(section);
-    setCroppedImage(section.thumbnail); // Restablecer la imagen si se cancela la edición
+    setCroppedImage(section.thumbnail); 
   };
 
   // Manejar la carga de archivos
@@ -68,23 +70,22 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
     setCroppingImage(file); 
   };
   
-
   // Manejar la imagen recortada
   const handleCropComplete = (croppedImageUrl) => {
-    setCroppedImage(croppedImageUrl); // Guardar la imagen recortada final
-    setCroppingImage(null); // Limpiar la imagen cargada para recortar
+    setCroppedImage(croppedImageUrl); 
+    setCroppingImage(null); 
   };
 
   // Confirmación antes de eliminar
   const handleDeleteClick = () => {
     const confirmed = window.confirm("Are you sure you want to delete this section?");
     if (confirmed) {
-      onDeleteClick(); // Llamar a la función de eliminación si el usuario confirma
+      onDeleteClick();
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row border border-gray-300 p-4 mb-4 bg-white rounded-md shadow-sm">
+    <div className="flex flex-col md:flex-row border-md p-4 mb-4 bg-white rounded-md shadow-sm">
       <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-4">
         {section.videoUrl || croppedImage ? (
           <img
@@ -129,10 +130,10 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
               name="videoUrl"
               value={editedSection.videoUrl}
               onChange={handleInputChange}
-              className="border-gray-200 px-4 py-2 w-full bg-gray-100 rounded-md"
+              className="border-gray-200 px-4 py-2 w-full bg-gray-100 rounded-md mb-5"
             />
 
-            {/* Componente para subir y recortar la imagen */}
+       {/* Componente para subir y recortar la imagen  */}
             <CourseImageUploadAndCrop
               setTemporaryImage={setTemporaryImage}
               handleFileChange={handleFileChange}
@@ -149,30 +150,32 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
           </>
         ) : (
           <>
-            <label htmlFor="description" className="block text-gray-700 mt-2 text-xs">Title</label>
+            <label htmlFor="title" className="block text-gray-700 mt-2 text-xs">Title</label>
             <h3 className="text-xl font-semibold text-gray-800">{section.title}</h3>
             <label htmlFor="description" className="block text-gray-700 mt-2 text-xs">Description</label>
             <p className="text-gray-600 bg-gray-100 p-3 rounded-md mb-6" style={{ whiteSpace: 'pre-wrap' }}>
               {section.description}
             </p>
-            <label htmlFor="description" className="block text-gray-700 mt-2 text-xs">Video</label>
+            <label htmlFor="video" className="block text-gray-700 mt-2 text-xs">Video</label>
             {section.videoUrl && (
-              <button onClick={handleWatchVideoClick} className="block text-[var(--color-orange)] hover:underline">
+              <button onClick={handleWatchVideoClick} className="block text-[var(--color-orange)] hover:underline mb-2">
                 Watch Video
               </button>
             )}
 
-<Link to={`/admin/manage-courses/${courseId}/section/${section._id}`} className='btn'>
-  Go to Section
-</Link>
+              <div className="flex flex-col xl:flex-row">
+                  <Link to={`/admin/manage-courses/${courseId}/section/${section._id}`} className="btn mt-1 xl:mr-2o">
+                    Go to Section
+                  </Link>
 
 
-            <button onClick={() => setIsEditing(true)} className="btn ml-0">
-              Quick Edit
-            </button>
-            <button onClick={handleDeleteClick} className="btn-delete ml-0">
-              Delete
-            </button>
+                <button onClick={() => setIsEditing(true)} className="btn mt-1 xl:mr-1">
+                  Quick Edit
+                </button>
+                <button onClick={handleDeleteClick} className="btn-delete mt-1 xl:mr-2">
+                  Delete
+                </button>
+                </div>
           </>
         )}
       </div>

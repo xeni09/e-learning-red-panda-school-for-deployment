@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CustomDropdown from '../../components/adminComponents/CustomDropdown';
+import CustomDropdown from '../adminComponents/CustomDropdown';
 import { categories } from '../sharedComponents/constants'; 
 import axios from '../../services/axiosConfig';
 import CourseImageUploadAndCrop from './CourseImageUploadAndCrop'; 
@@ -64,7 +64,7 @@ const CourseInfo = ({ courseId }) => {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white rounded-md">
       <div className="mb-0 p-4">
         <img
           src={
@@ -161,7 +161,7 @@ const CourseInfo = ({ courseId }) => {
               name="description"
               value={courseData.description}
               onChange={handleInputChange}
-              className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring "
             />
           ) : (
             <p className="border px-4 py-2 w-full rounded-md bg-gray-100" style={{ whiteSpace: 'pre-line' }}>

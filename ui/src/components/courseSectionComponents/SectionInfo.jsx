@@ -68,7 +68,7 @@ const SectionInfo = ({ courseId, sectionId }) => {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white rounded-md">
       <div className="mb-0 p-4">
         <img
           src={

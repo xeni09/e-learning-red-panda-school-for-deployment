@@ -89,8 +89,8 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <h3 className="text-2xl font-semibold mb-4">Add New Section</h3>
+    <form onSubmit={handleSubmit} className="mb-6 bg-white rounded-md p-4">
+      <p className="text-2xl font-semibold mb-4">Add New Section</p>
 
       <div className="mb-4">
         <label className="block mb-2 font-medium text-gray-700">Section Title*</label>
@@ -99,7 +99,7 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
           name="title"
           value={newSection.title}
           onChange={handleInputChange}
-          className={`border px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300 ${errors.title ? 'border-red-500' : ''}`}
+          className={`field ${errors.title ? 'border-red-500' : ''}`}
         />
         {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
       </div>
@@ -110,7 +110,7 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
           name="description"
           value={newSection.description}
           onChange={handleInputChange}
-          className={`border px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300 ${errors.description ? 'border-red-500' : ''}`}
+          className={`field p-3 ${errors.description ? 'border-red-500' : ''}`}
         />
         {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
       </div>
@@ -122,7 +122,7 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
           name="videoUrl"
           value={newSection.videoUrl}
           onChange={handleInputChange}
-          className="border px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+          className="field"
         />
       </div>
 

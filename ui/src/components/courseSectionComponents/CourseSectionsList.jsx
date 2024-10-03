@@ -59,7 +59,7 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
 
   return (
     <div>
-      <p className="text-3xl font-semibold my-4">Course Sections</p>
+      <p className="text-3xl font-semibold mb-4">Course Sections</p>
 
       {sectionList.map((section, index) => (
         <SectionItem
