@@ -32,6 +32,7 @@ import AdminRoute from './components/adminComponents/AdminRoute';
 import Admin from './pages/Admin';
 import CourseDetails from './pages/admin/CourseDetails';
 import CourseSectionDetails from './pages/admin/CourseSectionDetails'; 
+import CourseStudentsList from './pages/admin/CourseStudentsList'; 
 
 
 // Authenticated Pages
@@ -72,6 +73,7 @@ const App = () => {
                 <Route path="/admin/manage-courses" element={<AdminRoute><ManageCourses /></AdminRoute>} />
                 <Route path="/admin/manage-courses/:courseId" element={<AdminRoute><CourseDetails /></AdminRoute>} />
                 <Route path="/admin/manage-courses/:courseId/section/:sectionId" element={<AdminRoute><CourseSectionDetails /></AdminRoute>} />
+                <Route path="/admin/manage-courses/:courseId/students" element={<AdminRoute><CourseStudentsList /></AdminRoute>} />
 
 
                 {/* Authenticated Routes */}

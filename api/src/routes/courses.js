@@ -10,6 +10,7 @@ const {
   deleteCourse,
   updateCourse,
   getCourseById,
+  getUsersForCourse,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -54,5 +55,13 @@ router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);
+
+// Ruta para obtener los estudiantes de un curso (solo admin)
+router.get(
+  "/:courseId/students",
+  auth,
+  authorize(["admin"]),
+  getUsersForCourse
+);
 
 module.exports = router;

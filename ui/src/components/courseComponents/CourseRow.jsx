@@ -85,9 +85,18 @@ const CourseRow = ({
         )}
       </td>
 
+
+
+
       <td className="border px-4 py-2 text-center">
-        {course.userCount}
+      <Link to={`/admin/manage-courses/${course._id}/students`} className="text-[var(--color-orange)]">
+          {course.userCount} 
+        </Link>
       </td>
+
+
+
+
 
       <td className="border px-0 py-0 text-center">
         <img
