@@ -108,7 +108,18 @@ const CourseDetails = () => {
             &larr; Back to Courses List
           </Link>
         </div>
-      
+      <div className='mb-10'>
+      <p className="text-lg">To add a video to a section, you can use the following videos as a reference (copyright free):</p>
+
+
+        <a href="https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s" className="text-[var(--color-orange)] hover:underline">https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s</a>
+        <br />
+        <a href="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4" className="text-[var(--color-orange)] hover:underline">https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4</a>
+
+      </div>
+
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <CourseInfo courseId={courseId} />
