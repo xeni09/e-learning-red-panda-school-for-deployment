@@ -8,7 +8,6 @@ const MongoStore = require("connect-mongo");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
-const { auth } = require("./middleware/jwtAuth");
 const connectDB = require("./config/db");
 const initRoutes = require("./routes/initRoutes");
 

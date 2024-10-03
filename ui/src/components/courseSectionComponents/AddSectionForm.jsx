@@ -9,7 +9,6 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
     thumbnail: null,
   });
 
-
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [croppingImage, setCroppingImage] = useState(null);

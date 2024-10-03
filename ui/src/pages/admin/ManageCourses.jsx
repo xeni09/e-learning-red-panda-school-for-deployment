@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CourseList from '../../components/courseComponents/CourseList';
-// import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -18,7 +17,7 @@ const ManageCourses = () => {
     price: '',
   });
   const toggleForm = () => {
-    setShowCreateCourseForm(prevState => !prevState);  // Alternar el formulario de creación
+    setShowCreateCourseForm(prevState => !prevState);  
   };
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const ManageCourses = () => {
   
 
   const handleEditCourse = (course) => {
-    setEditingCourseId(course._id); // Establece el curso que se va a editar
+    setEditingCourseId(course._id);
     setEditFormData({
       name: course.name,
       category: course.category,

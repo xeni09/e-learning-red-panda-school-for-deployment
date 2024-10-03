@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
-import CourseTable from './CourseTable'; // Nuevo componente
+import CourseTable from './CourseTable'; 
 
 const CourseList = ({
   courses,

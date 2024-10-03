@@ -11,34 +11,25 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
 
-
-  const [sectionList, setSectionList] = useState(sections);
-
   const handleSaveClick = async (updatedSection, index) => {
     const formData = new FormData();
 
-    // Añadir los datos de la sección al formData
     formData.append('title', updatedSection.title);
     formData.append('description', updatedSection.description);
     formData.append('videoUrl', updatedSection.videoUrl);
 
-    // Si hay una imagen recortada, añádela
     if (updatedSection.thumbnail instanceof File) {
       formData.append('thumbnail', updatedSection.thumbnail);
     }
 
     try {
-      // Asegúrate de pasar el courseId y sectionId en la URL de la solicitud
       await axios.put(`/api/courses/${courseId}/sections/${updatedSection._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      // Actualiza el estado del frontend
-      const updatedSections = [...sectionList];
-      updatedSections[index] = updatedSection;
-      setSectionList(updatedSections); // Actualizar las secciones
+      // Ya no necesitas actualizar `sectionList`, porque el componente padre actualizará las secciones
     } catch (error) {
       console.error('Error updating section:', error);
     }
@@ -61,7 +52,7 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
     <div>
       <p className="text-3xl font-semibold mb-4">Course Sections</p>
 
-      {sectionList.map((section, index) => (
+      {sections.map((section, index) => (
         <SectionItem
           key={index}
           section={section}

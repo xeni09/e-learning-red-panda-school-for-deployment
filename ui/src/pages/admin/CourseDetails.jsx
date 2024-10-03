@@ -32,23 +32,23 @@ const CourseDetails = () => {
 
   const handleAddSection = async (formData) => {
     try {
-      // Aquí se envía una solicitud POST a la ruta para agregar una nueva sección
       const response = await axios.post(`/api/courses/${courseId}/sections`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
   
-      // Actualiza el estado con las nuevas secciones devueltas por el servidor
+      // Actualiza el estado con la nueva sección
       setSections([...sections, response.data]);
   
       // Limpiar el formulario
       setNewSection({ title: '', description: '', videoUrl: '' });
-      setShowAddSectionForm(false); // Ocultar el formulario después de agregar la sección
+      setShowAddSectionForm(false);
     } catch (error) {
       console.error('Error adding section:', error);
     }
   };
+  
   
 
   const handleEditSection = async (updatedSection, index) => {
