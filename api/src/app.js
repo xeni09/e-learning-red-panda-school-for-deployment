@@ -46,6 +46,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Configuración de multer para imágenes de secciones
+const sectionStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public/uploads/sections")); // Guardar las imágenes de secciones en /public/uploads/sections
+  },
+  filename: (req, file, cb) => {
+    const filename = `section-${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, filename);
+  },
+});
+
+const sectionUpload = multer({ storage: sectionStorage });
+
 // Middleware para servir los archivos estáticos (como las imágenes)
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 

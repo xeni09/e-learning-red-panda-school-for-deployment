@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import VideoModal from '../../components/sharedComponents/VideoModal';
-import CourseImageUploadAndCrop from '../../components/courseComponents/CourseImageUploadAndCrop';
+import VideoModal from '../sharedComponents/VideoModal';
+import CourseImageUploadAndCrop from '../courseComponents/CourseImageUploadAndCrop';
 
 const getYouTubeVideoId = (url) => {
   if (!url) return null; // Si la URL es nula o vacía, retorna null

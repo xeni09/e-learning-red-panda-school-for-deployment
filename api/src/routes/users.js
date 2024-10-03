@@ -8,6 +8,7 @@ const {
   updateUser,
   deleteUser,
   assignCourseToUser,
+  removeCourseFromUser,
 } = require("../controllers/userController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -48,6 +49,14 @@ router.put(
 
 // Ruta para asignar un curso a un usuario
 router.put("/assign-course/:courseId", auth, assignCourseToUser);
+
+// Ruta para eliminar un curso de un usuario
+router.put(
+  "/remove-course/:courseId",
+  auth,
+  authorize(["admin"]),
+  removeCourseFromUser
+);
 
 // Solo los administradores pueden eliminar usuarios
 router.delete("/user/:id", auth, authorize(["admin"]), deleteUser);

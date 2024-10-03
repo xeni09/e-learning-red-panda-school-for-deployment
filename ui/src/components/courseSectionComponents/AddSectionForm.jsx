@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CourseImageUploadAndCrop from '../../components/courseComponents/CourseImageUploadAndCrop';
+import SectionImageUploadAndCrop from './SectionImageUploadAndCrop';
 
 const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
   const [newSection, setNewSection] = useState({
@@ -126,7 +126,7 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
         />
       </div>
 
-      <CourseImageUploadAndCrop
+      <SectionImageUploadAndCrop
         handleFileChange={handleFileChange}
         handleCropComplete={handleCropComplete}
         croppingImage={croppingImage}

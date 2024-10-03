@@ -1,42 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, Link } from 'react-router-dom';
+import axios from '../../services/axiosConfig';
+import AdminSubMenu from '../../components/adminComponents/AdminSubMenu'; 
+import SectionInfo from '../../components/courseSectionComponents/SectionInfo';
+import CourseSectionsList from '../../components/courseSectionComponents/CourseSectionsList'; 
 
 const CourseSectionDetails = () => {
   const { courseId, sectionId } = useParams();
-  const [section, setSection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sections, setSections] = useState([]); // Para manejar las secciones
+  const [currentSection, setCurrentSection] = useState(null); // Maneja la sección actual
 
   useEffect(() => {
-    const fetchSectionDetails = async () => {
+    const fetchSections = async () => {
       try {
-        const response = await axios.get(`/api/courses/${courseId}/sections/${sectionId}`);
-        setSection(response.data);
+        const response = await axios.get(`/api/courses/${courseId}`);
+        const allSections = response.data.sections || [];
+
+        // Encuentra la sección actual basada en el sectionId
+        const current = allSections.find(section => section._id === sectionId);
+        setCurrentSection(current);
+
+        // Excluye la sección actual de la lista de secciones para mostrar el resto
+        const otherSections = allSections.filter(section => section._id !== sectionId);
+        setSections(otherSections);
+
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching section details:', error);
-      } finally {
+        console.error('Error fetching course or section details:', error);
         setLoading(false);
       }
     };
 
-    fetchSectionDetails();
+    fetchSections();
   }, [courseId, sectionId]);
 
   if (loading) {
     return <p>Loading section details...</p>;
   }
 
-  if (!section) {
-    return <p>Section not found</p>;
-  }
-
   return (
-    <div>
-      <h2>{section.title}</h2>
-      <p>{section.description}</p>
-      {section.videoUrl && <a href={section.videoUrl} target="_blank" rel="noopener noreferrer">Watch Video</a>}
-      {section.thumbnail && <img src={section.thumbnail} alt={section.title} />}
-    </div>
+    <>
+      <AdminSubMenu /> {/* Incluimos el submenú del administrador */}
+
+      <div className="container mx-auto p-4 pt-20">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="">Section Details <span className='text-lg'>(Editor view)</span></h1>
+          
+          <Link to={`/admin/manage-courses/${courseId}`} className="text-[var(--color-orange)] hover:underline">
+            &larr; Back to Course Details
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            {/* Muestra la información de la sección actual */}
+            {currentSection && <SectionInfo courseId={courseId} sectionId={sectionId} />}
+          </div>
+
+          <div>
+            {/* Lista de las otras secciones */}
+            {sections.length > 0 && (
+              <CourseSectionsList 
+                sections={sections}
+                // Puedes pasar las funciones para editar o eliminar secciones aquí
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

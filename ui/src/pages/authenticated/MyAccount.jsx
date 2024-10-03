@@ -51,17 +51,18 @@ const MyAccount = () => {
 
 
           {user.courses && user.courses.length > 0 ? (
-            <ul>
-              {user.courses.map((course) => (
-                <li key={course._id} className="mb-4">
-                  <strong>{course.name}</strong> 
-                  <p>Course ID: {course._id}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-  <p>You haven't bought any courses yet.</p>
-)}
+                    <ul>
+                      {user.courses.map((course, index) => (
+                        <li key={course._id || index} className="mb-4">
+                          <strong>{course.name}</strong>
+                          <p>Course ID: {course._id}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>You haven't bought any courses yet.</p>
+                  )}
+
 
         </div>
       </div>

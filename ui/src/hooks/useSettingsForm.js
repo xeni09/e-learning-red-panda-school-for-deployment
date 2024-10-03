@@ -15,7 +15,6 @@ const useSettingsForm = (user, updateUser) => {
     if (user) {
       setEditedName(user.name);
       setEditedEmail(user.email);
-      console.log("User ID in useEffect:", user._id); // Cambiar a user._id
     }
   }, [user]);
 

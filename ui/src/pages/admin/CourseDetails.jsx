@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from '../../services/axiosConfig';
 import CourseInfo from '../../components/courseComponents/CourseInfo'; 
-import CourseSectionsList from '../../components/courseComponents/CourseSectionsList'; 
-import AddSectionForm from '../../components/courseComponents/AddSectionForm'; 
+import CourseSectionsList from '../../components/courseSectionComponents/CourseSectionsList'; 
+import AddSectionForm from '../../components/courseSectionComponents/AddSectionForm'; 
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu'; 
 
 const CourseDetails = () => {

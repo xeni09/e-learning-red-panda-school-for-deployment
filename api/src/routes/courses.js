@@ -29,6 +29,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Configuración de multer para almacenar imágenes de secciones
+const sectionStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../../public/uploads/sections")); // Guardar las imágenes de secciones en /public/uploads/sections
+  },
+  filename: (req, file, cb) => {
+    const filename = `section-${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, filename);
+  },
+});
+
+const sectionUpload = multer({ storage: sectionStorage });
+
 // Rutas para gestionar los cursos
 router.get("/", auth, authorize(["admin"]), getCourses);
 
@@ -143,6 +156,23 @@ router.put(
     } catch (error) {
       console.error("Error updating section:", error); // Log del error
       res.status(500).json({ message: "Error updating section", error });
+    }
+  }
+);
+
+// Ruta para subir la imagen de la sección
+router.post(
+  "/api/upload-section",
+  sectionUpload.single("sectionImage"),
+  async (req, res) => {
+    try {
+      const filename = req.file.filename;
+      const imageUrl = `/uploads/sections/${filename}`;
+
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Error uploading section image:", error);
+      res.status(500).send("Error uploading section image");
     }
   }
 );
