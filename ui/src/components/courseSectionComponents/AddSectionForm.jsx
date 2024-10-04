@@ -131,6 +131,8 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
         croppingImage={croppingImage}
         croppedImage={croppedImage}
         errors={errors}
+        setTemporaryImage={(file) => setNewSection({ ...newSection, thumbnail: file })} 
+
       />
 
       <button 

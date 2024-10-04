@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ImageUploader from '../sharedComponents/ImageUploader';
 import ImageCropper from '../sharedComponents/ImageCropper';
 
-const SectionImageUploadAndCrop = ({ errors, setTemporaryImage }) => {
+const SectionImageUploadAndCrop = ({ setTemporaryImage, handleFileChange, onCropComplete, croppingImage: parentCroppingImage, croppedImage: parentCroppedImage, errors }) => {
   const [croppingImage, setCroppingImage] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null); // Cropped image preview
 
-  const handleFileChange = (file) => {
+  const localHandleFileChange = (file) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -23,7 +23,11 @@ const SectionImageUploadAndCrop = ({ errors, setTemporaryImage }) => {
       .then(blob => {
         // Convert the cropped image to a file and pass it to the parent component
         const croppedFile = new File([blob], 'croppedImage.jpeg', { type: blob.type });
-        setTemporaryImage(croppedFile); // Pass the File object to the parent component
+        if (setTemporaryImage) {
+          setTemporaryImage(croppedFile); // Pass the File object to the parent component
+        } else {
+          console.error("setTemporaryImage is not defined");
+        }
       });
 
     setCroppedImage(croppedImageDataUrl); // Set the cropped image preview
@@ -49,7 +53,7 @@ const SectionImageUploadAndCrop = ({ errors, setTemporaryImage }) => {
       )}
 
       <div className="md:col-span-2 my-2 relative">
-        {!croppedImage && !croppingImage && <ImageUploader onFileChange={handleFileChange} />}
+        {!croppedImage && !croppingImage && <ImageUploader onFileChange={localHandleFileChange} />}
         {croppedImage && (
           <div className="relative my-4 inline-block">
             <p className="block mb-2 font-medium text-gray-700">Cropped Image Preview:</p>
@@ -82,7 +86,7 @@ const SectionImageUploadAndCrop = ({ errors, setTemporaryImage }) => {
         type="file"
         name="courseImage"
         accept="image/*"
-        onChange={(e) => handleFileChange(e.target.files[0])}
+        onChange={(e) => localHandleFileChange(e.target.files[0])}
         className="hidden"
       />
     </>

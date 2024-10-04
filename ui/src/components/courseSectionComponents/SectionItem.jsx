@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import VideoModal from '../sharedComponents/VideoModal';
-import CourseImageUploadAndCrop from '../courseComponents/CourseImageUploadAndCrop';
+import SectionImageUploadAndCrop from './SectionImageUploadAndCrop';
 
 // Si la URL es nula o vacía, retorna null
 const getYouTubeVideoId = (url) => {
@@ -85,7 +85,8 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row border-md p-4 mb-4 bg-white rounded-md shadow-sm">
+    <div className='border-md p-4 mb-4 bg-white rounded-md shadow-sm'>
+      <div className="flex flex-col md:flex-row border-md ">
       <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-4">
         {section.videoUrl || croppedImage ? (
           <img
@@ -95,11 +96,19 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
             onClick={() => setIsEditing(true)}
           />
         ) : (
+
+
+
           <div className="w-full md:w-32 h-24 bg-gray-200 flex items-center justify-center rounded-md cursor-pointer" onClick={() => setIsEditing(true)}>
             <span>No video</span>
           </div>
         )}
+     
       </div>
+      
+     
+
+
 
       <div className="flex-grow">
         {isEditing ? (
@@ -123,7 +132,7 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
               />
             </div>
 
-            <label htmlFor="videoUrl" className="block text-gray-700 font-medium mt-1">Video URL</label>
+            <label htmlFor="videoUrl" className="block text-gray-700 font-medium mt-1">Video URL (Optional)</label>
             <input
               type="text"
               placeholder="Video URL"
@@ -134,7 +143,7 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
             />
 
        {/* Componente para subir y recortar la imagen  */}
-            <CourseImageUploadAndCrop
+            <SectionImageUploadAndCrop
               setTemporaryImage={setTemporaryImage}
               handleFileChange={handleFileChange}
               handleCropComplete={handleCropComplete}
@@ -156,34 +165,47 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
             <p className="text-gray-600 bg-gray-100 p-3 rounded-md mb-6" style={{ whiteSpace: 'pre-wrap' }}>
               {section.description}
             </p>
-            <label htmlFor="video" className="block text-gray-700 mt-2 text-xs">Video</label>
+            <label htmlFor="video" className="block text-gray-700 mt-2 text-xs">Video (optional)</label>
             {section.videoUrl && (
               <button onClick={handleWatchVideoClick} className="block text-[var(--color-orange)] hover:underline mb-2">
                 Watch Video
               </button>
             )}
 
-              <div className="flex flex-col xl:flex-row">
-                  <Link to={`/admin/manage-courses/${courseId}/section/${section._id}`} className="btn mt-1 xl:mr-2o">
-                    Go to Section
-                  </Link>
-
-
-                <button onClick={() => setIsEditing(true)} className="btn mt-1 xl:mr-1">
-                  Quick Edit
-                </button>
-                <button onClick={handleDeleteClick} className="btn-delete mt-1 xl:mr-2">
-                  Delete
-                </button>
-                </div>
+        
           </>
         )}
       </div>
 
+      
+
       {showVideoModal && (
         <VideoModal videoUrl={section.videoUrl} onClose={handleCloseModal} />
       )}
+</div>
+
+{!isEditing && (
+
+<div className="flex flex-col md:flex-row pt-6">
+    <Link to={`/admin/manage-courses/${courseId}/section/${section._id}`} className="btn mt-1 xl:mr-2o">
+      Go to Section
+    </Link>
+
+
+  <button onClick={() => setIsEditing(true)} className="btn mt-1 xl:mr-1">
+    Quick Edit
+  </button>
+  <button onClick={handleDeleteClick} className="btn-delete mt-1 xl:mr-2">
+    Delete
+  </button>
+  </div>
+)}
+
     </div>
+   
+   
+ 
+
   );
 };
 
