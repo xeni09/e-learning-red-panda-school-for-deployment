@@ -25,10 +25,24 @@ const CourseStudentsList = () => {
     fetchCourseDetails();
   }, [courseId]);
 
+  // Función para eliminar al usuario del curso
+  const handleRemoveStudent = async (studentId) => {
+    const confirmed = window.confirm("Are you sure you want to remove this student from the course?");
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`/api/courses/${courseId}/students/${studentId}`);
+      // Filtrar el estudiante eliminado de la lista local de estudiantes
+      setStudents(students.filter(student => student._id !== studentId));
+    } catch (error) {
+      console.error("Error removing student:", error);
+    }
+  };
+
   return (
     <>
       <AdminSubMenu />
-      <div className="container mx-auto p-6 pt-20">
+      <div className="container mx-auto p-6 pt-10">
         <div className="flex justify-end items-center mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -44,7 +58,10 @@ const CourseStudentsList = () => {
             {/* Enlace al CourseDetails */}
             <Link to={`/admin/manage-courses/${courseId}`}>
               <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
-                "{courseName}" <p className='flex flex-col justify-evenly pl-4'> Click here to go back to this Course Info</p>
+                "{courseName}" 
+                <p className='flex flex-col justify-evenly pl-4'>
+                  Click here to go back to this Course Info
+                </p>
               </h2>
             </Link>
 
@@ -53,6 +70,7 @@ const CourseStudentsList = () => {
                 <tr>
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Email</th>
+                  <th className="px-4 py-2">Action</th> {/* Nueva columna "Action" */}
                 </tr>
               </thead>
               <tbody>
@@ -60,13 +78,46 @@ const CourseStudentsList = () => {
                   <tr key={student._id}>
                     <td className="border px-4 py-2 text-center">{student.name}</td>
                     <td className="border px-4 py-2 text-center">{student.email}</td>
+                    <td className="border px-4 py-2 text-center">
+                      {/* Botón para eliminar el estudiante */}
+                      <button 
+                        onClick={() => handleRemoveStudent(student._id)} 
+                        className="btn-delete text-white bg-red-500 hover:bg-red-700 px-4 py-2 rounded"
+                      >
+                        Remove
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <p>No students have registered for this course yet.</p>
+
+          <div className="bg-white p-10">
+          <h2 className="text-3xl font-normal">Students Registered for:</h2>
+          
+          <Link to={`/admin/manage-courses/${courseId}`}>
+            <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
+              "{courseName}" 
+              <p className='flex flex-col justify-evenly pl-4'>
+                Click here to go back to this Course Info
+              </p>
+            </h2>
+          </Link>
+          
+
+          
+          <p className='pt-10 font-bold text-xl'>Sorry, but no students have registered for this course yet..</p>
+
+        </div>
+
+
+
+
+
+
+
         )}
       </div>
     </>

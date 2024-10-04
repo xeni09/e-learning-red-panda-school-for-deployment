@@ -187,72 +187,6 @@ const changeUserPassword = async (req, res) => {
   }
 };
 
-const assignCourseToUser = async (req, res) => {
-  const { courseId } = req.params; // Obtener el ID del curso de los parámetros
-  const { userId } = req.body; // Obtener el ID del usuario del cuerpo de la solicitud
-
-  try {
-    // Buscar el curso por ID
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    // Buscar el usuario por su ID
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Verificar si el curso ya está asignado al usuario
-    if (user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({ message: "Course already assigned to this user" });
-    }
-
-    // Asignar el curso al usuario
-    user.courses.push(courseId);
-    await user.save();
-
-    res.status(200).json({ message: "Course assigned successfully", user });
-  } catch (error) {
-    console.error("Error assigning course:", error);
-    res.status(500).json({ message: "Error assigning course", error });
-  }
-};
-
-const removeCourseFromUser = async (req, res) => {
-  const { courseId } = req.params;
-  const { userId } = req.body; // Pasar el userId por el body
-
-  try {
-    // Buscar al usuario por su ID
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Verificar si el curso está asignado al usuario
-    if (!user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({ message: "Course not assigned to this user" });
-    }
-
-    // Eliminar el curso de la lista de cursos del usuario
-    user.courses = user.courses.filter(
-      (course) => course.toString() !== courseId
-    );
-    await user.save();
-
-    res.status(200).json({ message: "Course removed successfully", user });
-  } catch (error) {
-    console.error("Error removing course from user:", error);
-    res.status(500).json({ message: "Error removing course", error });
-  }
-};
-
 module.exports = {
   getUser,
   getAllUsers,
@@ -260,6 +194,4 @@ module.exports = {
   createUser,
   deleteUser,
   changeUserPassword,
-  assignCourseToUser,
-  removeCourseFromUser,
 };

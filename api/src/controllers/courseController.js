@@ -274,6 +274,95 @@ const getUsersForCourse = async (req, res) => {
   }
 };
 
+// Eliminar un estudiante de un curso
+const removeStudentFromCourse = async (req, res) => {
+  const { courseId, studentId } = req.params;
+
+  try {
+    // Encontrar el curso
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Verificar si el estudiante está en el curso
+    if (!course.students.includes(studentId)) {
+      return res
+        .status(400)
+        .json({ message: "Student is not enrolled in this course" });
+    }
+
+    // Eliminar al estudiante del curso
+    course.students = course.students.filter(
+      (student) => student.toString() !== studentId
+    );
+    // Reducir el número de participantes
+    course.participants -= 1;
+
+    // Guardar los cambios en el curso
+    await course.save();
+
+    // También eliminar el curso del array de cursos del usuario
+    const user = await User.findById(studentId);
+    if (user) {
+      user.courses = user.courses.filter(
+        (course) => course.toString() !== courseId
+      );
+      await user.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Student removed from course successfully" });
+  } catch (error) {
+    console.error("Error removing student from course:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const assignCourseToUser = async (req, res) => {
+  const { courseId } = req.params; // Obtener el ID del curso de los parámetros
+  const { userId } = req.body; // Obtener el ID del usuario del cuerpo de la solicitud
+
+  try {
+    // Buscar el curso por ID
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Buscar el usuario por su ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verificar si el curso ya está asignado al usuario
+    if (user.courses.includes(courseId)) {
+      return res
+        .status(400)
+        .json({ message: "Course already assigned to this user" });
+    }
+
+    // Asignar el curso al usuario
+    user.courses.push(courseId);
+
+    // Aumentar el contador de participantes en el curso
+    course.participants += 1;
+    course.students.push(userId); // También agregar el usuario a la lista de estudiantes del curso
+
+    // Guardar los cambios tanto en el usuario como en el curso
+    await user.save();
+    await course.save();
+
+    res
+      .status(200)
+      .json({ message: "Course assigned successfully", user, course });
+  } catch (error) {
+    console.error("Error assigning course:", error);
+    res.status(500).json({ message: "Error assigning course", error });
+  }
+};
+
 module.exports = {
   getCourses,
   createCourse,
@@ -282,4 +371,6 @@ module.exports = {
   deleteCourse,
   getCourseById,
   getUsersForCourse,
+  removeStudentFromCourse,
+  assignCourseToUser,
 };

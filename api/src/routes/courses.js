@@ -11,6 +11,8 @@ const {
   updateCourse,
   getCourseById,
   getUsersForCourse,
+  removeStudentFromCourse,
+  assignCourseToUser,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -41,6 +43,13 @@ router.post(
 // Ruta para eliminar un curso
 router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse);
 
+router.delete(
+  "/:courseId/students/:studentId",
+  auth,
+  authorize(["admin"]),
+  removeStudentFromCourse
+);
+
 // Ruta para actualizar un curso (solo admin)
 router.put(
   "/:courseId",
@@ -63,5 +72,8 @@ router.get(
   authorize(["admin"]),
   getUsersForCourse
 );
+
+// Ruta para asignar un curso a un usuario
+router.put("/:courseId/assign", auth, assignCourseToUser);
 
 module.exports = router;
