@@ -18,13 +18,22 @@ const fileExists = async (filePath) => {
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find()
-      .populate("teacher", "name")
-      .populate("students", "_id"); // Poblar los estudiantes
+    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor, sin estudiantes
 
+    // Mapeamos los cursos para agregar la cuenta de estudiantes sin incluir la lista de estudiantes
     const coursesWithCount = courses.map((course) => ({
-      ...course.toObject(),
-      userCount: course.students.length, // Agregar la cuenta de usuarios registrados
+      _id: course._id,
+      customId: course.customId,
+      name: course.name,
+      category: course.category,
+      teacher: course.teacher,
+      description: course.description,
+      participants: course.participants,
+      price: course.price,
+      imageSrc: course.imageSrc,
+      userCount: course.students.length, // Solo el número de estudiantes
+      sections: course.sections,
+      createdAt: course.createdAt,
     }));
 
     res.json(coursesWithCount);
@@ -353,6 +362,9 @@ const assignCourseToUser = async (req, res) => {
     // Guardar los cambios tanto en el usuario como en el curso
     await user.save();
     await course.save();
+
+    // Después de guardar, populamos los estudiantes en el curso para obtener el email
+    await course.populate("students", "email name"); // Popular los estudiantes con sus emails y nombres
 
     res
       .status(200)

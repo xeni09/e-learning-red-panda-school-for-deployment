@@ -44,10 +44,7 @@ const CourseStudentsList = () => {
       <AdminSubMenu />
       <div className="container mx-auto p-6 pt-10">
         <div className="flex justify-end items-center mb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="btn"
-          >
+          <button onClick={() => navigate(-1)} className="btn">
             Go Back to Manage Courses
           </button>
         </div>
@@ -55,13 +52,10 @@ const CourseStudentsList = () => {
         {students.length > 0 ? (
           <div className="bg-white p-10">
             <h2 className="text-3xl font-normal">Students Registered for:</h2>
-            {/* Enlace al CourseDetails */}
             <Link to={`/admin/manage-courses/${courseId}`}>
               <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
-                "{courseName}" 
-                <p className='flex flex-col justify-evenly pl-4'>
-                  Click here to go back to this Course Info
-                </p>
+                "{courseName}"
+                <span className="pl-4 text-xs pt-6">Click here to go back to this Course Info</span>
               </h2>
             </Link>
 
@@ -70,7 +64,7 @@ const CourseStudentsList = () => {
                 <tr>
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Email</th>
-                  <th className="px-4 py-2">Action</th> {/* Nueva columna "Action" */}
+                  <th className="px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -79,9 +73,8 @@ const CourseStudentsList = () => {
                     <td className="border px-4 py-2 text-center">{student.name}</td>
                     <td className="border px-4 py-2 text-center">{student.email}</td>
                     <td className="border px-4 py-2 text-center">
-                      {/* Botón para eliminar el estudiante */}
-                      <button 
-                        onClick={() => handleRemoveStudent(student._id)} 
+                      <button
+                        onClick={() => handleRemoveStudent(student._id)}
                         className="btn-delete text-white bg-red-500 hover:bg-red-700 px-4 py-2 rounded"
                       >
                         Remove
@@ -93,31 +86,18 @@ const CourseStudentsList = () => {
             </table>
           </div>
         ) : (
-
           <div className="bg-white p-10">
-          <h2 className="text-3xl font-normal">Students Registered for:</h2>
-          
-          <Link to={`/admin/manage-courses/${courseId}`}>
-            <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
-              "{courseName}" 
-              <p className='flex flex-col justify-evenly pl-4'>
-                Click here to go back to this Course Info
-              </p>
-            </h2>
-          </Link>
-          
-
-          
-          <p className='pt-10 font-bold text-xl'>Sorry, but no students have registered for this course yet..</p>
-
-        </div>
-
-
-
-
-
-
-
+            <h2 className="text-3xl font-normal">Students Registered for:</h2>
+            <Link to={`/admin/manage-courses/${courseId}`}>
+              <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
+                "{courseName}"
+                <span className="pl-4 text-xs pt-6">Click here to go back to this Course Info</span>
+              </h2>
+            </Link>
+            <p className="pt-10 font-bold text-xl">
+              Sorry, but no students have registered for this course yet..
+            </p>
+          </div>
         )}
       </div>
     </>
