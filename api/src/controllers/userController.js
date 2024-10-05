@@ -5,8 +5,12 @@ const bcrypt = require("bcrypt");
 // Controlador para obtener un usuario por ID
 const getUser = async (req, res) => {
   try {
-    // Popular los cursos con la información completa
-    const user = await User.findById(req.params.id).populate("courses");
+    // Populate the courses array with full course information, not just IDs
+    const user = await User.findById(req.params.id).populate({
+      path: "courses",
+      model: "Course", // Ensure we're populating the right model
+      select: "_id name description teacher imageSrc", // Select the fields you need
+    });
 
     if (!user) {
       return res.status(404).json({ msg: "User not found" });

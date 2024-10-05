@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import CourseTabs from '../components//courseComponents/CourseTabs';
+import CourseTabs from '../components/courseComponents/CourseTabs';
 import CourseSummary from '../components/courseComponents/CourseSummary';
-import FeaturedCourses from '../components//courseComponents/FeaturedCourses'; 
+import FeaturedCourses from '../components/courseComponents/FeaturedCourses'; 
 
-const CoursePage = () => {
+const CoursePageToBuy = () => {
   const { courseId } = useParams();
   // Aquí puedes obtener los datos del curso usando el courseId, por ejemplo, desde una API o un estado global.
   
@@ -71,4 +71,4 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+export default CoursePageToBuy;

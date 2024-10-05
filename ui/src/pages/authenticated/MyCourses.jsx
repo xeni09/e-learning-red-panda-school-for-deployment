@@ -1,15 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SubMenu from '../../components/layoutComponents/SubMenu';
 import { useAuth } from '../../context/AuthProvider';
-import { Link } from 'react-router-dom';
+import EnrolledCourseCard from '../../components/courseComponents/EnrolledCourseCard';
 
 const MyCourses = () => {
   const { user, updateUser, isAuthenticated, isLoading } = useAuth();
+  const [courses, setCourses] = useState(
+    () => JSON.parse(localStorage.getItem('courses')) || [] // Cargar los cursos desde localStorage al inicio
+  );
 
   useEffect(() => {
     const fetchUpdatedUser = async () => {
       if (isAuthenticated) {
-        await updateUser();  // Actualiza los datos del usuario al cargar la página
+        const updatedUser = await updateUser();
+        if (updatedUser && updatedUser.courses) {
+          setCourses(updatedUser.courses); // Actualizar el estado de los cursos
+          localStorage.setItem('courses', JSON.stringify(updatedUser.courses)); // Guardar en localStorage
+        }
       }
     };
 
@@ -26,21 +33,32 @@ const MyCourses = () => {
       <div className="container mx-auto p-4 pt-20">
         <h2>My Courses</h2>
         <p className="text-xl">Here you can find all your purchased courses.</p>
+        <div className="bg-white shadow-md rounded-lg p-10 my-10">
+        {courses.length > 0 ? (
+          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {courses.map((course, index) => {
+              const teacherName = typeof course.teacher === 'object'
+                ? course.teacher.name
+                : course.teacher || "Unknown Teacher";
 
-        {user.courses && user.courses.length > 0 ? (
-  <ul>
-    {user.courses.map((course, index) => (
-      <li key={course._id || index} className="mb-4">
-        <Link to={`/courses/${course._id}`}>
-          <strong>{course.name}</strong>
-        </Link>
-        <p>Course ID: {course._id}</p>
-      </li>
-    ))}
-  </ul>
-) : (
-  <p>You haven't bought any courses yet.</p>
-)}
+              return (
+                <EnrolledCourseCard 
+                  key={course._id || index}
+                  id={course._id}
+                  name={course.name}
+                  imageSrc={course.imageSrc}
+                  imageAlt={course.name}
+                  teacher={teacherName}
+                  description={course.description}
+                  className="bg-[var(--color-beige)]"
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <p>You haven't bought any courses yet.</p>
+        )}
+      </div>
       </div>
     </>
   );

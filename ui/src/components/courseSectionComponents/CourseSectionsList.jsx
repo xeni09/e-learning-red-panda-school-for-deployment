@@ -12,28 +12,40 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
 
   const handleSaveClick = async (updatedSection, index) => {
+    console.log("Saving section with thumbnail:", updatedSection.thumbnail); // <-- Verifica el thumbnail
     const formData = new FormData();
-
+  
     formData.append('title', updatedSection.title);
     formData.append('description', updatedSection.description);
     formData.append('videoUrl', updatedSection.videoUrl);
-
+  
     if (updatedSection.thumbnail instanceof File) {
       formData.append('thumbnail', updatedSection.thumbnail);
+      console.log("Appending thumbnail to FormData:", updatedSection.thumbnail); // <-- Verifica si el thumbnail se está añadiendo
+
     }
-
+  
     try {
-      await axios.put(`/api/courses/${courseId}/sections/${updatedSection._id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Ya no necesitas actualizar `sectionList`, porque el componente padre actualizará las secciones
+      // Guardamos la respuesta en una variable
+      const response = await axios.put(
+        `/api/courses/${courseId}/sections/${updatedSection._id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log("Response after saving section:", response.data);
+  
+      // Aquí podrías llamar a una función para actualizar el estado global si es necesario
+      onEditSection(response.data, index);  // Asegúrate de pasar la sección actualizada de vuelta al padre
+  
     } catch (error) {
       console.error('Error updating section:', error);
     }
   };
+  
   
   
   

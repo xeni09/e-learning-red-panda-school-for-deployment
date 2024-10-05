@@ -251,10 +251,14 @@ const deleteCourse = async (req, res) => {
 // Obtener los detalles de un curso por su ID
 const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId);
+    const course = await Course.findById(req.params.courseId)
+      .populate("teacher", "name") // Populating teacher's name
+      .populate("students", "name email"); // Populating students' names and emails
+
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
+
     res.status(200).json(course);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
@@ -375,6 +379,29 @@ const assignCourseToUser = async (req, res) => {
   }
 };
 
+// Middleware to check if the user has purchased the course
+const hasPurchasedCourse = async (req, res, next) => {
+  const courseId = req.params.courseId;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    // Verificar si el usuario tiene este curso
+    if (user && user.courses.includes(courseId)) {
+      return next(); // Continuar si el usuario ha comprado el curso
+    }
+
+    // Si no ha comprado el curso, devolver un 403
+    return res
+      .status(403)
+      .json({ message: "You must purchase this course first" });
+  } catch (error) {
+    console.error("Error checking purchased course:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getCourses,
   createCourse,
@@ -385,4 +412,5 @@ module.exports = {
   getUsersForCourse,
   removeStudentFromCourse,
   assignCourseToUser,
+  hasPurchasedCourse,
 };

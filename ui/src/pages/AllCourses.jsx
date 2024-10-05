@@ -15,7 +15,7 @@ import lemur from '../assets/images/lemur.jpeg';
 import fox from '../assets/images/fox.jpg';
 
 
-const courses = [
+const coursesExample = [
   {
     id: 1,
     category: 'Programming',
@@ -126,16 +126,16 @@ const courses = [
 },
 ];
 
-const Courses = () => {
+const AllCourses = () => {
   const [filter, setFilter] = useState('All');
 
   const handleFilterChange = (category) => {
     setFilter(category);
   };
 
-  const filteredCourses = filter === 'All' ? courses : courses.filter(course => course.category === filter);
+  const filteredCourses = filter === 'All' ? coursesExample : coursesExample.filter(course => course.category === filter);
 
-  const categories = ['All', ...new Set(courses.map(course => course.category))];
+  const categories = ['All', ...new Set(coursesExample.map(course => course.category))];
 
   return (
     <>
@@ -177,4 +177,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default AllCourses;

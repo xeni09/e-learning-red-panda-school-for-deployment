@@ -17,7 +17,9 @@ const CourseDetails = () => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
+        console.log("Fetching course details...");
         const response = await axios.get(`/api/courses/${courseId}`);
+        console.log("Fetched course data:", response.data);
         setCourseData(response.data);
         setSections(response.data.sections || []);
         setIsLoading(false);
@@ -26,7 +28,7 @@ const CourseDetails = () => {
         setIsLoading(false);
       }
     };
-
+  
     fetchCourseDetails();
   }, [courseId]);
 
@@ -53,6 +55,7 @@ const CourseDetails = () => {
 
   const handleEditSection = async (updatedSection, index) => {
     try {
+      console.log("Editing section:", updatedSection);
       const updatedSections = [...sections];
       updatedSections[index] = updatedSection;
   
@@ -61,22 +64,33 @@ const CourseDetails = () => {
       formData.append("description", updatedSection.description);
       formData.append("videoUrl", updatedSection.videoUrl);
   
-      // Si hay una imagen recortada, añádela al FormData
       if (updatedSection.thumbnail instanceof File) {
         formData.append("thumbnail", updatedSection.thumbnail);
       }
   
-      await axios.put(`/api/courses/${courseId}/sections/${updatedSection._id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.put(
+        `/api/courses/${courseId}/sections/${updatedSection._id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log("Updated section response:", response.data);
   
-      setSections(updatedSections);
+      const updatedSectionFromServer = response.data;
+      const newSections = sections.map((section, i) =>
+        i === index ? updatedSectionFromServer : section
+      );
+  
+      console.log("New sections state before setting:", newSections);
+      setSections(newSections); // Actualizar el estado con la nueva sección
     } catch (error) {
       console.error('Error updating section:', error);
     }
   };
+  
   
 
   const handleDeleteSection = async (index) => {

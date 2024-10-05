@@ -99,7 +99,12 @@ const verifyToken = async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(decoded._id).populate({
+      path: "courses",
+      model: "Course", // Asegurarnos de popular los cursos
+      select: "_id name description teacher imageSrc",
+    });
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

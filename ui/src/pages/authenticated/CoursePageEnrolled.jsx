@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import SubMenu from '../../components/layoutComponents/SubMenu';
 
-const CoursePage = () => {
-  const { courseId } = useParams(); // Obtener el ID del curso de la URL
+
+const CoursePageEnrolled = () => {
+  const { courseId } = useParams(); // Get courseId from URL params
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,7 +13,7 @@ const CoursePage = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`/api/courses/${courseId}`);
+        const response = await axios.get(`/api/courses/${courseId}/enrolled`); // Make sure this matches your backend route
         setCourse(response.data);
         setLoading(false);
       } catch (err) {
@@ -32,14 +34,30 @@ const CoursePage = () => {
   }
 
   return (
-    <div>
+    <>
+    <SubMenu />
+    
+    <div className="container my-16 p-4">
       <h1>{course.name}</h1>
       <p>{course.description}</p>
-      <p>Teacher: {course.teacher}</p>
+      <p>Instructor: {course.teacher}</p>
       <p>Price: ${course.price}</p>
       <p>Participants: {course.participants}</p>
+      {/* Display course sections */}
+      <div>
+        <h2>Course Sections</h2>
+        {course.sections.map((section) => (
+          <div key={section._id}>
+            <h3>{section.title}</h3>
+            <p>{section.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
+    </>
   );
 };
 
-export default CoursePage;
+
+
+export default CoursePageEnrolled;

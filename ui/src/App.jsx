@@ -11,7 +11,7 @@ import AuthProvider from './context/AuthProvider';
 // Pages
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Courses from "./pages/Courses";
+import Courses from "./pages/AllCourses";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from './pages/Register';
@@ -20,7 +20,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotCreated from "./pages/NotCreated";
-import CoursePage from "./pages/CoursePage";
+import CoursePageToBuy from "./pages/CoursePageToBuy";
 import Checkout from './pages/Checkout';
 import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 
@@ -40,6 +40,7 @@ import ProtectedRoute from './components/authComponents/ProtectedRoute';
 import MyAccount from './pages/authenticated/MyAccount';
 import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
+import CoursePageEnrolled from './pages/authenticated/CoursePageEnrolled';
 
 
 const App = () => {
@@ -62,7 +63,7 @@ const App = () => {
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/not-created" element={<NotCreated />} />
-                <Route path="/course/:courseId" element={<CoursePage />} />
+                <Route path="/course/:courseId" element={<CoursePageToBuy />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/confirmationcoursebought" element={<ConfirmationCourseBought />} />
                 
@@ -80,6 +81,8 @@ const App = () => {
                 <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
                 <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/enrolled-course/:courseId" element={<ProtectedRoute><CoursePageEnrolled /></ProtectedRoute>} />
+
               </Routes>
             </div>
             <Footer />

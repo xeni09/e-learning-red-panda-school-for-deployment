@@ -23,6 +23,10 @@ const SectionImageUploadAndCrop = ({ setTemporaryImage, handleFileChange, onCrop
       .then(blob => {
         // Convert the cropped image to a file and pass it to the parent component
         const croppedFile = new File([blob], 'croppedImage.jpeg', { type: blob.type });
+
+        console.log("Cropped image file:", croppedFile); // <-- Añadir log para ver el archivo
+
+
         if (setTemporaryImage) {
           setTemporaryImage(croppedFile); // Pass the File object to the parent component
         } else {

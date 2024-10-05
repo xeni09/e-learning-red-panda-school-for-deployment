@@ -25,12 +25,13 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
   // Obtener el ID de YouTube, si existe
   const videoId = getYouTubeVideoId(section.videoUrl); 
 
-  const thumbnailUrl = croppedImage 
-  ? croppedImage 
+  const thumbnailUrl = croppedImage
+  ? croppedImage
   : videoId
   ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-  : section.thumbnail || 'https://via.placeholder.com/150?text=No+Thumbnail';
-
+  : section.thumbnail
+  ? `${baseUrl}/uploads/sections${section.thumbnail}`  // Incluye el prefijo correcto
+  : 'https://via.placeholder.com/150?text=No+Thumbnail';
 
   const handleWatchVideoClick = () => {
     setShowVideoModal(true);
@@ -53,6 +54,8 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
       ...editedSection,
       thumbnail: temporaryImage || croppedImage || section.thumbnail,
     };
+  
+    console.log("Updated section before saving:", updatedSection); // <-- Verifica los datos de la sección, especialmente el thumbnail
     onSaveClick(updatedSection);
     setIsEditing(false);
   };

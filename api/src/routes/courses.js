@@ -13,6 +13,7 @@ const {
   getUsersForCourse,
   removeStudentFromCourse,
   assignCourseToUser,
+  hasPurchasedCourse,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -75,5 +76,13 @@ router.get(
 
 // Ruta para asignar un curso a un usuario
 router.put("/:courseId/assign", auth, assignCourseToUser);
+
+// Route to access enrolled course (accessible to authenticated users who purchased the course)
+router.get(
+  "/:courseId/enrolled",
+  auth, // User must be authenticated
+  hasPurchasedCourse, // User must have purchased the course
+  getCourseById
+);
 
 module.exports = router;
