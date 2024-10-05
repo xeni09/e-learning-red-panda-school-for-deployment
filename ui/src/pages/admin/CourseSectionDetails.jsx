@@ -41,11 +41,11 @@ const CourseSectionDetails = () => {
 
   return (
     <>
-      <AdminSubMenu /> {/* Incluimos el submenú del administrador */}
+      <AdminSubMenu />
 
       <div className="container mx-auto p-4 pt-20">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="">Section Details <span className='text-lg'>(Editor view)</span></h1>
+      <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center w-full pb-10">
+      <h2 className="">Section Details <span className='text-lg'>(Editor view)</span></h2>
           
           <Link to={`/admin/manage-courses/${courseId}`} className="text-[var(--color-orange)] hover:underline">
             &larr; Back to Course Details

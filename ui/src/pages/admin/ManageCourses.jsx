@@ -141,7 +141,7 @@ const ManageCourses = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
+        <h2>Manage Courses</h2>
 
         <CourseList
           courses={courses}

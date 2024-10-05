@@ -18,9 +18,9 @@ const Settings = () => {
     <>
       <SubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1 className="text-2xl mb-5 font-bold">Settings</h1>
+        <h2>Settings</h2>
         <p className="text-xl pb-2 ">You can edit your Account Information here:</p>
-
+        <div className="bg-white shadow-md rounded-lg p-3 my-6">
         {/* Editable name */}
         <EditableField
           label="Name"
@@ -79,6 +79,7 @@ const Settings = () => {
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
         {success && <p className="text-green-500 mt-4">{success}</p>}
+      </div>
       </div>
     </>
   );

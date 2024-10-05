@@ -23,8 +23,8 @@ const CourseList = ({
 }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-10 my-10">
-      <div className="flex flex-col md:flex-row justify-between items-start mb-6">
-        <h2 className="text-xl font-bold">Courses List</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start ">
+      <p className="text-4xl font-normal pb-6">Courses List</p>
 
         <button className="btn-orange mt-4 md:mt-0" onClick={toggleForm}>
           {showCreateCourseForm ? 'Hide Create New Course' : 'Create New Course'}

@@ -43,7 +43,8 @@ const CourseStudentsList = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-6 pt-10">
-        <div className="flex justify-end items-center mb-6">
+        <div className="flex justify-between items-center mb-6">
+        
           <button onClick={() => navigate(-1)} className="btn">
             Go Back to Manage Courses
           </button>
@@ -51,11 +52,12 @@ const CourseStudentsList = () => {
 
         {students.length > 0 ? (
           <div className="bg-white p-10">
-            <h2 className="text-3xl font-normal">Students Registered for:</h2>
+            <h2 className="text-3xl font-normal">Students Registered for the Course:</h2>
             <Link to={`/admin/manage-courses/${courseId}`}>
-              <h2 className="flex justify-start text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
+              <h2 className="flex justify-start items-end text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
+                {/* <span className="text-black text-lg pr-3">Course Name:  </span> */}
                 "{courseName}"
-                <span className="pl-4 text-xs pt-6">Click here to go back to this Course Info</span>
+                <span className="pl-4 text-sm ">*Click here to go back</span>
               </h2>
             </Link>
 

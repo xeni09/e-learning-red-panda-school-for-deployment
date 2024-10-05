@@ -18,9 +18,9 @@ const fileExists = async (filePath) => {
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor, sin estudiantes
+    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor
 
-    // Mapeamos los cursos para agregar la cuenta de estudiantes sin incluir la lista de estudiantes
+    // Mapeamos los cursos para agregar la cuenta de estudiantes
     const coursesWithCount = courses.map((course) => ({
       _id: course._id,
       customId: course.customId,
@@ -28,10 +28,9 @@ const getCourses = async (req, res) => {
       category: course.category,
       teacher: course.teacher,
       description: course.description,
-      participants: course.participants,
+      participants: course.students.length,
       price: course.price,
       imageSrc: course.imageSrc,
-      userCount: course.students.length, // Solo el número de estudiantes
       sections: course.sections,
       createdAt: course.createdAt,
     }));

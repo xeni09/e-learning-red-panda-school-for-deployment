@@ -115,13 +115,20 @@ const CourseDetails = () => {
       <AdminSubMenu /> 
 
       <div className="container mx-auto p-4 pt-20">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="">Course Details <span className='text-lg'>(Editor view)</span></h1>
+        
+        
+        
+      <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center w-full pb-10">
+
+          <h2 className="">Course Details <span className='text-lg'>(Editor view)</span></h2>
           
           <Link to="/admin/manage-courses" className="text-[var(--color-orange)] hover:underline">
             &larr; Back to Courses List
           </Link>
         </div>
+
+
+
       <div className='mb-10'>
       <p className="text-lg">To add a video to a section, you can use the following videos as a reference (copyright free):</p>
 

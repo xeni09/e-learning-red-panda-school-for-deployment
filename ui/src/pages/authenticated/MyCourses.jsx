@@ -1,31 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import SubMenu from '../../components/layoutComponents/SubMenu';
-import { useAuth } from '../../context/AuthProvider';
 import EnrolledCourseCard from '../../components/courseComponents/EnrolledCourseCard';
+import axios from 'axios';
 
 const MyCourses = () => {
-  const { user, updateUser, isAuthenticated, isLoading } = useAuth();
-  const [courses, setCourses] = useState(
-    () => JSON.parse(localStorage.getItem('courses')) || [] // Cargar los cursos desde localStorage al inicio
-  );
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUpdatedUser = async () => {
-      if (isAuthenticated) {
-        const updatedUser = await updateUser();
-        if (updatedUser && updatedUser.courses) {
-          setCourses(updatedUser.courses); // Actualizar el estado de los cursos
-          localStorage.setItem('courses', JSON.stringify(updatedUser.courses)); // Guardar en localStorage
-        }
+    const fetchCourses = async () => {
+      try {
+        const { data } = await axios.get('/api/courses'); // Fetch courses
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false); // Stop loading regardless of success/failure
       }
     };
 
-    fetchUpdatedUser();
-  }, [isAuthenticated, updateUser]);
+    fetchCourses();
+  }, []);
 
-  if (isLoading || !user) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
@@ -34,31 +31,25 @@ const MyCourses = () => {
         <h2>My Courses</h2>
         <p className="text-xl">Here you can find all your purchased courses.</p>
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-        {courses.length > 0 ? (
-          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {courses.map((course, index) => {
-              const teacherName = typeof course.teacher === 'object'
-                ? course.teacher.name
-                : course.teacher || "Unknown Teacher";
-
-              return (
+          {courses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {courses.map((course) => (
                 <EnrolledCourseCard 
-                  key={course._id || index}
+                  key={course._id}
                   id={course._id}
                   name={course.name}
                   imageSrc={course.imageSrc}
                   imageAlt={course.name}
-                  teacher={teacherName}
+                  teacher={typeof course.teacher === 'object' ? course.teacher.name : course.teacher}
                   description={course.description}
-                  className="bg-[var(--color-beige)]"
+                  participants={course.participants || course.userCount}
                 />
-              );
-            })}
-          </div>
-        ) : (
-          <p>You haven't bought any courses yet.</p>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <p>You haven't bought any courses yet.</p>
+          )}
+        </div>
       </div>
     </>
   );
