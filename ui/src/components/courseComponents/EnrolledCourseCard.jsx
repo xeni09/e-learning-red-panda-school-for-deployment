@@ -7,11 +7,6 @@ const EnrolledCourseCard = ({ id }) => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null); // To hold course details
 
-  const shortDescription = course.description.length > 100 
-  ? `${course.description.slice(0, 100)}...` 
-  : course.description;
-
-
   // Load course data and store it locally or from API
   useEffect(() => {
     const fetchCourse = async () => {
@@ -41,6 +36,11 @@ const EnrolledCourseCard = ({ id }) => {
     return <p>Loading...</p>; // Handle loading state
   }
 
+  // Mover la verificación de course.description después de que course haya sido cargado
+  const shortDescription = course.description.length > 100 
+    ? `${course.description.slice(0, 100)}...` 
+    : course.description;
+
   const instructorName = typeof course.teacher === 'object' ? course.teacher.name : course.teacher || 'Unknown Teacher';
 
   return (
@@ -56,8 +56,8 @@ const EnrolledCourseCard = ({ id }) => {
         </div>
         <h3 className="font-bold mt-2 text-left">{course.name}</h3>
         <p className="text-[var(--color-black)] mt-0 text-sm sm:text-base text-left">
-  {shortDescription}
-</p>
+          {shortDescription}
+        </p>
 
         <div className="flex flex-wrap justify-between items-center mt-4 pt-6">
           <div className="flex items-center">

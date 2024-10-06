@@ -13,7 +13,8 @@ const EnrolledCourseTabs = ({ course }) => {
             {/* Left side: course description */}
             <div className="md:col-span-2">
               <p className="text-4xl mb-8">Course Overview</p>
-              <p className='p-6 bg-gray-100 rounded-lg shadow-md sticky top-20'>{course.description}</p>
+              <p className='p-6 bg-gray-100 rounded-lg shadow-md sticky top-20 whitespace-pre-wrap'>
+              {course.description}</p>
             </div>
             
             {/* Right side: fixed info */}

@@ -67,7 +67,7 @@ const EnrolledCourseContent = ({ courseName, sections }) => {
                   </video>
                 </div>
               )}
-              <p>{activeSection.description}</p>
+              <p className='whitespace-pre-wrap'>{activeSection.description}</p>
 
               {/* Botones "Previous Unit" y "Next Unit" */}
               <div className="flex justify-between mt-4">
