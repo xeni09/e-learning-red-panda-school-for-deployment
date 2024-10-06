@@ -40,7 +40,7 @@ import ProtectedRoute from './components/authComponents/ProtectedRoute';
 import MyAccount from './pages/authenticated/MyAccount';
 import MyCourses from './pages/authenticated/MyCourses';
 import Settings from './pages/authenticated/Settings';
-import CoursePageEnrolled from './pages/authenticated/CoursePageEnrolled';
+import EnrolledCoursePage from './pages/authenticated/EnrolledCoursePage';
 
 
 const App = () => {
@@ -81,7 +81,7 @@ const App = () => {
                 <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
                 <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-                <Route path="/enrolled-course/:courseId" element={<ProtectedRoute><CoursePageEnrolled /></ProtectedRoute>} />
+                <Route path="/enrolled-course/:courseId" element={<ProtectedRoute><EnrolledCoursePage /></ProtectedRoute>} />
 
               </Routes>
             </div>
