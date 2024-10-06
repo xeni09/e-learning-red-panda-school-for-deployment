@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const CustomDropdown = ({ options, selectedOption, onOptionSelect }) => {
-  const [isOpen, setIsOpen] = useState(false); // Asegúrate de tener useState correctamente importado
+const CustomDropdown = ({ options, selectedOption, onOptionSelect, className }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   // Cerrar el dropdown si se hace clic fuera de él
@@ -23,9 +23,9 @@ const CustomDropdown = ({ options, selectedOption, onOptionSelect }) => {
   };
 
   return (
-    <div className="relative w-36 md:w-48" ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef}> 
       <button
-        type="button" // Asegúrate de que el tipo sea button para prevenir submit
+        type="button"
         className="p-2 border border-gray-300 rounded bg-white focus:outline-none focus:border-[var(--color-yellow)] focus:ring-0 transition duration-300 w-full text-left text-md"
         onClick={handleDropdownClick}
       >

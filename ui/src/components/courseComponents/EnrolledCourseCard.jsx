@@ -7,20 +7,17 @@ const EnrolledCourseCard = ({ id }) => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null); // To hold course details
 
+  const shortDescription = course.description.length > 100 
+  ? `${course.description.slice(0, 100)}...` 
+  : course.description;
+
+
   // Load course data and store it locally or from API
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        // Load course data either from local storage or API
-        const localCourse = JSON.parse(localStorage.getItem(`course-${id}`));
-        if (localCourse) {
-          setCourse(localCourse); // If data exists in local storage, use it
-        } else {
-          // Fetch course data from backend
-          const response = await axios.get(`/api/courses/${id}`);
-          setCourse(response.data); // Store course data in state
-          localStorage.setItem(`course-${id}`, JSON.stringify(response.data)); // Cache course data locally
-        }
+        const response = await axios.get(`/api/courses/${id}`);
+        setCourse(response.data); // Actualiza el estado con los datos más recientes
       } catch (error) {
         console.error('Error fetching course:', error);
       }
@@ -58,7 +55,10 @@ const EnrolledCourseCard = ({ id }) => {
           <p className="text-sm text-[var(--color-grey)]">{instructorName}</p>
         </div>
         <h3 className="font-bold mt-2 text-left">{course.name}</h3>
-        <p className="text-[var(--color-black)] mt-0 text-sm sm:text-base text-left">{course.description}</p>
+        <p className="text-[var(--color-black)] mt-0 text-sm sm:text-base text-left">
+  {shortDescription}
+</p>
+
         <div className="flex flex-wrap justify-between items-center mt-4 pt-6">
           <div className="flex items-center">
             <FaUser className="w-5 h-5 text-[var(--color-grey)]" />

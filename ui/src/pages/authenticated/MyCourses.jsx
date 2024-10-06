@@ -42,7 +42,7 @@ const MyCourses = () => {
                   imageAlt={course.name}
                   teacher={typeof course.teacher === 'object' ? course.teacher.name : course.teacher}
                   description={course.description}
-                  participants={course.participants || course.userCount}
+                  participants={course.participants || course.participants}
                 />
               ))}
             </div>

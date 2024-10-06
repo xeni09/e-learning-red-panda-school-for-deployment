@@ -90,7 +90,7 @@ const CourseRow = ({
 
       <td className="border px-4 py-2 text-center">
       <Link to={`/admin/manage-courses/${course._id}/students`} className="text-[var(--color-orange)]">
-          {course.userCount} 
+          {course.participants} 
         </Link>
       </td>
 
