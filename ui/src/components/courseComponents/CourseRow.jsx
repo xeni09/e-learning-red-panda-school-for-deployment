@@ -3,6 +3,8 @@ import CustomDropdown from '../../components/adminComponents/CustomDropdown';
 import { categories } from '../sharedComponents/constants';
 import { Link } from 'react-router-dom';
 
+
+
 const CourseRow = ({
   course,
   editingCourseId,
@@ -13,11 +15,16 @@ const CourseRow = ({
   handleSaveChanges,
   handleCancelEdit,
   onEditCourse,
-  handleDelete
+  onDeleteCourse
 }) => {
   return (
     <tr key={course._id}>
-      <td className="border px-4 py-2 text-center">{course.customId}</td>
+
+      <td className="border px-4 py-2 text-center">
+        <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
+          {course.customId}
+        </Link>
+      </td>
 
       <td className="border px-4 py-2 text-center">
         {editingCourseId === course._id ? (
@@ -26,11 +33,10 @@ const CourseRow = ({
             name="name"
             value={editFormData.name}
             onChange={handleInputChange}
-            className="input text-center w-full p-2 border border-gray-300 rounded"
+            className="input text-center w-full p-2 border border-gray-300 "
           />
         ) : (
-          // Enlace a los detalles del curso
-          <Link to={`/admin/manage-courses/${course._id}`} className="text-blue-500">
+          <Link to={`/admin/manage-courses/${course._id}`} className="text-[var(--color-orange)]">
             {course.name}
           </Link>
         )}
@@ -41,7 +47,7 @@ const CourseRow = ({
           <CustomDropdown
             options={categories.map(cat => ({ value: cat, label: cat }))}
             selectedOption={editFormData.category}
-            onOptionSelect={handleCategoryChange}
+            onOptionSelect={handleCategoryChange}  // Asegúrate de que esta función está presente
           />
         ) : (
           course.category
@@ -55,7 +61,7 @@ const CourseRow = ({
             name="teacher"
             value={editFormData.teacher}
             onChange={handleInputChange}
-            className="input text-center w-full p-2 border border-gray-300 rounded"
+            className="input text-center w-full p-2 border border-gray-300 "
           />
         ) : (
           course.teacher
@@ -70,7 +76,7 @@ const CourseRow = ({
               name="price"
               value={editFormData.price}
               onChange={handleInputChange}
-              className="input text-center w-full p-2 pr-8 border border-gray-300 rounded" 
+              className="input text-center w-full p-2 pr-8 border border-gray-300 " 
             />
             <span className="absolute inset-y-0 right-0 pr-3 pb-2 flex items-center text-gray-500">€</span> 
           </div>
@@ -79,11 +85,24 @@ const CourseRow = ({
         )}
       </td>
 
+
+
+
       <td className="border px-4 py-2 text-center">
+      <Link to={`/admin/manage-courses/${course._id}/students`} className="text-[var(--color-orange)]">
+          {course.userCount} 
+        </Link>
+      </td>
+
+
+
+
+
+      <td className="border px-0 py-0 text-center">
         <img
           src={`http://localhost:3000${course.imageSrc}`}
           alt={course.name}
-          className="w-16 h-16 object-cover mx-auto"
+          className="w-auto h-auto object-cover mx-auto"
         />
       </td>
 
@@ -92,28 +111,34 @@ const CourseRow = ({
           <div className="flex flex-col lg:flex-row justify-center space-x-1">
             <button
               onClick={() => handleSaveChanges(course._id)}
-              className="btn my-2 rounded"
+              className="btn-save "
             >
               Save
             </button>
             <button
               onClick={handleCancelEdit}
-              className="btn my-2 bg-gray-400 rounded"
+              className="btn-cancel bg-gray-400 "
             >
               Cancel
             </button>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row justify-center ">
+            <Link to={`/admin/manage-courses/${course._id}`}>
+              <button className="btn m-1">
+                Edit
+              </button>
+            </Link>
+
             <button
-              className="btn my-2 mx-2 rounded"
+              className="btn m-1"
               onClick={() => onEditCourse(course)}
             >
-              Edit
+              Quick Edit
             </button>
             <button
-              className="btn my-2 mx-2 bg-red-500 text-white rounded"
-              onClick={() => handleDelete(course._id)}
+              className="btn-delete m-1"
+              onClick={() => onDeleteCourse(course._id)}
             >
               Delete
             </button>

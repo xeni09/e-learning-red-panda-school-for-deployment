@@ -120,16 +120,20 @@ const ManageUsers = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6">Manage Users</h1>
+        <h2>Manage Users</h2>
 
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-          <div className="flex flex-col md:flex-row justify-between items-start ">
-            <h2 className="text-xl font-bold">User List</h2>
+       
+        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center w-full pb-4">
 
-            <div className="flex flex-col md:flex-row md:justify-end md:space-x-4 mb-6">
+
+        <p className="text-4xl font-normal">User List</p>
+
+        <div className="flex flex-row justify-end space-x-4">
+
 
               <button
-                className="btn"
+                className="btn-orange"
                 onClick={() => toggleForm('create')}
               >
                 {showCreateUserForm ? 'Hide Create New User' : 'Create New User'}
@@ -138,6 +142,8 @@ const ManageUsers = () => {
               </div>
               
           </div>
+
+          
           {error && <p className="text-red-500">{error}</p>} {/* Handle global errors */}
 
         

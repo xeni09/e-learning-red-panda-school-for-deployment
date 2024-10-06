@@ -8,7 +8,6 @@ const MongoStore = require("connect-mongo");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
-const { auth } = require("./middleware/jwtAuth");
 const connectDB = require("./config/db");
 const initRoutes = require("./routes/initRoutes");
 
@@ -45,6 +44,19 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+
+// Configuración de multer para imágenes de secciones
+const sectionStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public/uploads/sections")); // Guardar las imágenes de secciones en /public/uploads/sections
+  },
+  filename: (req, file, cb) => {
+    const filename = `section-${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, filename);
+  },
+});
+
+const sectionUpload = multer({ storage: sectionStorage });
 
 // Middleware para servir los archivos estáticos (como las imágenes)
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
@@ -93,8 +105,11 @@ app.use(
       ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "none",
+      secure: false, // Solo para localhost, asegúrate de que esto sea `false`
+      sameSite: "lax", // Asegúrate que esté en `lax` o `strict` para desarrollo
+
       httpOnly: true,
     },
   })

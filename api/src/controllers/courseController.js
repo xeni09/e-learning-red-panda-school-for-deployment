@@ -6,14 +6,39 @@ const util = require("util");
 const unlinkAsync = util.promisify(fs.unlink);
 const fsExistsAsync = util.promisify(fs.exists);
 
+const fileExists = async (filePath) => {
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK); // Verificar si el archivo existe
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name");
-    res.json(courses);
+    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor
+
+    // Mapeamos los cursos para agregar la cuenta de estudiantes
+    const coursesWithCount = courses.map((course) => ({
+      _id: course._id,
+      customId: course.customId,
+      name: course.name,
+      category: course.category,
+      teacher: course.teacher,
+      description: course.description,
+      participants: course.students.length,
+      price: course.price,
+      imageSrc: course.imageSrc,
+      sections: course.sections,
+      createdAt: course.createdAt,
+    }));
+
+    res.json(coursesWithCount);
   } catch (error) {
-    console.error("Error fetching courses:", error.message);
-    res.status(500).send("Server error");
+    console.error("Error fetching courses with user count:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -74,11 +99,44 @@ const createCourse = async (req, res) => {
   }
 };
 
+// Simular la compra de un curso
+const buyCourse = async (req, res) => {
+  try {
+    const userId = req.user._id; // Usuario autenticado
+    const { courseId } = req.body;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const user = await User.findById(userId);
+    if (user.courses.includes(courseId)) {
+      return res
+        .status(400)
+        .json({ message: "You already purchased this course" });
+    }
+
+    // Agregar curso al usuario y aumentar participantes
+    user.courses.push(courseId);
+    course.students.push(userId); // Agregar el usuario a los estudiantes del curso
+    course.participants += 1;
+
+    await user.save();
+    await course.save();
+
+    res.status(200).json({ message: "Course purchased successfully" });
+  } catch (error) {
+    console.error("Error purchasing course:", error.message);
+    res.status(500).json({ message: "Error purchasing course", error });
+  }
+};
+
 // Actualizar un curso existente
 const updateCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { name, description, price, category, teacher } = req.body;
+    const { name, description, price, category, teacher, sections } = req.body;
 
     // Verificar si el curso existe
     const course = await Course.findById(courseId);
@@ -110,9 +168,14 @@ const updateCourse = async (req, res) => {
     course.category = category;
     course.teacher = teacher;
 
+    // Actualizar las secciones si están presentes
+    if (sections) {
+      course.sections = sections; // Sobrescribe las secciones actuales
+    }
+
     // Verificar si hay una nueva imagen cargada
     if (req.file) {
-      // Eliminar la imagen anterior
+      // Eliminar la imagen anterior si existe
       const oldImagePath = path.join(__dirname, `../public${course.imageSrc}`);
       const fileExists = await fsExistsAsync(oldImagePath);
       if (fileExists) {
@@ -138,7 +201,7 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { deleteImage } = req.body; // Recibir un parámetro para verificar si se elimina la imagen o no.
+    const { deleteImage } = req.body;
 
     // Buscar el curso por su ID
     const course = await Course.findById(courseId);
@@ -146,29 +209,36 @@ const deleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Obtener la ruta de la imagen
-    const imagePath = path.join(__dirname, `../public${course.imageSrc}`);
+    // Verificar que deleteImage y course.imageSrc existen
+    console.log("Delete image flag:", deleteImage);
+    console.log("Course image source:", course.imageSrc);
 
-    if (deleteImage) {
-      // Solo eliminar la imagen si deleteImage es verdadero
-      const fileExists = await fsExistsAsync(imagePath);
-      if (fileExists) {
-        // Eliminar el archivo de imagen
+    // Eliminar la imagen si se solicita y existe
+    if (deleteImage && course.imageSrc) {
+      // Usar una ruta relativa desde el directorio del proyecto (api/public/uploads)
+      const imagePath = path.join(
+        process.cwd(), // Esto apunta al directorio raíz del proyecto
+        "public", // Cambia esta parte si tu estructura es diferente
+        course.imageSrc // Mantener la ruta relativa que guardaste en la base de datos
+      );
+      console.log("Resolved image path:", imagePath); // Verifica la ruta de la imagen
+
+      const exists = await fileExists(imagePath);
+      console.log("File exists:", exists); // Verificar si el archivo existe
+
+      if (exists) {
         try {
           await unlinkAsync(imagePath);
-          console.log("Course image deleted successfully");
+          console.log("Image deleted:", imagePath); // Verificar que la imagen ha sido eliminada
         } catch (err) {
-          console.error("Error deleting image file:", err);
-          return res
-            .status(500)
-            .json({ message: "Error deleting course image" });
+          console.error("Error deleting image:", err.message); // Mostrar el error si ocurre
         }
       } else {
-        console.log("Image file does not exist");
+        console.log("Image file does not exist:", imagePath); // Si no existe, muestra este mensaje
       }
     }
 
-    // Eliminar el curso de la base de datos
+    // Eliminar el curso
     await course.deleteOne();
     res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
@@ -177,67 +247,169 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-// Simular la compra de un curso
-const buyCourse = async (req, res) => {
-  try {
-    const userId = req.user._id; // Usuario autenticado
-    const { courseId } = req.body;
-
-    // Verificar si el curso existe
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    // Buscar al usuario
-    const user = await User.findById(userId);
-
-    // Verificar si el usuario ya compró el curso
-    if (user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({ message: "You already purchased this course" });
-    }
-
-    // Agregar el ObjectId del curso al array de cursos del usuario
-    user.courses.push(courseId);
-
-    // Incrementar el número de participantes del curso
-    course.participants += 1;
-
-    // Guardar los cambios tanto en el usuario como en el curso
-    await user.save();
-    await course.save();
-
-    res.status(200).json({ message: "Course purchased successfully" });
-  } catch (error) {
-    console.error("Error purchasing course:", error.message);
-    res.status(500).json({ message: "Error purchasing course", error });
-  }
-};
-
 // Obtener los detalles de un curso por su ID
 const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId); // Obtener curso por ID
+    const course = await Course.findById(req.params.courseId)
+      .populate("teacher", "name") // Populating teacher's name
+      .populate("students", "name email"); // Populating students' names and emails
 
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
 
-    res.status(200).json(course); // Devolver los datos del curso
+    res.status(200).json(course);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
-module.exports = { getCourseById };
+const getUsersForCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    // Encontrar el curso y popular los usuarios
+    const course = await Course.findById(courseId).populate(
+      "students",
+      "name email"
+    ); // Solo los campos que quieres mostrar
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Devolver solo la lista de estudiantes
+    res.status(200).json(course.students);
+  } catch (error) {
+    console.error("Error fetching users for course:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Eliminar un estudiante de un curso
+const removeStudentFromCourse = async (req, res) => {
+  const { courseId, studentId } = req.params;
+
+  try {
+    // Encontrar el curso
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Verificar si el estudiante está en el curso
+    if (!course.students.includes(studentId)) {
+      return res
+        .status(400)
+        .json({ message: "Student is not enrolled in this course" });
+    }
+
+    // Eliminar al estudiante del curso
+    course.students = course.students.filter(
+      (student) => student.toString() !== studentId
+    );
+    // Reducir el número de participantes
+    course.participants -= 1;
+
+    // Guardar los cambios en el curso
+    await course.save();
+
+    // También eliminar el curso del array de cursos del usuario
+    const user = await User.findById(studentId);
+    if (user) {
+      user.courses = user.courses.filter(
+        (course) => course.toString() !== courseId
+      );
+      await user.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Student removed from course successfully" });
+  } catch (error) {
+    console.error("Error removing student from course:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const assignCourseToUser = async (req, res) => {
+  const { courseId } = req.params; // Obtener el ID del curso de los parámetros
+  const { userId } = req.body; // Obtener el ID del usuario del cuerpo de la solicitud
+
+  try {
+    // Buscar el curso por ID
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Buscar el usuario por su ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verificar si el curso ya está asignado al usuario
+    if (user.courses.includes(courseId)) {
+      return res
+        .status(400)
+        .json({ message: "Course already assigned to this user" });
+    }
+
+    // Asignar el curso al usuario
+    user.courses.push(courseId);
+
+    // Aumentar el contador de participantes en el curso
+    course.participants += 1;
+    course.students.push(userId); // También agregar el usuario a la lista de estudiantes del curso
+
+    // Guardar los cambios tanto en el usuario como en el curso
+    await user.save();
+    await course.save();
+
+    // Después de guardar, populamos los estudiantes en el curso para obtener el email
+    await course.populate("students", "email name"); // Popular los estudiantes con sus emails y nombres
+
+    res
+      .status(200)
+      .json({ message: "Course assigned successfully", user, course });
+  } catch (error) {
+    console.error("Error assigning course:", error);
+    res.status(500).json({ message: "Error assigning course", error });
+  }
+};
+
+// Middleware to check if the user has purchased the course
+const hasPurchasedCourse = async (req, res, next) => {
+  const courseId = req.params.courseId;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    // Verificar si el usuario tiene este curso
+    if (user && user.courses.includes(courseId)) {
+      return next(); // Continuar si el usuario ha comprado el curso
+    }
+
+    // Si no ha comprado el curso, devolver un 403
+    return res
+      .status(403)
+      .json({ message: "You must purchase this course first" });
+  } catch (error) {
+    console.error("Error checking purchased course:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   getCourses,
   createCourse,
   buyCourse,
-  deleteCourse,
   updateCourse,
+  deleteCourse,
   getCourseById,
+  getUsersForCourse,
+  removeStudentFromCourse,
+  assignCourseToUser,
+  hasPurchasedCourse,
 };

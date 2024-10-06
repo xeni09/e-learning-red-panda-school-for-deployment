@@ -5,5 +5,9 @@ export const getCourses = async () => {
 };
 
 export const createCourse = async (courseData) => {
-  return await axios.post("/api/courses", courseData); // Create a new course
+  return await axios.post("/api/courses", courseData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };

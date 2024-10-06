@@ -8,6 +8,7 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
+
 const { auth, authorize } = require("../middleware/jwtAuth");
 
 // Ruta para obtener todos los usuarios
@@ -17,7 +18,7 @@ router.get("/", auth, authorize(["admin"]), getAllUsers);
 router.get("/user/:id", auth, getUser);
 
 // Crear un nuevo usuario (solo los administradores pueden crear usuarios)
-router.post("/", auth, authorize(["admin"]), createUser); // Añadir esta ruta
+router.post("/", auth, authorize(["admin"]), createUser);
 
 // Ruta para cambiar la contraseña de un usuario (autorización requerida)
 router.put(

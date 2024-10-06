@@ -48,7 +48,7 @@ const courses = [
 ];
 
 const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCourseIds, titleFontSize = 'font-6xl' }) => {
-  const filteredCourses = courses.filter(course => selectedCourseIds.includes(course.id));
+  const filteredCourses = courses.filter(course => selectedCourseIds.includes(course.id)); // Cambié course._id a course.id
 
   return (
     <div className="container mx-auto p-4 py-20">

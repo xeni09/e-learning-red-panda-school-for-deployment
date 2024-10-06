@@ -1,75 +1,175 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from '../../services/axiosConfig';
-import SectionsList from '../../components/courseComponents/SectionsList'; // Manteniendo secciones
+import CourseInfo from '../../components/courseComponents/CourseInfo'; 
+import CourseSectionsList from '../../components/courseSectionComponents/CourseSectionsList'; 
+import AddSectionForm from '../../components/courseSectionComponents/AddSectionForm'; 
+import AdminSubMenu from '../../components/adminComponents/AdminSubMenu'; 
 
 const CourseDetails = () => {
-  const { courseId } = useParams(); // Obtener el ID del curso desde la URL
-  const [courseData, setCourseData] = useState(null); // Estado para los datos del curso
-  const [sections, setSections] = useState([]); // Para las secciones del curso (puedes adaptarlo)
+  const { courseId } = useParams();
+  const [courseData, setCourseData] = useState(null);
+  const [sections, setSections] = useState([]);
+  const [newSection, setNewSection] = useState({ title: '', description: '', videoUrl: '' });
+  const [isLoading, setIsLoading] = useState(true);
+  const [showAddSectionForm, setShowAddSectionForm] = useState(false); // Estado para controlar la visibilidad del formulario
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
+        console.log("Fetching course details...");
         const response = await axios.get(`/api/courses/${courseId}`);
-        console.log('Course data fetched:', response.data); // Verifica la imagen
+        console.log("Fetched course data:", response.data);
         setCourseData(response.data);
+        setSections(response.data.sections || []);
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching course details:', error);
+        console.error("Error fetching course details:", error);
+        setIsLoading(false);
       }
     };
   
     fetchCourseDetails();
   }, [courseId]);
+
+  const handleAddSection = async (formData) => {
+    try {
+      const response = await axios.post(`/api/courses/${courseId}/sections`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      // Actualiza el estado con la nueva sección
+      setSections([...sections, response.data]);
+  
+      // Limpiar el formulario
+      setNewSection({ title: '', description: '', videoUrl: '' });
+      setShowAddSectionForm(false);
+    } catch (error) {
+      console.error('Error adding section:', error);
+    }
+  };
+  
   
 
-  // Muestra un mensaje de carga mientras los datos del curso se obtienen
-  if (!courseData) {
+  const handleEditSection = async (updatedSection, index) => {
+    try {
+      console.log("Editing section:", updatedSection);
+      const updatedSections = [...sections];
+      updatedSections[index] = updatedSection;
+  
+      const formData = new FormData();
+      formData.append("title", updatedSection.title);
+      formData.append("description", updatedSection.description);
+      formData.append("videoUrl", updatedSection.videoUrl);
+  
+      if (updatedSection.thumbnail instanceof File) {
+        formData.append("thumbnail", updatedSection.thumbnail);
+      }
+  
+      const response = await axios.put(
+        `/api/courses/${courseId}/sections/${updatedSection._id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log("Updated section response:", response.data);
+  
+      const updatedSectionFromServer = response.data;
+      const newSections = sections.map((section, i) =>
+        i === index ? updatedSectionFromServer : section
+      );
+  
+      console.log("New sections state before setting:", newSections);
+      setSections(newSections); // Actualizar el estado con la nueva sección
+    } catch (error) {
+      console.error('Error updating section:', error);
+    }
+  };
+  
+  
+
+  const handleDeleteSection = async (index) => {
+    try {
+      const updatedSections = sections.filter((_, i) => i !== index);
+      const updatedCourse = { ...courseData, sections: updatedSections };
+
+      await axios.put(`/api/courses/${courseId}`, updatedCourse);
+
+      setSections(updatedSections);
+    } catch (error) {
+      console.error('Error deleting section:', error);
+    }
+  };
+
+  if (isLoading) {
     return <p>Loading course details...</p>;
   }
 
   return (
-    <div className="container mx-auto p-4 pt-20">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Course Details</h1>
-        <Link to="/admin/manage-courses" className="text-[var(--color-orange)] hover:underline">
-          &larr; Back to Courses List
-        </Link>
+    <>
+      <AdminSubMenu /> 
+
+      <div className="container mx-auto p-4 pt-20">
+        
+        
+        
+      <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center w-full pb-10">
+
+          <h2 className="">Course Details <span className='text-lg'>(Editor view)</span></h2>
+          
+          <Link to="/admin/manage-courses" className="text-[var(--color-orange)] hover:underline">
+            &larr; Back to Courses List
+          </Link>
+        </div>
+
+
+
+      <div className='mb-10'>
+      <p className="text-lg">To add a video to a section, you can use the following videos as a reference (copyright free):</p>
+
+
+        <a href="https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s" className="text-[var(--color-orange)] hover:underline">https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s</a>
+        <br />
+        <a href="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4" className="text-[var(--color-orange)] hover:underline">https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4</a>
+
       </div>
 
-      {/* Mostrar la imagen en full width */}
-      <div className="mb-6">
-      <img
-    src={`http://localhost:3000${courseData.imageSrc}`} // Concatenar la URL base del servidor
-    alt={courseData.name}
-    className="w-full h-auto object-cover rounded-md"
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <CourseInfo courseId={courseId} />
+          </div>
+
+          <div>
+            <CourseSectionsList 
+              sections={sections}
+              onEditSection={handleEditSection} 
+              onDeleteSection={handleDeleteSection} 
+            />
+
+            <button
+              onClick={() => setShowAddSectionForm(!showAddSectionForm)}
+              className="btn-orange"
+            >
+              {showAddSectionForm ? 'Hide Section Form' : 'Add New Section'}
+            </button>
+
+            {showAddSectionForm && (
+  <AddSectionForm 
+    handleAddSection={handleAddSection}
   />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6 mb-6">
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Course Name</label>
-          <p className="border px-4 py-2 w-full rounded-md bg-gray-100">{courseData.name}</p>
-        </div>
+)}
 
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Category</label>
-          <p className="border px-4 py-2 w-full rounded-md bg-gray-100">{courseData.category}</p>
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Teacher Name</label>
-          <p className="border px-4 py-2 w-full rounded-md bg-gray-100">{courseData.teacher}</p>
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Price</label>
-          <p className="border px-4 py-2 w-full rounded-md bg-gray-100">{`${courseData.price} €`}</p>
+          </div>
         </div>
       </div>
-
-      {/* Mantener la funcionalidad para añadir secciones */}
-      <SectionsList sections={sections} />
-    </div>
+    </>
   );
 };
 

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
+
 import "./Footer.css";
 import logo from "../../assets/logo.svg";
 import youtube from "../../assets/socials-youtube.png";
@@ -48,7 +50,7 @@ const Footer = () => {
           <h3>Popular courses</h3>
           <ul>
             <li>
-              <a href="not-created">Advanced design</a>
+              <a href="/not-created">Advanced design</a>
             </li>
             <li>
               <a href="not-created">Web development</a>
@@ -64,22 +66,24 @@ const Footer = () => {
           <h3>Need support?</h3>
           <p>Contact us at </p>
           <a href="mailto:support@redpandaschool.com">support@redpandaschool.com</a>
+          <p className="pt-2">or use our:</p>
+         <p> <a href="/contact">Contact Form</a></p>
         </div>
 
         {/* Newsletter subscription section */}
         <div className="footer-section">
-          <h3>Subscribe our newsletter</h3>
-          <form onSubmit={handleSubmit} className="contact-form">
-            <input
-              className="block w-full  rounded-md border-0 py-1.5 mb-2 text-[var(--color-black)] shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email..."
-              required
-            />
-            <button className="btn-fullwidth" type="submit">Submit</button>
-          </form>
+      <h3>Subscribe to our newsletter</h3>
+      <form onSubmit={handleSubmit} className="contact-form">
+        <input
+          className="block w-full rounded-md border-0 py-1.5 mb-2 text-[var(--color-black)] shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondary sm:text-sm sm:leading-6"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email..."
+          required
+        />
+        <Link to="/not-created" className="btn-fullwidth">Submit</Link>
+      </form>
         </div>
       </div>
 

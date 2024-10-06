@@ -15,7 +15,7 @@ const Checkout = () => {
   };
 
   const removeCourse = (courseToRemove) => {
-    setCart(cart.filter(course => course.id !== courseToRemove.id));
+    setCart(cart.filter(course => course._id !== courseToRemove.id));
   };
 
   if (cart.length === 0) {

@@ -7,7 +7,7 @@ const SubMenu = () => {
 
   return (
     <div className="bg-[var(--color-yellow)]">
-      <div className="container py-5 flex flex-col items-center md:flex-row md:justify-start md:space-x-4 space-y-2 md:space-y-0">
+      <div className="container py-2 flex flex-col items-center md:flex-row md:justify-start md:space-x-4 space-y-2 md:space-y-0">
         <NavLink
           to="/my-account"
           className={({ isActive }) =>

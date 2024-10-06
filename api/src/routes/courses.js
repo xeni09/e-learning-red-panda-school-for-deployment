@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const Course = require("../models/Course");
 
 const {
   getCourses,
@@ -11,6 +10,10 @@ const {
   deleteCourse,
   updateCourse,
   getCourseById,
+  getUsersForCourse,
+  removeStudentFromCourse,
+  assignCourseToUser,
+  hasPurchasedCourse,
 } = require("../controllers/courseController");
 const { auth, authorize } = require("../middleware/jwtAuth");
 
@@ -27,15 +30,26 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Rutas para gestionar los cursos
-router.get("/", auth, authorize(["admin"]), getCourses); // Ruta para obtener cursos (solo admin)
+router.get("/", auth, authorize(["admin"]), getCourses);
+
+// Ruta para crear un nuevo curso con imagen (solo admin)
 router.post(
   "/",
   auth,
   authorize(["admin"]),
   upload.single("courseImage"),
   createCourse
-); // Ruta para crear un nuevo curso con imagen (solo admin)
-router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse); // Ruta para eliminar un curso
+);
+
+// Ruta para eliminar un curso
+router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse);
+
+router.delete(
+  "/:courseId/students/:studentId",
+  auth,
+  authorize(["admin"]),
+  removeStudentFromCourse
+);
 
 // Ruta para actualizar un curso (solo admin)
 router.put(
@@ -51,5 +65,24 @@ router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
 // Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
 router.post("/buy", auth, buyCourse);
+
+// Ruta para obtener los estudiantes de un curso (solo admin)
+router.get(
+  "/:courseId/students",
+  auth,
+  authorize(["admin"]),
+  getUsersForCourse
+);
+
+// Ruta para asignar un curso a un usuario
+router.put("/:courseId/assign", auth, assignCourseToUser);
+
+// Route to access enrolled course (accessible to authenticated users who purchased the course)
+router.get(
+  "/:courseId/enrolled",
+  auth, // User must be authenticated
+  hasPurchasedCourse, // User must have purchased the course
+  getCourseById
+);
 
 module.exports = router;

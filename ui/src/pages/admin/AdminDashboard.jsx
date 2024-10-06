@@ -38,10 +38,10 @@ const AdminDashboard = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h2 className="text-3xl font-bold mb-6">Admin Dashboard</h2>
+        <h2>Admin Dashboard</h2>
 
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-          <h2 className="text-2xl my-6">Admin Summary</h2>
+      
 
           <ul>
             <li className="mb-10">

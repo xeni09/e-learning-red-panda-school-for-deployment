@@ -13,13 +13,13 @@ const UserActions = ({ editingUserId, userId, handleSaveChanges, handleCancelEdi
     <>
       <button
         onClick={() => handleSaveChanges(userId)}
-        className="btn px-4 py-2 rounded mr-2"
+        className="btn-save px-4 py-2 rounded mr-2"
       >
         Save
       </button>
       <button
         onClick={handleCancelEdit}
-        className="btn bg-gray-400 px-4 py-2 rounded"
+        className="btn-cancel"
       >
         Cancel
       </button>
@@ -34,7 +34,7 @@ const UserActions = ({ editingUserId, userId, handleSaveChanges, handleCancelEdi
       </button>
       <button
         onClick={handleDelete}
-        className="btn bg-red-600 px-4 py-2 rounded"
+        className="btn-delete px-4 py-2 rounded"
       >
         Delete
       </button>

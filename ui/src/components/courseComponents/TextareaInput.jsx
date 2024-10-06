@@ -10,7 +10,7 @@ const TextareaInput = ({ label, name, value, onChange, error }) => {
         name={name}
         value={value}
         onChange={onChange}
-        className="textarea mb-0 w-full mt-1 border border-gray-300 rounded"
+        className="textarea mb-1 p-2 w-full mt-1 border border-gray-300 rounded"
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

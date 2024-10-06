@@ -10,9 +10,13 @@ const CourseTable = ({
   setEditFormData,
   handleSaveChanges,
   handleCancelEdit,
-  handleInputChange,
-  handleCategoryChange
+  handleInputChange
 }) => {
+
+  const handleCategoryChange = (selectedCategory) => {
+    setEditFormData({ ...editFormData, category: selectedCategory });
+  };
+
   return (
     <table className="table-auto w-full mb-6">
       <thead>
@@ -22,12 +26,13 @@ const CourseTable = ({
           <th className="px-4 py-2">Category</th>
           <th className="px-4 py-2">Teacher</th>
           <th className="px-4 py-2">Price</th>
-          <th className="px-4 py-2">Image</th>
+          <th className="px-4 py-2">Users Registered</th> 
+          <th className="px-4 py-2">Course Image</th>
           <th className="px-4 py-2">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {courses.map(course => (
+        {courses.map((course) => (
           <CourseRow
             key={course._id}
             course={course}
@@ -35,11 +40,11 @@ const CourseTable = ({
             editFormData={editFormData}
             setEditFormData={setEditFormData}
             handleInputChange={handleInputChange}
-            handleCategoryChange={handleCategoryChange}
+            handleCategoryChange={handleCategoryChange} 
             handleSaveChanges={handleSaveChanges}
             handleCancelEdit={handleCancelEdit}
             onEditCourse={onEditCourse}
-            onDeleteCourse={onDeleteCourse} 
+            onDeleteCourse={onDeleteCourse}
           />
         ))}
       </tbody>

@@ -114,13 +114,13 @@ const UserTable = ({
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleSaveChanges(user._id)}
-                    className="btn px-4 py-2 rounded"
+                    className="btn-save"
                   >
                     Save
                   </button>
                   <button
                     onClick={handleCancelEdit}
-                    className="btn bg-[var(--color-grey)] px-4 py-2 rounded"
+                    className="btn-cancel"
                   >
                     Cancel
                   </button>
@@ -133,13 +133,13 @@ const UserTable = ({
     setEditingUserId(user._id);  // Use user._id here
     handleEditClick(user);  // Call the handleEditClick function with user data
   }}
-  className="btn px-4 py-2 rounded"
+  className="btn"
 >
   Edit
 </button>
                   <button
                     onClick={() => handleDeleteUser(user._id)}
-                    className="btn bg-[var(--color-red)] px-4 py-2 rounded"
+                    className="btn-delete"
                   >
                     Delete
                   </button>

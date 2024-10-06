@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CourseList from '../../components/courseComponents/CourseList';
-// import CreateCourseForm from '../../components/courseComponents/CreateCourseForm';
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -18,7 +17,7 @@ const ManageCourses = () => {
     price: '',
   });
   const toggleForm = () => {
-    setShowCreateCourseForm(prevState => !prevState);  // Alternar el formulario de creación
+    setShowCreateCourseForm(prevState => !prevState);  
   };
 
   useEffect(() => {
@@ -73,21 +72,27 @@ const ManageCourses = () => {
   
 
   const handleDeleteCourse = async (courseId) => {
-    // Preguntar si se quiere eliminar el curso
     const confirmed = window.confirm('Are you sure you want to delete this course?');
-    if (!confirmed) return;  // Si no se confirma, no eliminar
+    if (!confirmed) return;
+  
+    const shouldDeleteImage = true;
   
     try {
-      await axios.delete(`/api/courses/${courseId}`, { data: { deleteImage: shouldDeleteImage } });
-      setCourses(courses.filter(course => course._id !== courseId));  // Actualizar el estado local eliminando el curso
+      await axios({
+        method: 'delete',
+        url: `/api/courses/${courseId}`,
+        data: { deleteImage: shouldDeleteImage },
+      });
+      setCourses(courses.filter(course => course._id !== courseId));
     } catch (error) {
       console.error('Error deleting course:', error);
     }
   };
   
+  
 
   const handleEditCourse = (course) => {
-    setEditingCourseId(course._id); // Establece el curso que se va a editar
+    setEditingCourseId(course._id);
     setEditFormData({
       name: course.name,
       category: course.category,
@@ -136,7 +141,7 @@ const ManageCourses = () => {
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6">Manage Courses</h1>
+        <h2>Manage Courses</h2>
 
         <CourseList
           courses={courses}
