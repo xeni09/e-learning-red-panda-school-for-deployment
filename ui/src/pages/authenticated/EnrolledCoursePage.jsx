@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 import SubMenu from '../../components/layoutComponents/SubMenu';
 import EnrolledCourseTabs from '../../components/courseComponents/EnrolledCourseTabs';
 
@@ -39,7 +39,7 @@ const EnrolledCoursePage = () => {
       <div className="container my-16 p-4">
         <h1>{course.name}</h1>
         <p>A course from <span className="font-bold">{course.teacher}</span></p>
-        <p>Participants: {course.participants}</p>
+        <p>Participants: {course.students.length}</p>
 
         {/* Pass the course object to EnrolledCourseTabs */}
         <EnrolledCourseTabs course={course} />

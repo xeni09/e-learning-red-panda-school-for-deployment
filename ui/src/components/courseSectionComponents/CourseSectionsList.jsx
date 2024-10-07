@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import VideoModal from '../sharedComponents/VideoModal';
 import SectionItem from './SectionItem';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 import { useParams } from 'react-router-dom';
 
 

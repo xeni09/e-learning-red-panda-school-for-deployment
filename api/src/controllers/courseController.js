@@ -18,9 +18,9 @@ const fileExists = async (filePath) => {
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor
+    const courses = await Course.find().populate("teacher", "name");
 
-    // Mapeamos los cursos para agregar la cuenta de estudiantes
+    // Calcular la cantidad de participantes con la longitud de `students`
     const coursesWithCount = courses.map((course) => ({
       _id: course._id,
       customId: course.customId,
@@ -28,7 +28,7 @@ const getCourses = async (req, res) => {
       category: course.category,
       teacher: course.teacher,
       description: course.description,
-      participants: course.students.length,
+      students: course.students || [],
       price: course.price,
       imageSrc: course.imageSrc,
       sections: course.sections,
@@ -76,15 +76,16 @@ const createCourse = async (req, res) => {
     const lastCourse = await Course.findOne().sort({ customId: -1 });
     const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
 
-    // Crear el nuevo curso
+    // Inicializar el campo students como un array vacío
     const newCourse = new Course({
       customId: newCustomId,
       name,
       description,
-      price: parseFloat(price), // Asegurar que el precio sea tratado como número
+      price: parseFloat(price),
       category,
-      imageSrc: imagePath, // Asignar la imagen cargada
+      imageSrc: imagePath,
       teacher,
+      students: [], // Asegurarse de que siempre sea un array
     });
 
     // Guardar el curso en la base de datos
@@ -96,39 +97,6 @@ const createCourse = async (req, res) => {
       error: "Server error while creating course",
       details: error.message,
     });
-  }
-};
-
-// Simular la compra de un curso
-const buyCourse = async (req, res) => {
-  try {
-    const userId = req.user._id; // Usuario autenticado
-    const { courseId } = req.body;
-
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    const user = await User.findById(userId);
-    if (user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({ message: "You already purchased this course" });
-    }
-
-    // Agregar curso al usuario y aumentar participantes
-    user.courses.push(courseId);
-    course.students.push(userId); // Agregar el usuario a los estudiantes del curso
-    course.participants += 1;
-
-    await user.save();
-    await course.save();
-
-    res.status(200).json({ message: "Course purchased successfully" });
-  } catch (error) {
-    console.error("Error purchasing course:", error.message);
-    res.status(500).json({ message: "Error purchasing course", error });
   }
 };
 
@@ -308,8 +276,6 @@ const removeStudentFromCourse = async (req, res) => {
     course.students = course.students.filter(
       (student) => student.toString() !== studentId
     );
-    // Reducir el número de participantes
-    course.participants -= 1;
 
     // Guardar los cambios en el curso
     await course.save();
@@ -331,6 +297,7 @@ const removeStudentFromCourse = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 const assignCourseToUser = async (req, res) => {
   const { courseId } = req.params; // Obtener el ID del curso de los parámetros
   const { userId } = req.body; // Obtener el ID del usuario del cuerpo de la solicitud
@@ -350,16 +317,16 @@ const assignCourseToUser = async (req, res) => {
 
     // Verificar si el curso ya está asignado al usuario
     if (user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({ message: "Course already assigned to this user" });
+      return res.status(400).json({
+        message:
+          "Course already assigned to this user, change the email in Step 1",
+      });
     }
 
     // Asignar el curso al usuario
     user.courses.push(courseId);
 
     // Aumentar el contador de participantes en el curso
-    course.participants += 1;
     course.students.push(userId); // También agregar el usuario a la lista de estudiantes del curso
 
     // Guardar los cambios tanto en el usuario como en el curso
@@ -380,31 +347,87 @@ const assignCourseToUser = async (req, res) => {
 
 // Middleware to check if the user has purchased the course
 const hasPurchasedCourse = async (req, res, next) => {
-  const courseId = req.params.courseId;
-  const userId = req.user._id;
-
   try {
-    const user = await User.findById(userId);
+    const userId = req.user._id;
+    const courseId = req.params.courseId;
 
-    // Verificar si el usuario tiene este curso
-    if (user && user.courses.includes(courseId)) {
-      return next(); // Continuar si el usuario ha comprado el curso
+    // Buscar el usuario y verificar si ya ha comprado el curso
+    const user = await User.findById(userId).populate("courses");
+
+    if (!user || !user.courses) {
+      return res.status(403).send({ error: "User or courses not found" });
     }
 
-    // Si no ha comprado el curso, devolver un 403
-    return res
-      .status(403)
-      .json({ message: "You must purchase this course first" });
+    const hasCourse = user.courses.some((course) =>
+      course._id.equals(courseId)
+    );
+
+    if (!hasCourse) {
+      return res
+        .status(403)
+        .send({ error: "You have not purchased this course" });
+    }
+
+    next(); // Si el curso está asignado, continúa
   } catch (error) {
-    console.error("Error checking purchased course:", error.message);
-    return res.status(500).json({ message: "Server error" });
+    console.error("Error verifying course purchase:", error.message);
+    return res.status(500).send({ error: "Internal server error" });
+  }
+};
+
+// Simular la compra de un curso sin autenticación
+const simulateBuyCourse = async (req, res) => {
+  try {
+    const courseId = "67001dc00f968533a71ee9e7";
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    res.status(200).json({ message: "Course added to cart", course });
+  } catch (error) {
+    console.error("Error adding course to cart:", error.message);
+    res.status(500).json({ message: "Error adding course to cart", error });
+  }
+};
+
+// Confirmar la compra de un curso (requiere autenticación)
+const buyCourse = async (req, res) => {
+  try {
+    const userId = req.user._id; // Usuario autenticado
+
+    // ID del curso fijo a asignar
+    const courseId = "67001dc00f968533a71ee9e7";
+
+    // Buscar el curso por el ID fijo
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const user = await User.findById(userId);
+    if (user.courses.includes(courseId)) {
+      return res
+        .status(400)
+        .json({ message: "You already purchased this course" });
+    }
+
+    // Agregar curso al usuario y aumentar participantes
+    user.courses.push(courseId);
+    course.students.push(userId);
+
+    await user.save();
+    await course.save();
+
+    res.status(200).json({ message: "Course purchased successfully" });
+  } catch (error) {
+    console.error("Error purchasing course:", error.message);
+    res.status(500).json({ message: "Error purchasing course", error });
   }
 };
 
 module.exports = {
   getCourses,
   createCourse,
-  buyCourse,
   updateCourse,
   deleteCourse,
   getCourseById,
@@ -412,4 +435,6 @@ module.exports = {
   removeStudentFromCourse,
   assignCourseToUser,
   hasPurchasedCourse,
+  simulateBuyCourse,
+  buyCourse,
 };

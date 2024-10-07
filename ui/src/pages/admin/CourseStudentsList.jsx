@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom'; 
 import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
+import CustomDropdown from '../../components/adminComponents/CustomDropdown';
+
 
 const CourseStudentsList = () => {
   const { courseId } = useParams();
   const [students, setStudents] = useState([]);
   const [courseName, setCourseName] = useState('');
+  const [allUsers, setAllUsers] = useState([]); // Para almacenar todos los usuarios
+  const [selectedUser, setSelectedUser] = useState(''); // Usuario seleccionado en el dropdown
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -17,6 +21,13 @@ const CourseStudentsList = () => {
 
         const studentsResponse = await axios.get(`/api/courses/${courseId}/students`);
         setStudents(studentsResponse.data);
+
+        // Obtener la lista de todos los usuarios (excepto los ya registrados en el curso)
+        const allUsersResponse = await axios.get('/api/users'); // Asume que tienes un endpoint para obtener todos los usuarios
+        const filteredUsers = allUsersResponse.data.filter(user => 
+          !studentsResponse.data.some(student => student._id === user._id)
+        );
+        setAllUsers(filteredUsers); // Almacena los usuarios no registrados en el curso
       } catch (error) {
         console.error("Error fetching course details and students:", error);
       }
@@ -24,6 +35,19 @@ const CourseStudentsList = () => {
 
     fetchCourseDetails();
   }, [courseId]);
+
+  // Función para añadir un usuario al curso
+  const handleAddUserToCourse = async () => {
+    if (!selectedUser) return;
+    try {
+      await axios.post(`/api/courses/${courseId}/assign-user`, { userId: selectedUser });
+      const updatedStudents = await axios.get(`/api/courses/${courseId}/students`);
+      setStudents(updatedStudents.data); // Actualizar lista de estudiantes del curso
+      setSelectedUser(''); // Limpiar el usuario seleccionado
+    } catch (error) {
+      console.error("Error adding user to course:", error);
+    }
+  };
 
   // Función para eliminar al usuario del curso
   const handleRemoveStudent = async (studentId) => {
@@ -39,23 +63,50 @@ const CourseStudentsList = () => {
     }
   };
 
+  // Preparar las opciones para el CustomDropdown
+  const userOptions = allUsers.map(user => ({
+    value: user._id,
+    label: `${user.name} (${user.email})`
+  }));
+
   return (
     <>
       <AdminSubMenu />
       <div className="container mx-auto p-6 pt-10">
         <div className="flex justify-between items-center mb-6">
-        
           <button onClick={() => navigate(-1)} className="btn">
             Go Back to Manage Courses
           </button>
         </div>
 
+        {/* Dropdown para añadir usuarios */}
+        <div className="mb-8 bg-white p-8 shadow-md rounded-lg">
+          <h3 className="text-3xl font-bold text-gray-800">Add User to Course</h3>
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 items-start sm:items-end">
+            <div className="w-full sm:w-3/4">
+              <CustomDropdown
+                options={userOptions} // Pasar las opciones de usuarios
+                selectedOption={selectedUser}
+                onOptionSelect={setSelectedUser} // Manejar la selección
+                className="w-full"
+              />
+            </div>
+            <div>
+              <button
+                onClick={handleAddUserToCourse}
+                className="btn-save m-0"
+              >
+                Add to Course
+              </button>
+            </div>
+          </div>
+        </div>
+
         {students.length > 0 ? (
-          <div className="bg-white p-10">
+          <div className="bg-white p-10 rounded-lg">
             <h2 className="text-3xl font-normal">Students Registered for the Course:</h2>
             <Link to={`/admin/manage-courses/${courseId}`}>
               <h2 className="flex justify-start items-end text-3xl font-bold text-[var(--color-orange)] cursor-pointer">
-                {/* <span className="text-black text-lg pr-3">Course Name:  </span> */}
                 "{courseName}"
                 <span className="pl-4 text-sm ">*Click here to go back</span>
               </h2>

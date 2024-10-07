@@ -14,7 +14,7 @@ const initRoutes = (app) => {
   app.use("/api/admin", auth, adminRoutes);
 
   // Inicializar rutas de cursos (protegidas por autenticación)
-  app.use("/api/courses", auth, coursesRoutes);
+  app.use("/api/courses", coursesRoutes);
 
   // Inicializar rutas de secciones de cursos (protegidas por autenticación)
   app.use("/api/courses", auth, courseSectionRoutes); // El prefijo es el mismo, pero las rutas de secciones están separadas

@@ -1,8 +1,5 @@
 export const loginUser = async (token, setIsAuthenticated, setUser) => {
   try {
-    // Almacena solo el token en localStorage
-    localStorage.setItem("token", token);
-
     // Llamar a la API para verificar el token y obtener los datos del usuario
     const response = await fetch("http://localhost:3000/api/auth/verifyToken", {
       method: "GET",

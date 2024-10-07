@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import axios from 'axios'; // You could also use a custom hook or service for API requests
+import axios from '../../services/axiosConfig';
 
 const EnrolledCourseCard = ({ id }) => {
   const navigate = useNavigate();
@@ -11,20 +11,18 @@ const EnrolledCourseCard = ({ id }) => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        // Load course data either from local storage or API
-        const localCourse = JSON.parse(localStorage.getItem(`course-${id}`));
-        if (localCourse) {
-          setCourse(localCourse); // If data exists in local storage, use it
-        } else {
-          // Fetch course data from backend
-          const response = await axios.get(`/api/courses/${id}`);
-          setCourse(response.data); // Store course data in state
-          localStorage.setItem(`course-${id}`, JSON.stringify(response.data)); // Cache course data locally
-        }
+        const response = await axios.get(`/api/courses/${id}/enrolled`, { withCredentials: true }); 
+        setCourse(response.data); // Actualiza el estado con los datos más recientes
       } catch (error) {
-        console.error('Error fetching course:', error);
+        if (error.response && error.response.status === 403) {
+          console.error('You do not have access to this course');
+          // Aquí podrías redirigir al usuario o mostrar un mensaje de error
+        } else {
+          console.error('Error fetching course:', error);
+        }
       }
     };
+    
 
     if (id) {
       fetchCourse();
@@ -44,6 +42,11 @@ const EnrolledCourseCard = ({ id }) => {
     return <p>Loading...</p>; // Handle loading state
   }
 
+  // Mover la verificación de course.description después de que course haya sido cargado
+  const shortDescription = course.description.length > 100 
+    ? `${course.description.slice(0, 100)}...` 
+    : course.description;
+
   const instructorName = typeof course.teacher === 'object' ? course.teacher.name : course.teacher || 'Unknown Teacher';
 
   return (
@@ -58,11 +61,14 @@ const EnrolledCourseCard = ({ id }) => {
           <p className="text-sm text-[var(--color-grey)]">{instructorName}</p>
         </div>
         <h3 className="font-bold mt-2 text-left">{course.name}</h3>
-        <p className="text-[var(--color-black)] mt-0 text-sm sm:text-base text-left">{course.description}</p>
+        <p className="text-[var(--color-black)] mt-0 text-sm sm:text-base text-left">
+          {shortDescription}
+        </p>
+
         <div className="flex flex-wrap justify-between items-center mt-4 pt-6">
           <div className="flex items-center">
             <FaUser className="w-5 h-5 text-[var(--color-grey)]" />
-            <p className="ml-2 text-sm text-[var(--color-grey)] font-light">{course.participants} Students</p>
+            <p className="ml-2 text-sm text-[var(--color-grey)] font-light">{course.students.length} Students</p>
           </div>
         </div>
         <div className="mt-auto">

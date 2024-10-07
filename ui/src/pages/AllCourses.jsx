@@ -156,7 +156,7 @@ const AllCourses = () => {
         }
       />
       <div className="container mx-auto p-4 py-20">
-      <h1 className=" font-bold text-center pb-10">Our Courses</h1>
+      <h1 className=" text-center pb-16">Our Courses</h1>
 
         <div className="flex flex-wrap justify-center space-x-4 mb-10">
           {categories.map((category, index) => (

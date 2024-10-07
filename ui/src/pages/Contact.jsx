@@ -59,7 +59,7 @@ const Contact = () => {
 
       <div className="relative isolate px-6 py-16 sm:py-20 lg:px-8">
         <div>
-          <p className="text-center text-4xl text-[var(--color-black)]">Contact Form</p>
+          <h1 className="text-center text-4xl text-[var(--color-black)]">Contact Form</h1>
         </div>
         <form onSubmit={handleSubmit} className="mx-auto mt-10 max-w-xl">
           <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">

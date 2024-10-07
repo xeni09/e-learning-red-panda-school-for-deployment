@@ -10,29 +10,25 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const verifyUserToken = async () => {
       try {
-        // Token is assumed to be in cookies (managed by backend)
-        const response = await axios.get('/api/auth/verifyToken');  
+        const response = await axios.get('/api/auth/verifyToken', { withCredentials: true });
         if (response.data && response.data.user) {
-          // User successfully authenticated, store user and authentication state
           setUser(response.data.user);
           setIsAuthenticated(true);
         } else {
-          // If no user is returned, handle invalid token
           handleInvalidToken();
         }
       } catch (error) {
-        console.error('Token verification failed:', error);
-        // Only log out on token-related errors (401)
-        if (error.response && error.response.status === 401) {
-          handleInvalidToken();
-        }
+        console.error('User verification failed:', error);
+        handleInvalidToken();
       } finally {
-        setIsLoading(false);  // Stop loading after verification attempt
+        setIsLoading(false);
       }
     };
-
-    verifyUserToken();  // Trigger token verification when component mounts
+  
+    verifyUserToken();
   }, []);
+  
+  
 
   const handleInvalidToken = () => {
     setIsAuthenticated(false);

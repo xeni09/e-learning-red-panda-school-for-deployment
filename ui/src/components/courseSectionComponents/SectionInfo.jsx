@@ -117,7 +117,7 @@ const SectionInfo = ({ courseId, sectionId }) => {
               name="description"
               value={sectionData.description}
               onChange={handleInputChange}
-              className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300 whitespace-pre-wrap"
             />
           ) : (
             <p className="border px-4 py-2 w-full rounded-md bg-gray-100" style={{ whiteSpace: 'pre-line' }}>

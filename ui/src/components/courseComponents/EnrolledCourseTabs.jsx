@@ -12,8 +12,9 @@ const EnrolledCourseTabs = ({ course }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Left side: course description */}
             <div className="md:col-span-2">
-              <h2 className="text-2xl font-bold mb-4">Course Overview</h2>
-              <p>{course.description}</p>
+              <p className="text-4xl mb-8">Course Overview</p>
+              <p className='p-6 bg-gray-100 rounded-lg shadow-md sticky top-20 whitespace-pre-wrap'>
+              {course.description}</p>
             </div>
             
             {/* Right side: fixed info */}
@@ -22,8 +23,9 @@ const EnrolledCourseTabs = ({ course }) => {
             </div>
           </div>
         );
-      case 'Content':
-        return <EnrolledCourseContent sections={course.sections} />;
+        case 'Content':
+          return <EnrolledCourseContent courseName={course.name} sections={course.sections} />;
+        
       case 'Instructor':
         return <div>Instructor: {course.teacher}</div>;
       case 'Review':

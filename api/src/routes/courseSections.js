@@ -70,7 +70,7 @@ router.put(
 
 // Ruta para subir la imagen de la sección
 router.post(
-  "/api/upload-section",
+  "/:courseId/sections/upload-image",
   sectionUpload.single("sectionImage"),
   async (req, res) => {
     try {

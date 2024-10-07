@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useAuth } from '../../context/AuthProvider'; // Import useAuth hook to get the user context
 import SubMenu from '../../components/layoutComponents/SubMenu';
 import EnrolledCourseCard from '../../components/courseComponents/EnrolledCourseCard';
-import axios from 'axios';
 
 const MyCourses = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user, isAuthenticated, isLoading } = useAuth(); // Access user, isAuthenticated, and isLoading from context
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const { data } = await axios.get('/api/courses'); // Fetch courses
-        setCourses(data);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      } finally {
-        setLoading(false); // Stop loading regardless of success/failure
-      }
-    };
+  // Show loading state while fetching user data
+  if (isLoading || !user) {
+    return <p>Loading...</p>;
+  }
 
-    fetchCourses();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
+  // Show a message if the user is not authenticated
+  if (!isAuthenticated || !user) {
+    return <div>Please log in to view your courses.</div>;
+  }
 
   return (
     <>
@@ -31,19 +23,11 @@ const MyCourses = () => {
         <h2>My Courses</h2>
         <p className="text-xl">Here you can find all your purchased courses.</p>
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-          {courses.length > 0 ? (
+          {/* Display user's purchased courses */}
+          {user.courses && user.courses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {courses.map((course) => (
-                <EnrolledCourseCard 
-                  key={course._id}
-                  id={course._id}
-                  name={course.name}
-                  imageSrc={course.imageSrc}
-                  imageAlt={course.name}
-                  teacher={typeof course.teacher === 'object' ? course.teacher.name : course.teacher}
-                  description={course.description}
-                  participants={course.participants || course.userCount}
-                />
+              {user.courses.map((course) => (
+                <EnrolledCourseCard key={course._id} id={course._id} />
               ))}
             </div>
           ) : (

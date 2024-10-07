@@ -47,7 +47,8 @@ const CourseRow = ({
           <CustomDropdown
             options={categories.map(cat => ({ value: cat, label: cat }))}
             selectedOption={editFormData.category}
-            onOptionSelect={handleCategoryChange}  // Asegúrate de que esta función está presente
+            onOptionSelect={handleCategoryChange}  
+            className="min-w-[170px] w-full max-w-full px-2 py-2"
           />
         ) : (
           course.category
@@ -85,17 +86,11 @@ const CourseRow = ({
         )}
       </td>
 
-
-
-
       <td className="border px-4 py-2 text-center">
-      <Link to={`/admin/manage-courses/${course._id}/students`} className="text-[var(--color-orange)]">
-          {course.userCount} 
+        <Link to={`/admin/manage-courses/${course._id}/students`} className="text-[var(--color-orange)]">
+        {course.students ? course.students.length : 0} 
         </Link>
       </td>
-
-
-
 
 
       <td className="border px-0 py-0 text-center">

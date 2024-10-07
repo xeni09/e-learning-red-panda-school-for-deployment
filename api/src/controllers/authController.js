@@ -8,8 +8,10 @@ const registerUser = async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
+
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      // Si el usuario ya existe, simplemente devuelve un mensaje de éxito sin intentar crear un nuevo usuario
+      return res.status(200).json({ msg: "User already exists", user });
     }
 
     // Obtener el último customId y sumarle 1 para asignarlo al nuevo usuario
@@ -31,7 +33,8 @@ const registerUser = async (req, res) => {
     // Guardar el usuario en la base de datos
     await user.save();
 
-    res.status(201).json({ msg: "User registered successfully" });
+    // Devolver el usuario recién creado
+    res.status(201).json({ msg: "User registered successfully", user });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -43,7 +46,6 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Buscar el usuario por email y popular los cursos comprados
     const user = await User.findOne({ email }).populate("courses");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -70,6 +72,8 @@ const login = async (req, res) => {
       sameSite: "Strict",
       maxAge: 60 * 60 * 1000, // Expira en 1 hora
     });
+
+    console.log("Token set in cookie: ", token); // Add this log to verify token creation
 
     // Devolver los datos del usuario, incluyendo los cursos
     res.json({
