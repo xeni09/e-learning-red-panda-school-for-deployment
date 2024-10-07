@@ -68,7 +68,7 @@ const EnrolledCourseCard = ({ id }) => {
         <div className="flex flex-wrap justify-between items-center mt-4 pt-6">
           <div className="flex items-center">
             <FaUser className="w-5 h-5 text-[var(--color-grey)]" />
-            <p className="ml-2 text-sm text-[var(--color-grey)] font-light">{course.participants} Students</p>
+            <p className="ml-2 text-sm text-[var(--color-grey)] font-light">{course.students.length} Students</p>
           </div>
         </div>
         <div className="mt-auto">

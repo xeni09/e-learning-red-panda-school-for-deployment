@@ -141,19 +141,30 @@ const createUser = async (req, res) => {
 
 // Controlador para eliminar un usuario por ID
 const deleteUser = async (req, res) => {
-  console.log("deleteUser called with ID:", req.params.id);
+  const { userId } = req.params;
 
   try {
-    const user = await User.findById(req.params.id);
+    // Buscar al usuario a eliminar
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
+    // Eliminar al usuario de todos los cursos en los que esté inscrito
+    await Course.updateMany(
+      { students: userId },
+      {
+        $pull: { students: userId }, // Eliminar la referencia del usuario
+      }
+    );
+
+    // Finalmente, eliminar al usuario de la base de datos
     await user.deleteOne();
-    res.json({ msg: "User deleted successfully" });
-  } catch (err) {
-    console.error("Error deleting user:", err.message);
-    res.status(500).send("Server error");
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

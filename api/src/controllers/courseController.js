@@ -18,9 +18,9 @@ const fileExists = async (filePath) => {
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name"); // Solo obtenemos el nombre del profesor
+    const courses = await Course.find().populate("teacher", "name");
 
-    // Mapeamos los cursos para agregar la cuenta de estudiantes
+    // Calcular la cantidad de participantes con la longitud de `students`
     const coursesWithCount = courses.map((course) => ({
       _id: course._id,
       customId: course.customId,
@@ -28,7 +28,7 @@ const getCourses = async (req, res) => {
       category: course.category,
       teacher: course.teacher,
       description: course.description,
-      participants: course.students.length,
+      students: course.students || [],
       price: course.price,
       imageSrc: course.imageSrc,
       sections: course.sections,
@@ -76,15 +76,16 @@ const createCourse = async (req, res) => {
     const lastCourse = await Course.findOne().sort({ customId: -1 });
     const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
 
-    // Crear el nuevo curso
+    // Inicializar el campo students como un array vacío
     const newCourse = new Course({
       customId: newCustomId,
       name,
       description,
-      price: parseFloat(price), // Asegurar que el precio sea tratado como número
+      price: parseFloat(price),
       category,
-      imageSrc: imagePath, // Asignar la imagen cargada
+      imageSrc: imagePath,
       teacher,
+      students: [], // Asegurarse de que siempre sea un array
     });
 
     // Guardar el curso en la base de datos
@@ -275,8 +276,6 @@ const removeStudentFromCourse = async (req, res) => {
     course.students = course.students.filter(
       (student) => student.toString() !== studentId
     );
-    // Reducir el número de participantes
-    course.participants -= 1;
 
     // Guardar los cambios en el curso
     await course.save();
@@ -298,6 +297,7 @@ const removeStudentFromCourse = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 const assignCourseToUser = async (req, res) => {
   const { courseId } = req.params; // Obtener el ID del curso de los parámetros
   const { userId } = req.body; // Obtener el ID del usuario del cuerpo de la solicitud
@@ -317,19 +317,16 @@ const assignCourseToUser = async (req, res) => {
 
     // Verificar si el curso ya está asignado al usuario
     if (user.courses.includes(courseId)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Course already assigned to this user, change the email in Step 1",
-        });
+      return res.status(400).json({
+        message:
+          "Course already assigned to this user, change the email in Step 1",
+      });
     }
 
     // Asignar el curso al usuario
     user.courses.push(courseId);
 
     // Aumentar el contador de participantes en el curso
-    course.participants += 1;
     course.students.push(userId); // También agregar el usuario a la lista de estudiantes del curso
 
     // Guardar los cambios tanto en el usuario como en el curso
@@ -416,8 +413,7 @@ const buyCourse = async (req, res) => {
 
     // Agregar curso al usuario y aumentar participantes
     user.courses.push(courseId);
-    course.students.push(userId); // Agregar el usuario a los estudiantes del curso
-    course.participants += 1;
+    course.students.push(userId);
 
     await user.save();
     await course.save();
