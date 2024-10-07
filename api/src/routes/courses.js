@@ -90,4 +90,6 @@ router.get(
 // Ruta protegida para confirmar la compra (requiere autenticación)
 router.post("/confirm-buy", auth, buyCourse);
 
+router.post("/:courseId/assign-user", assignCourseToUser);
+
 module.exports = router;
