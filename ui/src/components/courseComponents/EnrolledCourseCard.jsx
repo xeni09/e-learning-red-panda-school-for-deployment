@@ -11,12 +11,18 @@ const EnrolledCourseCard = ({ id }) => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`/api/courses/${id}`);
+        const response = await axios.get(`/api/courses/${id}/enrolled`, { withCredentials: true }); 
         setCourse(response.data); // Actualiza el estado con los datos más recientes
       } catch (error) {
-        console.error('Error fetching course:', error);
+        if (error.response && error.response.status === 403) {
+          console.error('You do not have access to this course');
+          // Aquí podrías redirigir al usuario o mostrar un mensaje de error
+        } else {
+          console.error('Error fetching course:', error);
+        }
       }
     };
+    
 
     if (id) {
       fetchCourse();

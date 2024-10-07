@@ -7,6 +7,7 @@ const CourseSummary = ({ courseName, price, teacherName, description, posterUrl 
 
   const handleBuyNowClick = () => {
     const course = { name: courseName, price, teacherName, description, posterUrl };
+    // Navegar a checkout y pasar el curso en el estado de navegación
     navigate('/checkout', { state: { course } });
   };
 

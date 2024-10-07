@@ -9,31 +9,23 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const verifyUserToken = async () => {
-      // Verificar si el token existe en las cookies
-      const tokenExists = document.cookie.includes('token');
-      if (!tokenExists) {
-        console.log("No token found, skipping verification");
-        setIsLoading(false); // Asegúrate de que el loading termine si no hay token
-        return;
-      }
-    
       try {
+        // No manual token check, just call the backend route
         const response = await axios.get('/api/auth/verifyToken');
         if (response.data && response.data.user) {
-          setUser(response.data.user);
-          setIsAuthenticated(true);
+          setUser(response.data.user); // Set user from backend
+          setIsAuthenticated(true);   // Set auth status to true
         } else {
-          handleInvalidToken();
+          handleInvalidToken();       // Clear auth on failure
         }
       } catch (error) {
-        console.error('Token verification failed:', error);
-        if (error.response && error.response.status === 401) {
-          handleInvalidToken();
-        }
+        console.error('User verification failed:', error);
+        handleInvalidToken();
       } finally {
-        setIsLoading(false);
+        setIsLoading(false);          // Stop loading spinner
       }
     };
+    
     
 
     verifyUserToken();  // Trigger token verification when component mounts

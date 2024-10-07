@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/logo-transparente.png'; // Asegúrate de ajustar la ruta según sea necesario
+import logo from '../assets/logo-transparente.png';
 
 const CheckoutEmpty = () => {
   return (

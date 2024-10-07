@@ -22,6 +22,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotCreated from "./pages/NotCreated";
 import CoursePageToBuy from "./pages/CoursePageToBuy";
 import Checkout from './pages/Checkout';
+import CheckoutEmpty from './pages/CheckoutEmpty';
 import ConfirmationCourseBought from './pages/ConfirmationCourseBought';
 
 // Admin Pages
@@ -65,7 +66,8 @@ const App = () => {
                 <Route path="/not-created" element={<NotCreated />} />
                 <Route path="/course/:courseId" element={<CoursePageToBuy />} />
                 <Route path="/checkout" element={<Checkout />} />
-                <Route path="/confirmationcoursebought" element={<ConfirmationCourseBought />} />
+                <Route path="/checkout-empty" element={<CheckoutEmpty />} />
+               
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
@@ -82,6 +84,9 @@ const App = () => {
                 <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="/enrolled-course/:courseId" element={<ProtectedRoute><EnrolledCoursePage /></ProtectedRoute>} />
+
+                <Route path="/confirmationcoursebought" element={<ProtectedRoute><ConfirmationCourseBought /></ProtectedRoute>} />
+
 
               </Routes>
             </div>

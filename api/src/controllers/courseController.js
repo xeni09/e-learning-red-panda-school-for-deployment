@@ -348,13 +348,19 @@ const assignCourseToUser = async (req, res) => {
 // Middleware to check if the user has purchased the course
 const hasPurchasedCourse = async (req, res, next) => {
   try {
-    const userId = req.user._id; // Esto debería provenir de las cookies (ya decodificadas en el middleware `auth`)
+    const userId = req.user._id;
     const courseId = req.params.courseId;
 
-    // Verifica si el usuario ya ha comprado el curso
-    const user = await User.findById(userId).populate("courses"); // Asegúrate de que courses sea un array de ObjectId
+    // Buscar el usuario y verificar si ya ha comprado el curso
+    const user = await User.findById(userId).populate("courses");
 
-    const hasCourse = user.courses.some((course) => course.equals(courseId));
+    if (!user || !user.courses) {
+      return res.status(403).send({ error: "User or courses not found" });
+    }
+
+    const hasCourse = user.courses.some((course) =>
+      course._id.equals(courseId)
+    );
 
     if (!hasCourse) {
       return res
@@ -362,9 +368,9 @@ const hasPurchasedCourse = async (req, res, next) => {
         .send({ error: "You have not purchased this course" });
     }
 
-    next();
+    next(); // Si el curso está asignado, continúa
   } catch (error) {
-    console.error(error);
+    console.error("Error verifying course purchase:", error.message);
     return res.status(500).send({ error: "Internal server error" });
   }
 };

@@ -2,28 +2,41 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import CourseTabs from '../components/courseComponents/CourseTabs';
 import CourseSummary from '../components/courseComponents/CourseSummary';
-import FeaturedCourses from '../components/courseComponents/FeaturedCourses'; 
+import FeaturedCoursesThin from '../components/courseComponents/FeaturedCoursesThin'; 
 
 const CoursePageToBuy = () => {
   const { courseId } = useParams();
-  // Aquí puedes obtener los datos del curso usando el courseId, por ejemplo, desde una API o un estado global.
   
   const course = {
-    title: "Big Buck Bunny",
-    instructor: "Rabbit Teacher",
+    title: "Python Programming",
+    instructor: "Pete Python",
     videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     posterUrl: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
-    price: "99 €"
+    price: "49.99 €"
   };
-  const selectedCourseIds = [2, 5];
+  const selectedCourseIds = [1, 2];
 
   return (
     <div className="container my-16 p-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+        
+        {/* Course Summary: Primero en móviles, segundo en escritorio */}
+        <div className="order-first md:order-2 col-span-1">
+          <div className="sticky top-40">
+            <CourseSummary 
+              courseName={course.title}
+              price={course.price} 
+              teacherName={course.instructor} 
+              posterUrl={course.posterUrl} 
+            />
+          </div>
+        </div>
+
+        {/* Course Content */}
         <div className="col-span-1 md:col-span-3 mx-5">
           {/* Course Header */}
           <div className="order-2 md:order-1 mb-4">
-            <h1 className="font-bold">{course.title}</h1>
+            <h2 className="">{course.title}</h2>
             <p className="text-xl text-[var(--color-grey)]">{course.instructor}</p>
           </div>
 
@@ -40,33 +53,22 @@ const CoursePageToBuy = () => {
           </div>
 
           {/* Course Tabs */}
-          <div className="order-5 md:order-3 w-full">
+          <div className="order-3 md:order-4 w-full">
             <CourseTabs />
           </div>
+
           {/* Featured Courses */}
-      <FeaturedCourses 
-        title="Related Courses" 
-        selectedCourseIds={selectedCourseIds} 
-        titleFontSize="text-4xl"
-    
-      />
-        </div>
-        
-        <div className="order-4 md:order-4 col-span-1">
-          {/* Course Summary */}
-          <div className="sticky top-40">
-            <CourseSummary 
-                  courseName={course.title}
-                  price={course.price} 
-                  teacherName={course.instructor} 
-                  posterUrl={course.posterUrl} />
+          <div className="order-4 md:order-5 w-full">
+            <FeaturedCoursesThin 
+              title="Related Courses" 
+              selectedCourseIds={selectedCourseIds} 
+              titleFontSize="text-4xl"
+              
+            />
           </div>
         </div>
-
         
       </div>
-
-      
     </div>
   );
 };

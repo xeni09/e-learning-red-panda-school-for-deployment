@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png'; 
-import pythonImage from '../assets/images/python.jpg'; 
 
 const ConfirmationCourseBought = () => {
   const location = useLocation();
@@ -23,36 +22,9 @@ const ConfirmationCourseBought = () => {
         Email: <strong>testemail@test.com</strong> <br /> password: <strong>1234</strong> 
         </p>
 
-
-       <h2 className="font-bold text-3xl text-[var(--color-black)] mb-6">
-        Order Summary
-      </h2>
-
-      <div className="flex justify-center">
-        {cart.length > 0 ? (
-          cart.map((course, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg p-6 text-center w-full sm:w-1/2 lg:w-1/3">
-              {/* Course Image */}
-              <img
-                src={pythonImage}
-                alt="Python Course"
-                className="rounded-lg shadow-md mx-auto mb-6"
-              />
-
-              {/* Course Information */}
-              <h3 className="font-bold text-xl text-[var(--color-black)]">{course.name || 'Python Programming'}</h3>
-              <p className="text-lg font-medium text-[var(--color-grey)]">by {course.teacherName || 'Pete Python'}</p>
-              <p className="text-lg font-medium text-[var(--color-grey)]">Price: {course.price || '49.99 €'}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-lg font-medium text-[var(--color-grey)]">No courses in the cart.</p>
-        )}
-      </div>
-
-      <Link to="/courses">
+      <Link to="/my-account">
         <button className="btn-wide btn-primary mt-6">
-          Back to Courses
+          Go to your account
         </button>
       </Link>
     </div>

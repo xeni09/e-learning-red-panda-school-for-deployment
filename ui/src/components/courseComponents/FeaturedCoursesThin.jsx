@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import CourseCardGrid from './CourseCard';
+import CourseCardGrid from './CourseCardThin';
 import alpaca from '../../assets/images/alpaca.webp';
 import cat from '../../assets/images/cat.jpeg';
 import python from '../../assets/images/python.jpg';
@@ -47,8 +47,8 @@ const courses = [
   },
 ];
 
-const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCourseIds, titleFontSize = 'font-6xl' }) => {
-  const filteredCourses = courses.filter(course => selectedCourseIds.includes(course.id)); // Cambié course._id a course.id
+const FeaturedCoursesThin = ({ title, buttonText, buttonLink, subText, selectedCourseIds, titleFontSize = 'font-6xl' }) => {
+  const filteredCourses = courses.filter(course => selectedCourseIds.includes(course.id)); 
 
   return (
     <div className="container mx-auto p-4 py-20">
@@ -68,4 +68,4 @@ const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCours
   );
 };
 
-export default FeaturedCourses;
+export default FeaturedCoursesThin;

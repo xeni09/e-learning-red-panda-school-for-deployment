@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CheckoutSteps from '../components/checkoutComponents/CheckoutSteps';
 import CheckoutSummary from '../components/checkoutComponents/CheckoutSummary';
 import axios from 'axios';
-import CheckoutEmpty from '../components/checkoutComponents/CheckoutEmpty';
+import CheckoutEmpty from './CheckoutEmpty';
 
 const Checkout = () => {
   const [cart, setCart] = useState([]);  // Por defecto, carrito vacío
