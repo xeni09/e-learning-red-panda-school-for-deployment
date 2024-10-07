@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Section from "../components/sharedComponents/Section";
 import heroBanner from "../assets/hero-banner2.png";
 import Feedback from '../components/feedbackComponents/Feedback';

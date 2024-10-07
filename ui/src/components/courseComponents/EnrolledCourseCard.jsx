@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import axios from 'axios'; // You could also use a custom hook or service for API requests
+import axios from '../../services/axiosConfig';
 
 const EnrolledCourseCard = ({ id }) => {
   const navigate = useNavigate();

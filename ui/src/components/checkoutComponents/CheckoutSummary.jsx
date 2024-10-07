@@ -3,7 +3,7 @@ import pythonImage from '../../assets/images/python.jpg';
 
 const CheckoutSummary = ({ cart, removeCourse }) => {
   return (
-    <div className="md:w-1/3 p-8 bg-white rounded-lg shadow-md">
+    <div className="md:w-1/3 p-5 bg-white rounded-lg shadow-md">
       <p className="font-bold text-3xl my-4">Cart</p>
       <img src={pythonImage} className="rounded-lg shadow-md mr-4 mb-6" />
       <div>

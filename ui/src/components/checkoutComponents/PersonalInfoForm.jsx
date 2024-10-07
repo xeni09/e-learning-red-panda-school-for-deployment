@@ -19,7 +19,7 @@ const PersonalInfoForm = ({ formData, errors, handleInputChange, nextStep }) => 
           {errors.name && <p className="text-red-500">{errors.name}</p>}
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-medium mb-2" htmlFor="email">Email (Please change it a bit so it creates a new user automatically for testing)</label>
+          <label className="block text-lg font-medium mb-2" htmlFor="email">Email (Please change Email Address!)</label>
           <input
             type="email"
             value={formData.email}

@@ -4,6 +4,8 @@ import CourseTabs from '../components/courseComponents/CourseTabs';
 import CourseSummary from '../components/courseComponents/CourseSummary';
 import FeaturedCoursesThin from '../components/courseComponents/FeaturedCoursesThin'; 
 
+
+
 const CoursePageToBuy = () => {
   const { courseId } = useParams();
   

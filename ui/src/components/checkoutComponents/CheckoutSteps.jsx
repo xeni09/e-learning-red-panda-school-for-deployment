@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 import { useAuth } from '../../context/AuthProvider';
 import ProgressBar from './ProgressBar';
 import PersonalInfoForm from './PersonalInfoForm';
@@ -81,7 +81,7 @@ const CheckoutSteps = ({ cart }) => {
   };
 
   return (
-    <div className="p-4 pr-10">
+    <div className="p-2">
       <ProgressBar step={step} setStep={setStep} />
 
       {step === 1 && (

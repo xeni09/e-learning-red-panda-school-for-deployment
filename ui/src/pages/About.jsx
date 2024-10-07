@@ -97,7 +97,7 @@ const About = () => {
 
       <div className="container mx-auto">
         <div className='pt-10'>
-          <h1 className=" font-bold text-center pb-10">Meet our Team</h1>
+          <h1 className=" text-center pb-10">Meet our Team</h1>
           <h6 className='text-center px-6'> 
             Our team is composed of dedicated professionals who are passionate about education and committed to helping our students succeed. Each member brings a wealth of experience and expertise to the table, ensuring that our students receive the best possible learning experience.
           </h6>

@@ -55,7 +55,7 @@ const FeaturedCourses = ({ title, buttonText, buttonLink, subText, selectedCours
       <h2 className={` text-[var(--color-black)] text-center pb-10 ${titleFontSize}`}>{title}</h2>
       <CourseCardGrid courses={filteredCourses} />
       
-      <h2 className="font-bold text-center pt-16">{subText}</h2>
+      <h2 className=" text-center pt-16">{subText}</h2>
 
       {buttonText && buttonLink && (
         <div className="text-center m-4">

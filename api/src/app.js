@@ -105,12 +105,9 @@ app.use(
       ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
     }),
     cookie: {
-      // secure: process.env.NODE_ENV === "production",
-      // sameSite: "none",
-      secure: false, // Solo para localhost, asegúrate de que esto sea `false`
-      sameSite: "lax", // Asegúrate que esté en `lax` o `strict` para desarrollo
-
-      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // `true` solo en producción con HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      httpOnly: true, // Asegura que solo sea accesible desde el servidor
     },
   })
 );

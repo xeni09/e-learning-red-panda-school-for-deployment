@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CheckoutSteps from '../components/checkoutComponents/CheckoutSteps';
 import CheckoutSummary from '../components/checkoutComponents/CheckoutSummary';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import CheckoutEmpty from './CheckoutEmpty';
 
 const Checkout = () => {

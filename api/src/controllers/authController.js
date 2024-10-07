@@ -46,7 +46,6 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Buscar el usuario por email y popular los cursos comprados
     const user = await User.findOne({ email }).populate("courses");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -73,6 +72,8 @@ const login = async (req, res) => {
       sameSite: "Strict",
       maxAge: 60 * 60 * 1000, // Expira en 1 hora
     });
+
+    console.log("Token set in cookie: ", token); // Add this log to verify token creation
 
     // Devolver los datos del usuario, incluyendo los cursos
     res.json({

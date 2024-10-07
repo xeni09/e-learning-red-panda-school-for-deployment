@@ -10,26 +10,25 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const verifyUserToken = async () => {
       try {
-        // No manual token check, just call the backend route
-        const response = await axios.get('/api/auth/verifyToken');
+        const response = await axios.get('/api/auth/verifyToken', { withCredentials: true });
         if (response.data && response.data.user) {
-          setUser(response.data.user); // Set user from backend
-          setIsAuthenticated(true);   // Set auth status to true
+          setUser(response.data.user);
+          setIsAuthenticated(true);
         } else {
-          handleInvalidToken();       // Clear auth on failure
+          handleInvalidToken();
         }
       } catch (error) {
         console.error('User verification failed:', error);
         handleInvalidToken();
       } finally {
-        setIsLoading(false);          // Stop loading spinner
+        setIsLoading(false);
       }
     };
-    
-    
-
-    verifyUserToken();  // Trigger token verification when component mounts
+  
+    verifyUserToken();
   }, []);
+  
+  
 
   const handleInvalidToken = () => {
     setIsAuthenticated(false);

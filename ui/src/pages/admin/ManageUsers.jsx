@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 import AdminSubMenu from '../../components/adminComponents/AdminSubMenu';
 import CustomDropdown from '../../components/adminComponents/CustomDropdown';
 import SearchBar from '../../components/adminComponents/SearchBar';
