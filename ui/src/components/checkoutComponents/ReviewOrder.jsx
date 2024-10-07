@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReviewOrder = ({ cart, prevStep, handleConfirmOrder }) => {
+const ReviewOrder = ({ cart, prevStep, handleConfirmOrder, errorMessage }) => {
   return (
     <div>
       <p className="font-bold text-2xl pt-6 my-4">Step 3: Review & Confirm</p>
@@ -22,6 +22,15 @@ const ReviewOrder = ({ cart, prevStep, handleConfirmOrder }) => {
         <button type="button" onClick={prevStep} className="btn bg-gray-400 mt-4">Back</button>
         <button type="button" onClick={handleConfirmOrder} className="btn mt-4">Confirm Order</button>
       </div>
+
+      {/* Conditionally render the error message */}
+      {errorMessage && (
+        <div className="mt-4 p-4 bg-red-100 text-red-600 rounded">
+          {errorMessage}
+        </div>
+      )}
+
+
     </div>
   );
 };

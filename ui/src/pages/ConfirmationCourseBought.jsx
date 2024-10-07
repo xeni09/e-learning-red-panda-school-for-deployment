@@ -16,12 +16,19 @@ const ConfirmationCourseBought = () => {
       <h1 className="font-bold text-3xl my-4 text-[var(--color-black)]">Congratulations!</h1>
       <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">You have successfully bought the course.</p>
      
-        <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">An email confirmation has been sent to <strong>{formData.email}</strong> (Not really).
-        </p>
-        <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">Therefore use this info to log in:<br />
-        Email: <strong>testemail@test.com</strong> <br /> password: <strong>1234</strong> 
-        </p>
-
+      <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">
+        An email confirmation has been sent to <strong>{formData.email}</strong> (Not really).
+      </p>
+      
+      <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">
+        You can use this info to log in:<br />
+        Email: <strong>{formData.email}</strong><br /> password: <strong>1234</strong>
+      </p>
+      
+      <p className="text-center text-lg font-medium text-[var(--color-grey)] mb-6">
+        But for testing purposes.... <br />you are already logged in!! please click on the button below:
+      </p>
+      
       <Link to="/my-account">
         <button className="btn-wide btn-primary mt-6">
           Go to your account

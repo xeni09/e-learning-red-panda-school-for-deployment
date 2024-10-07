@@ -319,7 +319,10 @@ const assignCourseToUser = async (req, res) => {
     if (user.courses.includes(courseId)) {
       return res
         .status(400)
-        .json({ message: "Course already assigned to this user" });
+        .json({
+          message:
+            "Course already assigned to this user, change the email in Step 1",
+        });
     }
 
     // Asignar el curso al usuario
