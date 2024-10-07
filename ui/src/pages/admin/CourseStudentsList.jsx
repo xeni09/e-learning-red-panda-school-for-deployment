@@ -37,17 +37,26 @@ const CourseStudentsList = () => {
   }, [courseId]);
 
   // Función para añadir un usuario al curso
-  const handleAddUserToCourse = async () => {
-    if (!selectedUser) return;
-    try {
-      await axios.post(`/api/courses/${courseId}/assign-user`, { userId: selectedUser });
-      const updatedStudents = await axios.get(`/api/courses/${courseId}/students`);
-      setStudents(updatedStudents.data); // Actualizar lista de estudiantes del curso
-      setSelectedUser(''); // Limpiar el usuario seleccionado
-    } catch (error) {
-      console.error("Error adding user to course:", error);
-    }
-  };
+// Función para añadir un usuario al curso
+const handleAddUserToCourse = async () => {
+  if (!selectedUser) return;
+  try {
+    await axios.post(`/api/courses/${courseId}/assign-user`, { userId: selectedUser });
+    
+    // Actualizar la lista de estudiantes con los datos más recientes
+    const updatedStudents = await axios.get(`/api/courses/${courseId}/students`);
+    setStudents(updatedStudents.data);
+
+    // Filtrar al usuario añadido de la lista de todos los usuarios
+    const updatedUsers = allUsers.filter(user => user._id !== selectedUser);
+    setAllUsers(updatedUsers); // Actualizar la lista de usuarios en el dropdown
+    
+    setSelectedUser(''); // Limpiar el usuario seleccionado
+  } catch (error) {
+    console.error("Error adding user to course:", error);
+  }
+};
+
 
   // Función para eliminar al usuario del curso
   const handleRemoveStudent = async (studentId) => {
@@ -91,6 +100,9 @@ const CourseStudentsList = () => {
                 className="w-full"
               />
             </div>
+
+
+
             <div>
               <button
                 onClick={handleAddUserToCourse}

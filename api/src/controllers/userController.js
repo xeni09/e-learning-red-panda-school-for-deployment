@@ -141,20 +141,20 @@ const createUser = async (req, res) => {
 
 // Controlador para eliminar un usuario por ID
 const deleteUser = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params; // Cambiado de userId a id
 
   try {
     // Buscar al usuario a eliminar
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Eliminar al usuario de todos los cursos en los que esté inscrito
     await Course.updateMany(
-      { students: userId },
+      { students: id },
       {
-        $pull: { students: userId }, // Eliminar la referencia del usuario
+        $pull: { students: id }, // Eliminar la referencia del usuario
       }
     );
 
