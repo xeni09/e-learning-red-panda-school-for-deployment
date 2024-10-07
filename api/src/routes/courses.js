@@ -14,7 +14,12 @@ const {
   removeStudentFromCourse,
   assignCourseToUser,
   hasPurchasedCourse,
+  simulateBuyCourse,
 } = require("../controllers/courseController");
+
+// Ruta pública para simular la compra de un curso
+router.get("/simulate-buy", simulateBuyCourse);
+
 const { auth, authorize } = require("../middleware/jwtAuth");
 
 // Configurar multer para la subida de imágenes
@@ -63,9 +68,6 @@ router.put(
 // Ruta para obtener los detalles de un curso por su ID (solo accesible para administradores)
 router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
-// Ruta para comprar un curso (cualquier usuario autenticado puede acceder)
-router.post("/buy", auth, buyCourse);
-
 // Ruta para obtener los estudiantes de un curso (solo admin)
 router.get(
   "/:courseId/students",
@@ -84,5 +86,8 @@ router.get(
   hasPurchasedCourse, // User must have purchased the course
   getCourseById
 );
+
+// Ruta protegida para confirmar la compra (requiere autenticación)
+router.post("/confirm-buy", auth, buyCourse);
 
 module.exports = router;

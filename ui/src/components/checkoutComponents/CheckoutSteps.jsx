@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CheckoutSteps = ({ cart }) => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    address: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
+    name: 'Test Name',
+    email: 'testemail@test.com',
+    address: 'Far Far Away',
+    cardNumber: '4111 1111 1111 1111', 
+    expiryDate: '12/25',               
+    cvv: '123',                       
+
   });
   const [errors, setErrors] = useState({});
 
@@ -23,25 +25,72 @@ const CheckoutSteps = ({ cart }) => {
       newErrors.email = 'Email is invalid';
     }
     if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.cardNumber) newErrors.cardNumber = 'Card Number is required';
-    if (!formData.expiryDate) newErrors.expiryDate = 'Expiry Date is required';
-    if (!formData.cvv) newErrors.cvv = 'CVV is required';
+  
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0;  // Solo validar estos campos en el paso 1
   };
 
+
   const nextStep = () => {
-    if (step === 1 && !validateStep1()) return;
+    if (step === 1 && !validateStep1()) {
+      console.log("Validation failed for step 1", errors);  // Añadir log para comprobar errores
+      return;
+    }
     setStep(step + 1);
   };
+  
 
   const prevStep = () => {
     setStep(step - 1);
   };
 
-  const handleConfirmOrder = () => {
-    navigate('/confirmationcoursebought', { state: { cart, formData } });
+  const handleConfirmOrder = async () => {
+    try {
+      
+      // Crear el usuario en el backend o continuar si ya existe
+      const registerResponse = await axios.post('/api/auth/register', {
+        name: formData.name,  // Nombre del usuario
+        email: formData.email,  // Email del usuario
+        password: '1234'  // Contraseña fija para todos los usuarios registrados durante este testeo
+      });
+  
+
+      
+      // Iniciar sesión automáticamente después de crear el usuario
+      const loginResponse = await axios.post('/api/auth/login', {
+        email: formData.email,
+        password: '1234'
+      });
+      
+
+      
+      // Intentar asignar el curso al usuario autenticado
+      try {
+        await axios.put(`/api/courses/67001dc00f968533a71ee9e7/assign`, {
+          userId: loginResponse.data.user._id  // ID del usuario autenticado
+        });
+        console.log("Course assigned successfully");
+      } catch (assignError) {
+        // Si el curso ya está asignado, simplemente continuar
+        if (assignError.response && assignError.response.data.message === "Course already assigned to this user") {
+          console.log("Course already assigned, continuing to success page");
+        } else {
+          // Si es otro error, lanzarlo
+          throw assignError;
+        }
+      }
+    
+      // Redirigir a la página de confirmación
+      navigate('/confirmationcoursebought', { state: { email: formData.email, password: '1234' } });
+    } catch (error) {
+      console.error("Error creating user or assigning course:", error.response?.data || error.message);
+    }
   };
+  
+  
+  
+  
+  
 
   return (
     <div className="p-4 pr-20 ">
@@ -175,11 +224,21 @@ const CheckoutSteps = ({ cart }) => {
             <h3 className="font-bold text-xl">Order Summary</h3>
             {/* Resumen de la orden con los detalles del carrito */}
             {cart.map((item, index) => (
-              <div key={index} className="flex justify-between">
-                <span>{item.name} x {item.quantity}</span>
-                <span>${item.price * item.quantity}</span>
-              </div>
-            ))}
+  <div key={item._id || index} className="flex justify-between">
+    <div>
+      <p>x1</p> {/* Mostrar siempre "x1" */}
+      <p>Python Programming</p> {/* Nombre del curso estático */}
+    </div>
+    <div>
+      <p>Price: 49,99 €</p> {/* Precio del curso estático */}
+    </div>
+  </div>
+))}
+
+
+
+
+
           </div>
           <div className="flex justify-between mt-8">
             <button type="button" onClick={prevStep} className="btn bg-gray-400 mt-4">Back</button>

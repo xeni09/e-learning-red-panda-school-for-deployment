@@ -8,8 +8,10 @@ const registerUser = async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
+
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      // Si el usuario ya existe, simplemente devuelve un mensaje de éxito sin intentar crear un nuevo usuario
+      return res.status(200).json({ msg: "User already exists", user });
     }
 
     // Obtener el último customId y sumarle 1 para asignarlo al nuevo usuario
@@ -31,7 +33,8 @@ const registerUser = async (req, res) => {
     // Guardar el usuario en la base de datos
     await user.save();
 
-    res.status(201).json({ msg: "User registered successfully" });
+    // Devolver el usuario recién creado
+    res.status(201).json({ msg: "User registered successfully", user });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
