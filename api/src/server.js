@@ -3,17 +3,14 @@ const Logger = require("./utils/Logger");
 const app = require("./app");
 
 // Configurar puerto
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000; // Aquí defines correctamente PORT
 
 // Crear servidor HTTP
 const server = http.createServer(app);
 
-// Iniciar servidor
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Iniciar servidor en el puerto correcto
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 // Manejar eventos del servidor
@@ -22,7 +19,7 @@ server.on("error", (error) => {
     throw error;
   }
 
-  const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
+  const bind = typeof PORT === "string" ? `Pipe ${PORT}` : `Port ${PORT}`;
 
   switch (error.code) {
     case "EACCES":
