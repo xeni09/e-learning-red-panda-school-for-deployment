@@ -88,6 +88,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 // Habilitar preflight (solicitudes OPTIONS) para todas las rutas
 app.options("*", cors());
 
