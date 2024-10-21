@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
+
 
 const CallToAction = ({ buttonText, buttonLink }) => {
   return (
@@ -18,9 +21,9 @@ const CallToAction = ({ buttonText, buttonLink }) => {
           Online learning wherever and whenever
         </h2>
         {buttonText && buttonLink && (
-          <a href={buttonLink} className="btn-wide py-3">
+          <Link to={buttonLink} className="btn-wide py-3">
             {buttonText}
-          </a>
+          </Link>
         )}
       </div>
     </div>

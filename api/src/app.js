@@ -101,8 +101,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI, // Utilizar la misma URI que conectas a MongoDB
-      ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 14 * 24 * 60 * 60,
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",

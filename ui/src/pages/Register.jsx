@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-transparente.png';
 import useApi from "../hooks/useApi";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -173,9 +175,9 @@ export default function Register() {
           </form>
           <p className="mt-2 text-left text-[var(--color-grey)]">
             Already a member?{' '}
-            <a href="Login" className="font-semibold leading-6 text-secondary hover:text-primary">
+            <Link to="Login" className="font-semibold leading-6 text-secondary hover:text-primary">
               Log in here
-            </a>
+            </Link>
           </p>
         </div>
       </div>
