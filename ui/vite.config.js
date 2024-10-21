@@ -10,17 +10,16 @@ export default defineConfig({
   build: {
     outDir: "dist",
   },
-  server:
-    process.env.NODE_ENV !== "production"
-      ? {
-          proxy: {
+  server: {
+    proxy:
+      process.env.NODE_ENV !== "production"
+        ? {
             "/api": {
               target: "http://localhost:3000",
               changeOrigin: true,
               secure: false,
             },
-          },
-          historyApiFallback: true,
-        }
-      : undefined,
+          }
+        : undefined,
+  },
 });
