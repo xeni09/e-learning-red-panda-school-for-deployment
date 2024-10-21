@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 
 // Interceptor para asegurarse de que las cookies se envíen con cada solicitud
 axiosInstance.interceptors.request.use((config) => {
-  config.withCredentials = true; // Asegura que las cookies se envíen con cada solicitud
+  config.withCredentials = true;
   return config;
 });
 
