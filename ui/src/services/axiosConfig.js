@@ -9,6 +9,13 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+// Interceptor para asegurarse de que las cookies se envíen con cada solicitud
+axiosInstance.interceptors.request.use((config) => {
+  config.withCredentials = true; // Asegura que las cookies se envíen con cada solicitud
+  return config;
+});
+
+// Interceptor para manejar respuestas 401
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
