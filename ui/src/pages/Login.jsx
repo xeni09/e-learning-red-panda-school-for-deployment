@@ -4,6 +4,7 @@ import logo from '../assets/logo-transparente.png';
 import { authenticateUser } from '../services/authService';
 import { useAuth } from '../context/AuthProvider';
 import LoginForm from '../components/authComponents/LoginForm';
+import { Link } from 'react-router-dom';
 
 export default function Login() {
   const [error, setError] = useState('');
@@ -53,9 +54,9 @@ export default function Login() {
           />
           <p className="mt-2 text-left text-[var(--color-grey)]">
             Not a member?{' '}
-            <a href="register" className="font-semibold leading-6 text-secondary hover:text-primary">
+            <Link to="register" className="font-semibold leading-6 text-secondary hover:text-primary">
               Register here
-            </a>
+            </Link>
           </p>
         </div>
       </div>

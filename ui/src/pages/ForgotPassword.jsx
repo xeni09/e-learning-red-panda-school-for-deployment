@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import logo from '../assets/logo-transparente.png';
+import { Link } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -56,10 +57,10 @@ const ForgotPassword = () => {
 
           <p className="mt-10 text-center text-sm text-[var(--color-grey)]">
             Remembered your password?{' '}
-            <a href="login" className="font-semibold leading-6 text-secondary hover:text-primary">
+            <Link to="/login" className="font-semibold leading-6 text-secondary hover:text-primary">
               Log in
-            </a>
-          </p>
+              </Link>
+              </p>
         </div>
       </div>
     </>
