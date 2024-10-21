@@ -5,11 +5,10 @@ const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 // Crear una instancia de Axios con configuración predefinida
 const axiosInstance = axios.create({
-  baseURL, // Usar la URL del backend desde la variable de entorno
-  withCredentials: true, // Habilita el uso de cookies en las solicitudes
+  baseURL,
+  withCredentials: true,
 });
 
-// Configuración de intercepción de respuestas para manejar errores de autenticación
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
