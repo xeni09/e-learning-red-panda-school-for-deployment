@@ -1,0 +1,8 @@
+version: 1
+services:
+  - type: web
+    name: my-web-service
+    env: node
+    buildCommand: npm install
+    cacheDirectories:
+      - node_modules
