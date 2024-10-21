@@ -105,9 +105,9 @@ app.use(
       ttl: 14 * 24 * 60 * 60, // Duración de la sesión (14 días, en este caso)
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production", // `true` solo en producción con HTTPS
+      secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true, // Asegura que solo sea accesible desde el servidor
+      httpOnly: true,
     },
   })
 );

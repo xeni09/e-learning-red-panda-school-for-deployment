@@ -50,13 +50,13 @@ const Footer = () => {
           <h3>Popular courses</h3>
           <ul>
             <li>
-              <a href="/not-created">Advanced design</a>
+            <Link to="/not-created">Advanced design</Link>
             </li>
             <li>
-              <a href="not-created">Web development</a>
+            <Link to="/not-created">Web development</Link>
             </li>
             <li>
-              <a href="not-created">Data visualization</a>
+            <Link to="/not-created">Data visualization</Link>
             </li>
           </ul>
         </div>
