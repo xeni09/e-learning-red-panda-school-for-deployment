@@ -25,42 +25,19 @@ function configure(app) {
 
   // Configurar Content Security Policy con Helmet
   const isProduction = process.env.NODE_ENV === "production";
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
   console.log(`Running in ${isProduction ? "production" : "development"} mode`);
 
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: [
-          "'self'",
-          isProduction
-            ? "https://e-learning-red-panda-school.vercel.app"
-            : "http://localhost:3000",
-        ],
-        connectSrc: [
-          "'self'",
-          isProduction
-            ? "https://e-learning-red-panda-school-production.up.railway.app"
-            : "http://localhost:3000",
-        ],
-        scriptSrc: [
-          "'self'",
-          isProduction
-            ? "https://e-learning-red-panda-school.vercel.app"
-            : "http://localhost:3000",
-        ],
-        styleSrc: [
-          "'self'",
-          isProduction
-            ? "https://e-learning-red-panda-school.vercel.app"
-            : "http://localhost:3000",
-        ],
-        fontSrc: [
-          "'self'",
-          isProduction
-            ? "https://e-learning-red-panda-school.vercel.app"
-            : "http://localhost:3000",
-        ],
+        imgSrc: ["'self'", frontendUrl],
+        connectSrc: ["'self'", backendUrl],
+        scriptSrc: ["'self'", frontendUrl],
+        styleSrc: ["'self'", frontendUrl],
+        fontSrc: ["'self'", frontendUrl],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: isProduction ? [] : [],
       },
