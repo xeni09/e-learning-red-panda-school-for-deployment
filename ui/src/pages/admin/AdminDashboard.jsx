@@ -23,12 +23,16 @@ const AdminDashboard = () => {
         });
       } catch (err) {
         console.error('Error fetching admin data:', err.response ? err.response.data : err.message);
-        setError(err.message);
+        if (err.response && err.response.status === 401) {
+          navigate('/login');
+        } else {
+          setError(err.message);
+        }
       }
     };
 
     fetchAdminData();
-  }, []); // Esta dependencia vacía asegura que la llamada solo ocurra cuando el componente se monte
+  }, [navigate]); // Esta dependencia vacía asegura que la llamada solo ocurra cuando el componente se monte
 
   if (error) {
     return <p className="text-red-500">Error: {error}</p>;
@@ -41,8 +45,6 @@ const AdminDashboard = () => {
         <h2>Admin Dashboard</h2>
 
         <div className="bg-white shadow-md rounded-lg p-10 my-10">
-      
-
           <ul>
             <li className="mb-10">
               <strong>Users:</strong> {adminData.usersCount}

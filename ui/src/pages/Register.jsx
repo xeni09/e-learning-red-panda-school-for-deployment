@@ -17,7 +17,7 @@ export default function Register() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const { data, loading, error: fetchError, execute } = useApi('http://localhost:3000/api/auth/register', {
+  const { data, loading, error: fetchError, execute } = useApi(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
