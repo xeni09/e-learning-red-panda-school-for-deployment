@@ -25,7 +25,7 @@ function configure(app) {
 
   // Configurar Content Security Policy con Helmet
   const isProduction = process.env.NODE_ENV === "production";
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
   const backendUrl = process.env.VITE_BACKEND_URL || "http://localhost:3000";
   console.log(`Running in ${isProduction ? "production" : "development"} mode`);
 

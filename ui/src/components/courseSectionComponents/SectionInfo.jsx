@@ -74,7 +74,7 @@ const SectionInfo = ({ courseId, sectionId }) => {
           src={
             temporaryImage 
               ? URL.createObjectURL(temporaryImage)
-              : `${import.meta.env.VITE_BACKEND_URL}${sectionData.imageSrc}`
+              : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${sectionData.imageSrc}`
           }
           alt={sectionData.title}
           className="w-full h-auto object-cover rounded-md"
