@@ -29,7 +29,18 @@ export const loginUser = async (setIsAuthenticated, setUser) => {
   }
 };
 
-export const logoutUser = (setIsAuthenticated, setUser) => {
-  setIsAuthenticated(false);
-  setUser(null);
+export const logoutUser = async (setIsAuthenticated, setUser) => {
+  try {
+    // Llamar al backend para eliminar la cookie de sesión
+    await fetch(`${baseURL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include", // Incluir cookies en la solicitud
+    });
+  } catch (error) {
+    console.error("Failed to log out:", error);
+  } finally {
+    // Actualiza el estado global después de cerrar sesión
+    setIsAuthenticated(false);
+    setUser(null);
+  }
 };

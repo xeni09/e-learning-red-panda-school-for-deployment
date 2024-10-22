@@ -30,7 +30,6 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageUsers from './pages/admin/ManageUsers';
 import ManageCourses from './pages/admin/ManageCourses';
 import AdminRoute from './components/adminComponents/AdminRoute';
-import Admin from './pages/Admin';
 import CourseDetails from './pages/admin/CourseDetails';
 import CourseSectionDetails from './pages/admin/CourseSectionDetails'; 
 import CourseStudentsList from './pages/admin/CourseStudentsList'; 
@@ -70,7 +69,7 @@ const App = () => {
                
                 
                 {/* Admin Routes */}
-                <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+      
                 <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                 <Route path="/admin/manage-users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
                 <Route path="/admin/manage-courses" element={<AdminRoute><ManageCourses /></AdminRoute>} />

@@ -93,7 +93,7 @@ const NavBar = ({ cartItemCount }) => {
         </ul>
 
         <div className="navbar-login-container" ref={dropdownRef}>
-          <Link to="/checkout" className="relative text-white pr-4">
+          <Link to="/checkout" className="relative text-white pr-4" aria-label="Shopping Cart">
             <FaShoppingCart className="cart-icon text-white text-xl" />
             {cartItemCount > 0 && (
               <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
@@ -102,7 +102,7 @@ const NavBar = ({ cartItemCount }) => {
             )}
           </Link>
 
-          <button className="navbar-login-icon" onClick={toggleDropdown}>
+          <button className="navbar-login-icon" onClick={toggleDropdown} aria-label="User menu">
             <img src={userIcon} alt="User Icon" className="user-icon" />
           </button>
           {dropdownVisible && (

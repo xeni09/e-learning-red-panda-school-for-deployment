@@ -39,7 +39,7 @@ const EnrolledCourseCard = ({ id }) => {
   };
 
   if (!course) {
-    return <p>Loading...</p>; // Handle loading state
+    return <p>No curse bought yet</p>;
   }
 
   // Mover la verificación de course.description después de que course haya sido cargado

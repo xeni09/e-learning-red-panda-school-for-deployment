@@ -93,7 +93,7 @@ const CourseRow = ({
       </td>
 
 
-      <td className="border px-0 py-0 text-center">
+      <td className="border px-0 py-2 text-center">
         <img
           src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${course.imageSrc}`}
           alt={course.name}
