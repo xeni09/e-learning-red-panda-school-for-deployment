@@ -70,7 +70,7 @@ const CourseInfo = ({ courseId }) => {
           src={
             temporaryImage 
               ? URL.createObjectURL(temporaryImage)
-              : `${import.meta.env.VITE_BACKEND_URL}${courseData.imageSrc}`
+              : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${courseData.imageSrc}`
           }
           alt={courseData.name}
           className="w-full h-auto object-cover rounded-md"

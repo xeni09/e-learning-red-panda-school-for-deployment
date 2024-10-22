@@ -14,15 +14,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error("Unauthorized, redirecting to login...");
-      // Redirigir solo si estás en una página protegida
-      const protectedRoutes = ["/dashboard", "/my-account", "/admin"];
-      if (
-        protectedRoutes.some((route) =>
-          window.location.pathname.startsWith(route)
-        )
-      ) {
-        window.location.href = "/login";
-      }
+      window.location.href = "/login"; // Redirigir a la página de inicio de sesión para cualquier error 401
     }
     return Promise.reject(error);
   }

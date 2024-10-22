@@ -95,7 +95,7 @@ const CourseRow = ({
 
       <td className="border px-0 py-0 text-center">
         <img
-          src={`${import.meta.env.VITE_BACKEND_URL}${course.imageSrc}`}
+          src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${course.imageSrc}`}
           alt={course.name}
           className="w-auto h-auto object-cover mx-auto"
         />

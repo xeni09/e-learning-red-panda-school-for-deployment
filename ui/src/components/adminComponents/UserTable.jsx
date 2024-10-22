@@ -129,7 +129,6 @@ const UserTable = ({
                 <div className="flex space-x-2">
                   <button
   onClick={() => {
-    console.log('Edit button clicked for user:', user); // Log which user is being clicked
     setEditingUserId(user._id);  // Use user._id here
     handleEditClick(user);  // Call the handleEditClick function with user data
   }}
