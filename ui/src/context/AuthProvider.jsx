@@ -50,20 +50,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // const updateUser = async () => {
-  //   try {
-  //     const response = await axios.get('/api/auth/verifyToken');
-  //     if (response.data && response.data.user) {
-  //       setUser(response.data.user);
-  //       return response.data.user;
-  //     } else {
-  //       handleInvalidToken();  // If no user, clear session
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to update user data:', error);
-  //     handleInvalidToken();  // Treat failed verification as invalid token
-  //   }
-  // };
+
 
   const updateUser = async () => {
     try {

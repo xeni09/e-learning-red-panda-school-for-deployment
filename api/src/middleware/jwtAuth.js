@@ -10,7 +10,7 @@ const auth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-
+    console.log("Decoded token:", req.user); // Verifica el contenido del token decodificado
     next();
   } catch (error) {
     console.log("Invalid token", error.message);
@@ -18,10 +18,13 @@ const auth = (req, res, next) => {
   }
 };
 
-// Role-based authorization middleware
 const authorize = (roles) => (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    console.log("No role found in req.user");
+    return res.status(403).send({ error: "Access denied. Role not found." });
+  }
   if (!roles.includes(req.user.role)) {
-    console.log("Access denied. Insufficient role");
+    console.log(`Access denied. Role: ${req.user.role} is not sufficient`);
     return res
       .status(403)
       .send({ error: "Access denied. You do not have the required role." });
