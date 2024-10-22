@@ -1,11 +1,11 @@
-export const loginUser = async (token, setIsAuthenticated, setUser) => {
+const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
+export const loginUser = async (setIsAuthenticated, setUser) => {
   try {
     // Llamar a la API para verificar el token y obtener los datos del usuario
-    const response = await fetch("http://localhost:3000/api/auth/verifyToken", {
+    const response = await fetch(`${baseURL}/api/auth/verifyToken`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include", // Asegura que las cookies se envíen con la solicitud
     });
 
     if (response.ok) {
@@ -32,6 +32,4 @@ export const loginUser = async (token, setIsAuthenticated, setUser) => {
 export const logoutUser = (setIsAuthenticated, setUser) => {
   setIsAuthenticated(false);
   setUser(null);
-  localStorage.removeItem("token"); // Elimina solo el token de `localStorage`
-  localStorage.setItem("isAuthenticated", "false"); // Actualiza el estado de autenticación
 };

@@ -70,7 +70,7 @@ const CourseInfo = ({ courseId }) => {
           src={
             temporaryImage 
               ? URL.createObjectURL(temporaryImage)
-              : `http://localhost:3000${courseData.imageSrc}`
+              : `${import.meta.env.VITE_BACKEND_URL}${courseData.imageSrc}`
           }
           alt={courseData.name}
           className="w-full h-auto object-cover rounded-md"
@@ -78,19 +78,18 @@ const CourseInfo = ({ courseId }) => {
       </div>
 
       {isEditing && (
-  <div className="p-4">
-    {!isChangingImage && (
-      // Directamente mostrar el componente de carga y recorte de imagen
-      <CourseImageUploadAndCrop
-        errors={{}} 
-        setTemporaryImage={(file) => {
-          setTemporaryImage(file); 
-        }} 
-      />
-    )}
-  </div>
-)}
-
+        <div className="p-4">
+          {!isChangingImage && (
+            // Directamente mostrar el componente de carga y recorte de imagen
+            <CourseImageUploadAndCrop
+              errors={{}} 
+              setTemporaryImage={(file) => {
+                setTemporaryImage(file); 
+              }} 
+            />
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6 mb-6">
         <div>
