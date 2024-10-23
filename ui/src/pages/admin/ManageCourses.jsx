@@ -38,22 +38,14 @@ const ManageCourses = () => {
       console.log([...formData.entries()]); // Verifica el contenido de FormData antes de enviarlo
   
       if (selectedCourse) {
-        // Si estamos editando un curso
-        const response = await axios.put(`/api/courses/${selectedCourse._id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.put(`/api/courses/${selectedCourse._id}`, formData);
+
         setCourses(courses.map(course => 
           course._id === selectedCourse._id ? { ...course, ...courseData } : course));
         setSelectedCourse(null);
       } else {
         // Crear nuevo curso
-        const response = await axios.post('/api/courses', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.post('/api/courses', formData);
         setCourses([...courses, response.data]);
       }
   
@@ -117,7 +109,9 @@ const ManageCourses = () => {
     try {
       const updatedCourse = { ...editFormData };
       console.log("Saving course with ID:", courseId); // <-- Log para verificar el courseId
-      await axios.put(`/api/courses/${courseId}`, updatedCourse);
+      await axios.put(`/api/courses/${courseId}`, updatedCourse, {
+        withCredentials: true,  // <-- Añadir esta opción
+      });
       setCourses(courses.map(course =>
         course._id === courseId ? { ...course, ...updatedCourse } : course
       ));

@@ -73,7 +73,7 @@ const CourseRow = ({
         {editingCourseId === course._id ? (
           <div className="relative">
             <input
-              type="text"
+              type="number"
               name="price"
               value={editFormData.price}
               onChange={handleInputChange}
@@ -94,8 +94,8 @@ const CourseRow = ({
 
 
       <td className="border px-0 py-2 text-center">
-        <img
-          src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${course.imageSrc}`}
+      <img
+          src={course.imageSrc}  
           alt={course.name}
           className="w-auto h-auto object-cover mx-auto"
         />

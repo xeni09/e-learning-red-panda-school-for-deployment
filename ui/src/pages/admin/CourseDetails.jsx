@@ -32,26 +32,23 @@ const CourseDetails = () => {
     fetchCourseDetails();
   }, [courseId]);
 
-  const handleAddSection = async (formData) => {
-    try {
-      const response = await axios.post(`/api/courses/${courseId}/sections`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      // Actualiza el estado con la nueva sección
-      setSections([...sections, response.data]);
-  
-      // Limpiar el formulario
-      setNewSection({ title: '', description: '', videoUrl: '' });
-      setShowAddSectionForm(false);
-    } catch (error) {
-      console.error('Error adding section:', error);
-    }
-  };
-  
-  
+const handleAddSection = async (formData) => {
+  try {
+    const response = await axios.post(
+      `/api/courses/${courseId}/sections`, 
+      formData, 
+      { withCredentials: true }  
+    );
+    setSections([...sections, response.data]);
+
+    setNewSection({ title: '', description: '', videoUrl: '' });
+    setShowAddSectionForm(false);
+  } catch (error) {
+    console.error('Error adding section:', error);
+  }
+};
+
+   
 
   const handleEditSection = async (updatedSection, index) => {
     try {
@@ -64,18 +61,13 @@ const CourseDetails = () => {
       formData.append("description", updatedSection.description);
       formData.append("videoUrl", updatedSection.videoUrl);
   
-      if (updatedSection.thumbnail instanceof File) {
-        formData.append("thumbnail", updatedSection.thumbnail);
+      if (updatedSection.sectionImage instanceof File) {
+        formData.append("sectionImage", updatedSection.sectionImage);
       }
   
       const response = await axios.put(
         `/api/courses/${courseId}/sections/${updatedSection._id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
+        formData
       );
       console.log("Updated section response:", response.data);
   

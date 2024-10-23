@@ -36,7 +36,6 @@ const CourseStudentsList = () => {
     fetchCourseDetails();
   }, [courseId]);
 
-  // Función para añadir un usuario al curso
 // Función para añadir un usuario al curso
 const handleAddUserToCourse = async () => {
   if (!selectedUser) return;

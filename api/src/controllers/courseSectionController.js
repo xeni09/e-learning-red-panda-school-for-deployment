@@ -26,24 +26,29 @@ const addCourseSection = async (req, res) => {
     const course = await Course.findById(courseId);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
-    let thumbnail = null;
+    let sectionImage = null;
     if (req.file) {
       try {
+        console.log("Subiendo imagen a Cloudinary...");
+
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "sections",
           transformation: { width: 300, height: 200, crop: "limit" },
         });
-        thumbnail = result.secure_url;
-        fs.unlinkSync(req.file.path); // Delete the local file after upload
+        sectionImage = result.secure_url;
+        console.log("Imagen subida con URL:", result.secure_url);
       } catch (error) {
         console.error("Error uploading image to Cloudinary:", error);
         return res.status(500).json({ message: "Error uploading image" });
       }
     }
 
-    const newSection = { title, description, videoUrl, thumbnail };
+    // Crear la nueva sección
+    const newSection = { title, description, videoUrl, sectionImage };
     course.sections.push(newSection);
     await course.save();
+
+    // Devolver la nueva sección creada
     const createdSection = course.sections[course.sections.length - 1];
     res.status(201).json(createdSection);
   } catch (error) {
@@ -64,26 +69,31 @@ const updateCourseSection = async (req, res) => {
     const section = course.sections.id(sectionId);
     if (!section) return res.status(404).json({ message: "Section not found" });
 
-    // Actualiza los campos de la sección
+    // Actualizar los campos de la sección
     section.title = title || section.title;
     section.description = description || section.description;
     section.videoUrl = videoUrl || section.videoUrl;
 
-    // Si hay un archivo de imagen, actualiza el thumbnail en Cloudinary
     if (req.file) {
       try {
+        if (section.sectionImage) {
+          const publicId = section.sectionImage.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
+          await cloudinary.uploader.destroy(`sections/${publicId}`); // Eliminar la imagen anterior
+        }
+
+        // Subir la nueva imagen
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "sections",
           transformation: { width: 300, height: 200, crop: "limit" },
         });
-        section.thumbnail = result.secure_url;
-        fs.unlinkSync(req.file.path); // Delete the local file after upload
+        section.sectionImage = result.secure_url; // Actualizar con la nueva URL
       } catch (error) {
         console.error("Error uploading image to Cloudinary:", error);
         return res.status(500).json({ message: "Error uploading image" });
       }
     }
 
+    // Guardar los cambios
     await course.save();
     res.status(200).json(section);
   } catch (error) {
