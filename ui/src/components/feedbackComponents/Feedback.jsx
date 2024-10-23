@@ -14,21 +14,21 @@ const feedbacks = [
   },
   {
     quote: "“The best course I've ever taken. The instructors are top-notch!”",
-    name: "John Doe",
+    name: "Catnip Whiskers",
     title: "Web Developer",
     image: cat,
     rating: 4
   },
   {
     quote: "“A fantastic learning experience. Highly recommend to everyone.”",
-    name: "Jane Smith",
+    name: "Alpaca McFluff",
     title: "Graphic Designer",
     image: alpaca,
     rating: 4
   },
   {
     quote: "“Incredible content and very engaging instructors. Five stars!”",
-    name: "Alice Johnson",
+    name: "Sir Purrcival",
     title: "Data Scientist",
     image: cat,
     rating: 5
