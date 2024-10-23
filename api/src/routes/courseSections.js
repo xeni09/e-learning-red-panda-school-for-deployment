@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinaryConfig");
+const { auth, authorize } = require("../middleware/jwtAuth");
 
 const {
   getCourseSections,
@@ -10,20 +12,17 @@ const {
   deleteCourseSection,
   getSectionById,
 } = require("../controllers/courseSectionController");
-const { auth, authorize } = require("../middleware/jwtAuth");
 
-// Configuración de multer para almacenar imágenes de secciones
-const sectionStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../../public/uploads/sections")); // Guardar las imágenes de secciones en /public/uploads/sections
-  },
-  filename: (req, file, cb) => {
-    const filename = `section-${Date.now()}${path.extname(file.originalname)}`;
-    cb(null, filename);
+// Configuración de multer para almacenar imágenes en Cloudinary
+const sectionStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "sections", // Carpeta donde se guardarán las imágenes en Cloudinary
+    allowed_formats: ["jpg", "png", "jpeg"], // Formatos permitidos
+    transformation: [{ width: 500, height: 500, crop: "limit" }], // Opcional: Transformar las imágenes
   },
 });
 
-// Usa `sectionStorage` para la configuración de multer
 const sectionUpload = multer({ storage: sectionStorage });
 
 // Rutas para crear secciones
@@ -74,8 +73,7 @@ router.post(
   sectionUpload.single("sectionImage"),
   async (req, res) => {
     try {
-      const filename = req.file.filename;
-      const imageUrl = `/uploads/sections/${filename}`;
+      const imageUrl = req.file.path;
 
       res.json({ imageUrl });
     } catch (error) {

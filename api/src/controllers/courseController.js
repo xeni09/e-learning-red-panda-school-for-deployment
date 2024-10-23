@@ -1,19 +1,6 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
-const fs = require("fs");
-const path = require("path");
-const util = require("util");
-const unlinkAsync = util.promisify(fs.unlink);
-const fsExistsAsync = util.promisify(fs.exists);
-
-const fileExists = async (filePath) => {
-  try {
-    await fs.promises.access(filePath, fs.constants.F_OK); // Verificar si el archivo existe
-    return true;
-  } catch {
-    return false;
-  }
-};
+const cloudinary = require("../config/cloudinaryConfig");
 
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
@@ -52,8 +39,11 @@ const createCourse = async (req, res) => {
       return res.status(400).json({ message: "Image is required" });
     }
 
-    // Asignar la ruta de la imagen
-    const imagePath = `/uploads/${req.file.filename}`;
+    // Subir imagen a Cloudinary y obtener la URL
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "courses",
+    });
+    const imageUrl = result.secure_url;
 
     // Verificar si todos los campos requeridos están presentes
     if (!name || !description || !price || !category || !teacher) {
@@ -83,7 +73,7 @@ const createCourse = async (req, res) => {
       description,
       price: parseFloat(price),
       category,
-      imageSrc: imagePath,
+      imageSrc: imageUrl,
       teacher,
       students: [], // Asegurarse de que siempre sea un array
     });
@@ -138,20 +128,22 @@ const updateCourse = async (req, res) => {
 
     // Actualizar las secciones si están presentes
     if (sections) {
-      course.sections = sections; // Sobrescribe las secciones actuales
+      course.sections = sections;
     }
 
     // Verificar si hay una nueva imagen cargada
     if (req.file) {
-      // Eliminar la imagen anterior si existe
-      const oldImagePath = path.join(__dirname, `../public${course.imageSrc}`);
-      const fileExists = await fsExistsAsync(oldImagePath);
-      if (fileExists) {
-        await unlinkAsync(oldImagePath);
+      // Eliminar la imagen anterior en Cloudinary si existe
+      if (course.imageSrc) {
+        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
+        await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
       }
 
-      // Asignar la nueva imagen
-      course.imageSrc = `/uploads/${req.file.filename}`;
+      // Subir nueva imagen a Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "courses",
+      });
+      course.imageSrc = result.secure_url; // Actualizar con la nueva URL
     }
 
     // Guardar los cambios
@@ -181,28 +173,18 @@ const deleteCourse = async (req, res) => {
     console.log("Delete image flag:", deleteImage);
     console.log("Course image source:", course.imageSrc);
 
-    // Eliminar la imagen si se solicita y existe
+    // Eliminar la imagen de Cloudinary si se solicita y existe
     if (deleteImage && course.imageSrc) {
-      // Usar una ruta relativa desde el directorio del proyecto (api/public/uploads)
-      const imagePath = path.join(
-        process.cwd(), // Esto apunta al directorio raíz del proyecto
-        "public", // Cambia esta parte si tu estructura es diferente
-        course.imageSrc // Mantener la ruta relativa que guardaste en la base de datos
-      );
-      console.log("Resolved image path:", imagePath); // Verifica la ruta de la imagen
-
-      const exists = await fileExists(imagePath);
-      console.log("File exists:", exists); // Verificar si el archivo existe
-
-      if (exists) {
-        try {
-          await unlinkAsync(imagePath);
-          console.log("Image deleted:", imagePath); // Verificar que la imagen ha sido eliminada
-        } catch (err) {
-          console.error("Error deleting image:", err.message); // Mostrar el error si ocurre
-        }
-      } else {
-        console.log("Image file does not exist:", imagePath); // Si no existe, muestra este mensaje
+      try {
+        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
+        await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
+        console.log("Image deleted from Cloudinary:", course.imageSrc);
+      } catch (err) {
+        console.error("Error deleting image from Cloudinary:", err.message);
+        return res.status(500).json({
+          message: "Error deleting image from Cloudinary",
+          error: err.message,
+        });
       }
     }
 
