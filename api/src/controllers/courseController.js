@@ -257,35 +257,21 @@ const removeStudentFromCourse = async (req, res) => {
   const { courseId, studentId } = req.params;
 
   try {
-    // Encontrar el curso
-    const course = await Course.findById(courseId);
+    // Remove the student from the course's students array
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      { $pull: { students: studentId } },
+      { new: true }
+    );
+
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Verificar si el estudiante está en el curso
-    if (!course.students.includes(studentId)) {
-      return res
-        .status(400)
-        .json({ message: "Student is not enrolled in this course" });
-    }
-
-    // Eliminar al estudiante del curso
-    course.students = course.students.filter(
-      (student) => student.toString() !== studentId
-    );
-
-    // Guardar los cambios en el curso
-    await course.save();
-
-    // También eliminar el curso del array de cursos del usuario
-    const user = await User.findById(studentId);
-    if (user) {
-      user.courses = user.courses.filter(
-        (course) => course.toString() !== courseId
-      );
-      await user.save();
-    }
+    // Remove the course from the user's list of courses
+    await User.findByIdAndUpdate(studentId, {
+      $pull: { courses: courseId },
+    });
 
     res
       .status(200)
