@@ -38,6 +38,7 @@ const CourseStudentsList = () => {
 
 // Función para añadir un usuario al curso
 const handleAddUserToCourse = async () => {
+  console.log("Selected User:", selectedUser);
   if (!selectedUser) return;
   try {
     await axios.post(`/api/courses/${courseId}/assign-user`, { userId: selectedUser });
