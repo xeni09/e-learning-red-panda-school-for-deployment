@@ -34,23 +34,9 @@ const getCourses = async (req, res) => {
 const createCourse = async (req, res) => {
   try {
     const { name, description, price, category, teacher } = req.body;
+    console.log("Request to create course received with file:", req.file);
 
-    // Verificar si la imagen está presente en la solicitud
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
-    }
-
-    // Subir imagen a Cloudinary y obtener la URL
-    console.log("Subiendo imagen a Cloudinary...");
-
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "courses",
-    });
-    console.log("Imagen subida con URL:", result.secure_url);
-
-    const imageUrl = result.secure_url;
-
-    // Verificar si todos los campos requeridos están presentes
+    // Validate required fields
     if (!name || !description || !price || !category || !teacher) {
       return res.status(400).json({
         error: "Validation error",
@@ -59,7 +45,7 @@ const createCourse = async (req, res) => {
       });
     }
 
-    // Verificar que el precio sea un número válido y mayor que 0
+    // Validate price
     if (isNaN(price) || price <= 0) {
       return res.status(400).json({
         error: "Validation error",
@@ -67,11 +53,24 @@ const createCourse = async (req, res) => {
       });
     }
 
-    // Obtener el último curso para determinar el próximo `customId`
+    // Check if image is provided in the request
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    // Upload image to Cloudinary and obtain URL
+    console.log("Image file received:", req.file);
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "courses",
+    });
+    console.log("Image successfully uploaded:", result.secure_url);
+    const imageUrl = result.secure_url;
+
+    // Get the last course to determine the next `customId`
     const lastCourse = await Course.findOne().sort({ customId: -1 });
     const newCustomId = lastCourse ? lastCourse.customId + 1 : 1;
 
-    // Inicializar el campo students como un array vacío
+    // Create new course with the provided data and image URL
     const newCourse = new Course({
       customId: newCustomId,
       name,
@@ -80,11 +79,13 @@ const createCourse = async (req, res) => {
       category,
       imageSrc: imageUrl,
       teacher,
-      students: [], // Asegurarse de que siempre sea un array
+      students: [], // Ensure that the students field is always an array
     });
 
-    // Guardar el curso en la base de datos
+    // Save the new course in the database
     await newCourse.save();
+
+    // Respond with the created course
     res.status(201).json(newCourse);
   } catch (error) {
     console.error("Error creating course:", error.message);
@@ -142,7 +143,7 @@ const updateCourse = async (req, res) => {
       if (course.imageSrc) {
         const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
         try {
-          await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
+          await cloudinary.uploader.destroy(publicId);
         } catch (err) {
           console.error("Error deleting image from Cloudinary:", err.message);
           if (err.http_code !== 404) {
@@ -176,24 +177,22 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { deleteImage } = req.body;
 
-    // Buscar el curso por su ID
+    // Find the course by its ID
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Verificar que deleteImage y course.imageSrc existen
-    console.log("Delete image flag:", deleteImage);
-    console.log("Course image source:", course.imageSrc);
-
-    // Eliminar la imagen de Cloudinary si se solicita y existe
-    if (deleteImage && course.imageSrc) {
+    // Check if the course has an associated image
+    if (course.imageSrc) {
       try {
-        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
-        await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
-        console.log("Image deleted from Cloudinary:", course.imageSrc);
+        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extract the publicId from Cloudinary URL
+        await cloudinary.uploader.destroy(`courses/${publicId}`); // Delete the image from Cloudinary
+        console.log(
+          "Image successfully deleted from Cloudinary:",
+          course.imageSrc
+        );
       } catch (err) {
         console.error("Error deleting image from Cloudinary:", err.message);
         if (err.http_code !== 404) {
@@ -205,7 +204,7 @@ const deleteCourse = async (req, res) => {
       }
     }
 
-    // Eliminar el curso
+    // Delete the course from the database
     await course.deleteOne();
     res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {

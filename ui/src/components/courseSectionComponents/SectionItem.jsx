@@ -30,12 +30,12 @@ const SectionItem = ({ section, onEditClick, onDeleteClick, onSaveClick }) => {
 
 
 
-  const sectionImageUrl = croppedImage
+  const sectionImageUrl = section.sectionImage
+  ? `${baseUrl}${section.sectionImage}` 
+  : croppedImage
   ? croppedImage
   : videoId
   ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-  : section.sectionImage
-  ? `${baseUrl}${section.sectionImage}` 
   : 'https://via.placeholder.com/150?text=No+sectionImage';
 
 

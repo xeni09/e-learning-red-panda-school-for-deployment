@@ -7,43 +7,43 @@ const EnrolledOverviewFixedInfo = () => {
         <p>This content is just a template*</p>
         <li className="flex items-center">
           <FaThumbsUp className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">98% valoraciones positivas (188)</span>
+          <span className="text-sm">98% positive ratings (188)</span>
         </li>
         <li className="flex items-center">
           <FaUser className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">4.861 estudiantes</span>
+          <span className="text-sm">4,861 students</span>
         </li>
         <li className="flex items-center">
           <FaVideo className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">16 lecciones (3h 45m)</span>
+          <span className="text-sm">16 lessons (3h 45m)</span>
         </li>
         <li className="flex items-center">
           <FaFile className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">17 recursos adicionales (3 archivos)</span>
+          <span className="text-sm">17 additional resources (3 files)</span>
         </li>
         <li className="flex items-center">
           <FaPlayCircle className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Online y a tu ritmo</span>
+          <span className="text-sm">Online and at your own pace</span>
         </li>
         <li className="flex items-center">
           <FaMobileAlt className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Disponible en la app</span>
+          <span className="text-sm">Available on the app</span>
         </li>
         <li className="flex items-center">
           <FaHeadphonesAlt className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Audio: Inglés</span>
+          <span className="text-sm">Audio: English</span>
         </li>
         <li className="flex items-center">
           <FaGlobe className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Inglés, Español, Portugués, Alemán, Francés, Italiano, Polaco, Neerlandés</span>
+          <span className="text-sm">English, Spanish, Portuguese, German, French, Italian, Polish, Dutch</span>
         </li>
         <li className="flex items-center">
           <FaPlayCircle className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Nivel: Iniciación</span>
+          <span className="text-sm">Level: Beginner</span>
         </li>
         <li className="flex items-center">
           <FaPlayCircle className="text-[var(--color-grey)] w-5 h-5 mr-2" />
-          <span className="text-sm">Acceso ilimitado para siempre</span>
+          <span className="text-sm">Unlimited lifetime access</span>
         </li>
       </ul>
     </div>
