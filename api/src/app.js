@@ -5,6 +5,9 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const MongoStore = require("connect-mongo");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("./config/cloudinaryConfig");
+
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { configure, initErrorHandler } = require("./middleware/middleware");
@@ -17,9 +20,10 @@ const app = express();
 if (
   !process.env.SESSION_SECRET ||
   !process.env.JWT_SECRET ||
-  !process.env.ADMIN_EMAIL ||
-  !process.env.ADMIN_PASSWORD ||
-  !process.env.MONGODB_URI
+  !process.env.MONGODB_URI ||
+  !process.env.CLOUDINARY_CLOUD_NAME ||
+  !process.env.CLOUDINARY_API_KEY ||
+  !process.env.CLOUDINARY_API_SECRET
 ) {
   throw new Error("Faltan variables de entorno requeridas");
 }
@@ -33,46 +37,17 @@ connectDB();
 // Configurar middlewares
 configure(app);
 
-// Configurar multer para almacenar imágenes directamente en el disco
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads")); // Guardar las imágenes en /public/uploads
-  },
-  filename: (req, file, cb) => {
-    const filename = `course-${Date.now()}${path.extname(file.originalname)}`;
-    cb(null, filename);
-  },
-});
-const upload = multer({ storage: storage });
-
-// Configuración de multer para imágenes de secciones
-const sectionStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads/sections")); // Guardar las imágenes de secciones en /public/uploads/sections
-  },
-  filename: (req, file, cb) => {
-    const filename = `section-${Date.now()}${path.extname(file.originalname)}`;
-    cb(null, filename);
+// Configurar multer para almacenar imágenes en Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads", // Nombre de la carpeta en Cloudinary donde se almacenarán las imágenes
+    allowed_formats: ["jpg", "png", "jpeg"],
+    transformation: [{ width: 800, height: 600, crop: "limit" }], // Puedes ajustar esta transformación según tu caso
   },
 });
 
-const sectionUpload = multer({ storage: sectionStorage });
-
-// Middleware para servir los archivos estáticos (como las imágenes)
-app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
-
-// Ruta para subir la imagen
-app.post("/api/upload", upload.single("courseImage"), async (req, res) => {
-  try {
-    const filename = req.file.filename;
-    const imageUrl = `/uploads/${filename}`;
-
-    res.json({ imageUrl });
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    res.status(500).send("Error uploading image");
-  }
-});
+const upload = multer({ storage });
 
 // Middleware para manejar JSON y datos de formularios
 app.use(express.json());

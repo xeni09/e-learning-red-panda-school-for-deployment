@@ -11,7 +11,12 @@ const SectionSchema = new mongoose.Schema({
   },
   videoUrl: {
     type: String,
-    required: false,
+    validate: {
+      validator: function (v) {
+        return /^https?:\/\/.*/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid URL!`,
+    },
   },
   thumbnail: {
     type: String,
@@ -25,7 +30,7 @@ const CourseSchema = new mongoose.Schema({
   category: { type: String, required: true },
   teacher: { type: String, required: true },
   description: { type: String, required: true },
-  price: { type: Number, required: true },
+  price: { type: Number, required: true, min: [0, "Price must be positive"] },
   imageSrc: {
     type: String,
     default: "https://via.placeholder.com/150",
@@ -33,7 +38,6 @@ const CourseSchema = new mongoose.Schema({
   },
   sections: [SectionSchema],
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

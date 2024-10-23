@@ -1,7 +1,6 @@
 const Course = require("../models/Course");
-const sharp = require("sharp");
+const cloudinary = require("../config/cloudinaryConfig");
 const fs = require("fs");
-const path = require("path");
 
 // Obtener secciones de un curso
 const getCourseSections = async (req, res) => {
@@ -29,18 +28,17 @@ const addCourseSection = async (req, res) => {
 
     let thumbnail = null;
     if (req.file) {
-      const resizedImagePath = `/uploads/resized_${req.file.filename}`;
-      await sharp(req.file.path)
-        .resize(300, 200)
-        .toFile(
-          path.join(
-            __dirname,
-            "../../public/uploads",
-            `resized_${req.file.filename}`
-          )
-        );
-      fs.unlinkSync(req.file.path);
-      thumbnail = resizedImagePath;
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "sections",
+          transformation: { width: 300, height: 200, crop: "limit" },
+        });
+        thumbnail = result.secure_url;
+        fs.unlinkSync(req.file.path); // Delete the local file after upload
+      } catch (error) {
+        console.error("Error uploading image to Cloudinary:", error);
+        return res.status(500).json({ message: "Error uploading image" });
+      }
     }
 
     const newSection = { title, description, videoUrl, thumbnail };
@@ -71,20 +69,19 @@ const updateCourseSection = async (req, res) => {
     section.description = description || section.description;
     section.videoUrl = videoUrl || section.videoUrl;
 
-    // Si hay un archivo de imagen, actualiza el thumbnail
+    // Si hay un archivo de imagen, actualiza el thumbnail en Cloudinary
     if (req.file) {
-      const resizedImagePath = `/uploads/resized_${req.file.filename}`;
-      await sharp(req.file.path)
-        .resize(300, 200)
-        .toFile(
-          path.join(
-            __dirname,
-            "../../public/uploads",
-            `resized_${req.file.filename}`
-          )
-        );
-      fs.unlinkSync(req.file.path);
-      section.thumbnail = resizedImagePath;
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "sections",
+          transformation: { width: 300, height: 200, crop: "limit" },
+        });
+        section.thumbnail = result.secure_url;
+        fs.unlinkSync(req.file.path); // Delete the local file after upload
+      } catch (error) {
+        console.error("Error uploading image to Cloudinary:", error);
+        return res.status(500).json({ message: "Error uploading image" });
+      }
     }
 
     await course.save();

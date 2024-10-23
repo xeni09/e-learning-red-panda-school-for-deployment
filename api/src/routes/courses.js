@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
-const path = require("path");
+const cloudinary = require("../config/cloudinaryConfig");
 
 const {
   getCourses,
@@ -17,27 +18,26 @@ const {
   simulateBuyCourse,
 } = require("../controllers/courseController");
 
-// Ruta pública para simular la compra de un curso
-router.get("/simulate-buy", simulateBuyCourse);
-
 const { auth, authorize } = require("../middleware/jwtAuth");
 
-// Configurar multer para la subida de imágenes
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../../public/uploads")); // Guardar las imágenes en la carpeta /public/uploads
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Asignar un nombre único a la imagen
+// Cloudinary storage configuration
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "courses", // Folder in Cloudinary
+    allowed_formats: ["jpg", "png", "jpeg"], // Allowed formats for course images
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Rutas para gestionar los cursos
+// Public route for simulating course purchase
+router.get("/simulate-buy", simulateBuyCourse);
+
+// Route to manage courses (admin only)
 router.get("/", auth, authorize(["admin"]), getCourses);
 
-// Ruta para crear un nuevo curso con imagen (solo admin)
+// Create a new course with image upload (admin only)
 router.post(
   "/",
   auth,
@@ -46,9 +46,10 @@ router.post(
   createCourse
 );
 
-// Ruta para eliminar un curso
+// Delete a course (admin only)
 router.delete("/:courseId", auth, authorize(["admin"]), deleteCourse);
 
+// Remove a student from a course (admin only)
 router.delete(
   "/:courseId/students/:studentId",
   auth,
@@ -56,7 +57,7 @@ router.delete(
   removeStudentFromCourse
 );
 
-// Ruta para actualizar un curso (solo admin)
+// Update a course with image upload (admin only)
 router.put(
   "/:courseId",
   auth,
@@ -65,10 +66,10 @@ router.put(
   updateCourse
 );
 
-// Ruta para obtener los detalles de un curso por su ID (solo accesible para administradores)
+// Get course details by ID (admin only)
 router.get("/:courseId", auth, authorize(["admin"]), getCourseById);
 
-// Ruta para obtener los estudiantes de un curso (solo admin)
+// Get users enrolled in a course (admin only)
 router.get(
   "/:courseId/students",
   auth,
@@ -76,20 +77,21 @@ router.get(
   getUsersForCourse
 );
 
-// Ruta para asignar un curso a un usuario
+// Assign a course to a user
 router.put("/:courseId/assign", auth, assignCourseToUser);
 
-// Route to access enrolled course (accessible to authenticated users who purchased the course)
+// Access the enrolled course (for authenticated users who purchased the course)
 router.get(
   "/:courseId/enrolled",
   auth, // User must be authenticated
-  hasPurchasedCourse, // User must have purchased the course
+  hasPurchasedCourse, // Check if the user has purchased the course
   getCourseById
 );
 
-// Ruta protegida para confirmar la compra (requiere autenticación)
+// Protected route for confirming the purchase (requires authentication)
 router.post("/confirm-buy", auth, buyCourse);
 
+// Assign course to user (admin route)
 router.post("/:courseId/assign-user", assignCourseToUser);
 
 module.exports = router;
