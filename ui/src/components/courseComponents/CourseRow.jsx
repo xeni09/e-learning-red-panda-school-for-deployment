@@ -73,11 +73,11 @@ const CourseRow = ({
         {editingCourseId === course._id ? (
           <div className="relative">
             <input
-              type="number"
+              type="text"
               name="price"
               value={editFormData.price}
               onChange={handleInputChange}
-              className="input text-center w-full p-2 pr-8 border border-gray-300 " 
+              className="input text-center w-28 p-2 pr-8 border border-gray-300 " 
             />
             <span className="absolute inset-y-0 right-0 pr-3 pb-2 flex items-center text-gray-500">€</span> 
           </div>
@@ -97,7 +97,7 @@ const CourseRow = ({
       <img
           src={course.imageSrc}  
           alt={course.name}
-          className="w-auto h-auto object-cover mx-auto"
+          className="w-20 object-cover mx-auto"
         />
       </td>
 

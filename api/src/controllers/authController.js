@@ -73,8 +73,6 @@ const login = async (req, res) => {
       maxAge: 60 * 60 * 1000, // Expira en 1 hora
     });
 
-    console.log("Token set in cookie: ", token); // Add this log to verify token creation
-
     // Devolver los datos del usuario, incluyendo los cursos
     res.json({
       user: {

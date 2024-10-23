@@ -17,9 +17,9 @@ const CourseDetails = () => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        console.log("Fetching course details...");
+        
         const response = await axios.get(`/api/courses/${courseId}`);
-        console.log("Fetched course data:", response.data);
+      
         setCourseData(response.data);
         setSections(response.data.sections || []);
         setIsLoading(false);
@@ -52,7 +52,6 @@ const handleAddSection = async (formData) => {
 
   const handleEditSection = async (updatedSection, index) => {
     try {
-      console.log("Editing section:", updatedSection);
       const updatedSections = [...sections];
       updatedSections[index] = updatedSection;
   
@@ -69,15 +68,13 @@ const handleAddSection = async (formData) => {
         `/api/courses/${courseId}/sections/${updatedSection._id}`,
         formData
       );
-      console.log("Updated section response:", response.data);
   
       const updatedSectionFromServer = response.data;
       const newSections = sections.map((section, i) =>
         i === index ? updatedSectionFromServer : section
       );
   
-      console.log("New sections state before setting:", newSections);
-      setSections(newSections); // Actualizar el estado con la nueva sección
+      setSections(newSections); 
     } catch (error) {
       console.error('Error updating section:', error);
     }

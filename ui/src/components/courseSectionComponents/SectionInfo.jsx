@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../services/axiosConfig';
 import SectionImageUploadAndCrop from './SectionImageUploadAndCrop';
-import VideoModal from '../sharedComponents/VideoModal'; // Asegúrate de importar el modal
+import VideoModal from '../sharedComponents/VideoModal';
 
-const SectionInfo = ({ courseId, sectionId }) => {
+const SectionInfo = ({ courseId, sectionId, onSectionUpdate }) => {
   const [sectionData, setSectionData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingImage, setIsChangingImage] = useState(false);
   const [temporaryImage, setTemporaryImage] = useState(null);
-  const [showVideoModal, setShowVideoModal] = useState(false); // Estado para el modal
-  const [currentVideoUrl, setCurrentVideoUrl] = useState('');  // URL del video actual
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
   useEffect(() => {
     const fetchSectionDetails = async () => {
@@ -22,6 +21,11 @@ const SectionInfo = ({ courseId, sectionId }) => {
     };
     fetchSectionDetails();
   }, [courseId, sectionId]);
+
+  const getYouTubeThumbnail = (videoUrl) => {
+    const videoId = videoUrl?.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    return videoId ? `https://img.youtube.com/vi/${videoId[1]}/hqdefault.jpg` : null;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -43,12 +47,15 @@ const SectionInfo = ({ courseId, sectionId }) => {
       }
 
       const response = await axios.put(`/api/courses/${courseId}/sections/${sectionId}`, formData, {
-        withCredentials: true,  
+        withCredentials: true,
       });
 
-      setSectionData(response.data);
+      setSectionData(response.data); // Actualizamos la sección con los nuevos datos
       setIsEditing(false);
       setIsChangingImage(false);
+
+      // Llamamos a la función onSectionUpdate para actualizar la sección en el componente padre
+      onSectionUpdate(response.data);
     } catch (error) {
       console.error('Error saving section details:', error);
     }
@@ -59,44 +66,40 @@ const SectionInfo = ({ courseId, sectionId }) => {
     setIsChangingImage(false);
   };
 
-  // Abre el modal y establece la URL del video
-  const handleOpenVideoModal = (videoUrl) => {
-    setCurrentVideoUrl(videoUrl);
-    setShowVideoModal(true);
-  };
-
-  // Cierra el modal
-  const handleCloseVideoModal = () => {
-    setShowVideoModal(false);
-    setCurrentVideoUrl('');
-  };
-
   if (!sectionData) {
     return <p>Loading section details...</p>;
   }
 
+  const sectionThumbnail = temporaryImage
+    ? URL.createObjectURL(temporaryImage)
+    : sectionData.sectionImage
+    ? sectionData.sectionImage
+    : sectionData.videoUrl
+    ? getYouTubeThumbnail(sectionData.videoUrl)
+    : null;
+
   return (
     <div className="bg-white rounded-md">
       <div className="mb-0 p-4">
-      <img
-  src={
-    temporaryImage 
-      ? URL.createObjectURL(temporaryImage)
-      : sectionData.imageSrc  // No concatenes si es una URL de Cloudinary
-  }
-  alt={sectionData.title}
-  className="w-full h-auto object-cover rounded-md"
-/>
+        {sectionThumbnail ? (
+          <img
+            src={sectionThumbnail}
+            alt={sectionData.title}
+            className="w-full h-auto object-cover rounded-md"
+          />
+        ) : (
+          <p></p>
+        )}
       </div>
 
       {isEditing && (
         <div className="p-4">
           {!isChangingImage && (
             <SectionImageUploadAndCrop
-              errors={{}} 
+              errors={{}}
               setTemporaryImage={(file) => {
-                setTemporaryImage(file); 
-              }} 
+                setTemporaryImage(file);
+              }}
             />
           )}
         </div>
@@ -138,7 +141,7 @@ const SectionInfo = ({ courseId, sectionId }) => {
           <label className="block mb-2 font-medium text-gray-700">Video</label>
           {sectionData.videoUrl ? (
             <button
-              onClick={() => handleOpenVideoModal(sectionData.videoUrl)} // Abrir el modal con el video
+              onClick={() => setShowVideoModal(true)}
               className="text-[var(--color-orange)] hover:underline"
             >
               Watch Video
@@ -160,9 +163,8 @@ const SectionInfo = ({ courseId, sectionId }) => {
         </div>
       </div>
 
-      {/* Modal para mostrar el video */}
       {showVideoModal && (
-        <VideoModal videoUrl={currentVideoUrl} onClose={handleCloseVideoModal} />
+        <VideoModal videoUrl={sectionData.videoUrl} onClose={() => setShowVideoModal(false)} />
       )}
     </div>
   );

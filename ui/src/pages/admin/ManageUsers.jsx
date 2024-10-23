@@ -61,7 +61,6 @@ const ManageUsers = () => {
       password: ''  // Password field will be left empty as it won't be fetched from the database
     });
   
-  console.log("hello");
   };
   
 

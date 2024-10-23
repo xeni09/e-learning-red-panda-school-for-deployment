@@ -12,7 +12,6 @@ const Footer = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Form submitted:", { email });
     setEmail("");
   };
 

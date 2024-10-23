@@ -31,7 +31,6 @@ const EnrolledCourseCard = ({ id }) => {
 
   const handleCardClick = () => {
     if (id) {
-      console.log(`Course ID in handleCardClick: ${id}`);
       navigate(`/enrolled-course/${id}`);
     } else {
       console.error("Course ID is undefined");

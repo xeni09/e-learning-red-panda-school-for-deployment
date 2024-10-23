@@ -13,7 +13,17 @@ const EnrolledCourseTabs = ({ course }) => {
             {/* Left side: course description */}
             <div className="md:col-span-2">
               <p className="text-4xl mb-8">Course Overview</p>
+              
               <p className='p-6 bg-gray-100 rounded-lg shadow-md sticky top-20 whitespace-pre-wrap'>
+              {course.imageSrc && (
+                <div className="mb-6">
+                  <img 
+                    src={course.imageSrc} 
+                    alt={course.name} 
+                    className="w-full h-auto object-cover rounded-lg" 
+                  />
+                </div>
+              )}
               {course.description}</p>
             </div>
             
@@ -23,9 +33,9 @@ const EnrolledCourseTabs = ({ course }) => {
             </div>
           </div>
         );
-        case 'Content':
-          return <EnrolledCourseContent courseName={course.name} sections={course.sections} />;
-        
+      case 'Content':
+        return <EnrolledCourseContent courseName={course.name} sections={course.sections} />;
+      
       case 'Instructor':
         return <div>Instructor: {course.teacher}</div>;
       case 'Review':

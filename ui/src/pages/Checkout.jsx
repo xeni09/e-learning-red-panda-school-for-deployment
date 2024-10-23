@@ -12,7 +12,6 @@ const Checkout = () => {
     const fetchCourse = async () => {
       try {
         const response = await axios.get(`/api/courses/simulate-buy`);
-        console.log(response.data);  // Verificar el contenido de la respuesta
 
         // Solo agregar el curso al carrito si la API lo devuelve
         if (response.data) {
