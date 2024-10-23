@@ -72,7 +72,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     const formattedCourse = {
       ...newCourse,
       price: parseFloat(newCourse.price),
-      courseImage: temporaryImage || newCourse.courseImage, // Utilizar la imagen temporal si se ha subido
+      courseImage: temporaryImage || newCourse.courseImage,
     };
 
     const formData = new FormData();
@@ -86,7 +86,7 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
       formData.append("courseImage", temporaryImage); // Añadir imagen temporal si existe
     }
 
-    onSubmit(formData);
+    onSubmit(formData, { withCredentials: true });
   };
 
   return (

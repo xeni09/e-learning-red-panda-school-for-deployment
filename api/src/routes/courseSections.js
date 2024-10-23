@@ -38,7 +38,7 @@ router.post(
   "/:courseId/sections",
   auth,
   authorize(["admin"]),
-  sectionUpload.single("thumbnail"), // Usa sectionUpload aquí
+  sectionUpload.single("sectionImage"), // Usa sectionUpload aquí
   addCourseSection
 );
 
@@ -63,7 +63,7 @@ router.put(
   "/:courseId/sections/:sectionId",
   auth,
   authorize(["admin"]),
-  sectionUpload.single("thumbnail"), // Usa multer para la subida de la imagen
+  sectionUpload.single("sectionImage"), // Usa multer para la subida de la imagen
   updateCourseSection
 );
 

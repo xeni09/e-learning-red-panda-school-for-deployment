@@ -19,9 +19,6 @@ export default function Register() {
 
   const { data, loading, error: fetchError, execute } = useApi(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/api/auth/register`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
 
   const togglePasswordVisibility = () => {

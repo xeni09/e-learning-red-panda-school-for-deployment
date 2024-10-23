@@ -11,14 +11,15 @@ const SectionSchema = new mongoose.Schema({
   },
   videoUrl: {
     type: String,
+    required: false,
     validate: {
-      validator: function (v) {
-        return /^https?:\/\/.*/.test(v);
+      validator: function (value) {
+        return !value || /^(http|https):\/\/[^ "]+$/.test(value);
       },
-      message: (props) => `${props.value} is not a valid URL!`,
+      message: "Invalid URL format for videoUrl",
     },
   },
-  thumbnail: {
+  sectionImage: {
     type: String,
     required: false,
   },

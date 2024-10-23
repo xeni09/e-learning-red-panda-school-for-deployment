@@ -43,7 +43,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout');  // Backend handles clearing cookies
+      await axios.post('/api/auth/logout', {}, { withCredentials: true });  
       handleInvalidToken();  // Clear user data on successful logout
     } catch (error) {
       console.error('Logout failed:', error);

@@ -22,11 +22,11 @@ const CourseTableMobile = ({
       {courses.map((course) => (
         <div key={course._id} className="bg-white border border-gray-200 p-4 rounded-lg shadow-md space-y-2 mb-5">
           <div>
-            <img
-              src={`http://localhost:3000${course.imageSrc}`}
-              alt={course.name}
-              className="w-full object-cover rounded-lg pb-5"
-            />
+          <img
+  src={course.imageSrc}
+  alt={course.name}
+  className="w-full object-cover rounded-lg pb-5"
+/>
           </div>
           <div><strong className="mr-2">ID:</strong> {course.customId}</div>
           <div><strong className="mr-2">Name:</strong>

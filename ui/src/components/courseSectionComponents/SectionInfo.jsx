@@ -43,9 +43,7 @@ const SectionInfo = ({ courseId, sectionId }) => {
       }
 
       const response = await axios.put(`/api/courses/${courseId}/sections/${sectionId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        withCredentials: true,  
       });
 
       setSectionData(response.data);
@@ -80,15 +78,15 @@ const SectionInfo = ({ courseId, sectionId }) => {
   return (
     <div className="bg-white rounded-md">
       <div className="mb-0 p-4">
-        <img
-          src={
-            temporaryImage 
-              ? URL.createObjectURL(temporaryImage)
-              : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${sectionData.imageSrc}`
-          }
-          alt={sectionData.title}
-          className="w-full h-auto object-cover rounded-md"
-        />
+      <img
+  src={
+    temporaryImage 
+      ? URL.createObjectURL(temporaryImage)
+      : sectionData.imageSrc  // No concatenes si es una URL de Cloudinary
+  }
+  alt={sectionData.title}
+  className="w-full h-auto object-cover rounded-md"
+/>
       </div>
 
       {isEditing && (

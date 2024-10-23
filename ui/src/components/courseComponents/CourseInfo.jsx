@@ -45,12 +45,15 @@ const CourseInfo = ({ courseId }) => {
       }
 
       // Send the request to update the course
-      const response = await axios.put(`/api/courses/${courseId}`, formData);
-      setCourseData(response.data); // Update with the new course data
+      const response = await axios.put(`/api/courses/${courseId}`, formData, {
+        withCredentials: true, // Asegurar que las cookies se envían con la solicitud
+      });
+      
+      setCourseData(response.data); // Actualizar con los nuevos datos
       setIsEditing(false);
       setIsChangingImage(false);
     } catch (error) {
-      console.error('Error saving course details:', error);
+      console.error("Error saving course details:", error);
     }
   };
 
@@ -66,15 +69,15 @@ const CourseInfo = ({ courseId }) => {
   return (
     <div className="bg-white rounded-md">
       <div className="mb-0 p-4">
-        <img
-          src={
-            temporaryImage 
-              ? URL.createObjectURL(temporaryImage)
-              : `${import.meta.env.VITE_BACKEND_URL}${courseData.imageSrc}`
-          }
-          alt={courseData.name}
-          className="w-full h-auto object-cover rounded-md"
-        />
+      <img
+  src={
+    temporaryImage 
+      ? URL.createObjectURL(temporaryImage)
+      : courseData.imageSrc 
+  }
+  alt={courseData.title}
+  className="w-full h-auto object-cover rounded-md"
+/>
       </div>
 
       {isEditing && (

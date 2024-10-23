@@ -22,7 +22,6 @@ const useApi = (url, options = {}) => {
         const response = await axios({
           url,
           method: mergedOptions.method || "GET",
-          headers: mergedOptions.headers || {}, // Usa headers si los necesitas
           data: mergedOptions.method !== "GET" ? mergedOptions.body : undefined, // Solo envía body si no es GET
         });
 

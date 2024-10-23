@@ -29,12 +29,7 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
       // Guardamos la respuesta en una variable
       const response = await axios.put(
         `/api/courses/${courseId}/sections/${updatedSection._id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
+        formData
       );
       console.log("Response after saving section:", response.data);
   

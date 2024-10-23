@@ -1,6 +1,7 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
 const cloudinary = require("../config/cloudinaryConfig");
+const fs = require("fs"); // Importamos para manejar la eliminación de archivos locales
 
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
@@ -40,9 +41,13 @@ const createCourse = async (req, res) => {
     }
 
     // Subir imagen a Cloudinary y obtener la URL
+    console.log("Subiendo imagen a Cloudinary...");
+
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "courses",
     });
+    console.log("Imagen subida con URL:", result.secure_url);
+
     const imageUrl = result.secure_url;
 
     // Verificar si todos los campos requeridos están presentes
@@ -54,11 +59,11 @@ const createCourse = async (req, res) => {
       });
     }
 
-    // Verificar que el precio sea un número
-    if (isNaN(price)) {
+    // Verificar que el precio sea un número válido y mayor que 0
+    if (isNaN(price) || price <= 0) {
       return res.status(400).json({
         error: "Validation error",
-        details: "Price must be a number",
+        details: "Price must be a valid number greater than 0",
       });
     }
 
@@ -111,11 +116,11 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // Verificar que el precio sea un número
-    if (isNaN(price)) {
+    // Verificar que el precio sea un número válido y mayor que 0
+    if (isNaN(price) || price <= 0) {
       return res.status(400).json({
         error: "Validation error",
-        details: "Price must be a number",
+        details: "Price must be a valid number greater than 0",
       });
     }
 
@@ -136,7 +141,17 @@ const updateCourse = async (req, res) => {
       // Eliminar la imagen anterior en Cloudinary si existe
       if (course.imageSrc) {
         const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
-        await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
+        try {
+          await cloudinary.uploader.destroy(publicId); // Eliminar la imagen en Cloudinary
+        } catch (err) {
+          console.error("Error deleting image from Cloudinary:", err.message);
+          if (err.http_code !== 404) {
+            return res.status(500).json({
+              message: "Error deleting image from Cloudinary",
+              error: err.message,
+            });
+          }
+        }
       }
 
       // Subir nueva imagen a Cloudinary
@@ -181,10 +196,12 @@ const deleteCourse = async (req, res) => {
         console.log("Image deleted from Cloudinary:", course.imageSrc);
       } catch (err) {
         console.error("Error deleting image from Cloudinary:", err.message);
-        return res.status(500).json({
-          message: "Error deleting image from Cloudinary",
-          error: err.message,
-        });
+        if (err.http_code !== 404) {
+          return res.status(500).json({
+            message: "Error deleting image from Cloudinary",
+            error: err.message,
+          });
+        }
       }
     }
 
@@ -309,7 +326,9 @@ const assignCourseToUser = async (req, res) => {
     user.courses.push(courseId);
 
     // Aumentar el contador de participantes en el curso
-    course.students.push(userId); // También agregar el usuario a la lista de estudiantes del curso
+    if (!course.students.includes(userId)) {
+      course.students.push(userId);
+    }
 
     // Guardar los cambios tanto en el usuario como en el curso
     await user.save();
