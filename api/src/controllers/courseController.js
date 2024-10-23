@@ -364,7 +364,7 @@ const hasPurchasedCourse = async (req, res, next) => {
 // Simular la compra de un curso sin autenticación
 const simulateBuyCourse = async (req, res) => {
   try {
-    const courseId = "67001dc00f968533a71ee9e7";
+    const courseId = "6719253b67cdbc9b425922d5";
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
@@ -382,7 +382,7 @@ const buyCourse = async (req, res) => {
     const userId = req.user._id; // Usuario autenticado
 
     // ID del curso fijo a asignar
-    const courseId = "67001dc00f968533a71ee9e7";
+    const courseId = "6719253b67cdbc9b425922d5";
 
     // Buscar el curso por el ID fijo
     const course = await Course.findById(courseId);

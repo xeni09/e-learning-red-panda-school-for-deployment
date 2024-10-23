@@ -46,18 +46,18 @@ const CheckoutSteps = ({ cart }) => {
         name: formData.name,
         email: formData.email,
         password: '1234',
-      }, { withCredentials: true });
+      });
   
       // Login user
       const loginResponse = await axios.post('/api/auth/login', {
         email: formData.email,
         password: '1234',
-      }, { withCredentials: true });
+      });
   
       login(loginResponse.data.user);
   
       const userId = loginResponse.data.user._id;
-      await axios.put(`/api/courses/67001dc00f968533a71ee9e7/assign`, { userId }, { withCredentials: true });
+      await axios.put(`/api/courses/6719253b67cdbc9b425922d5/assign`, { userId });
   
       await updateUser();  // Update user data
   

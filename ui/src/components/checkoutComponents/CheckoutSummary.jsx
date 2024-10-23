@@ -18,7 +18,7 @@ const CheckoutSummary = ({ cart, removeCourse }) => {
               {/* Botón para eliminar curso usando el ID estático */}
               <button 
                 className="text-red-500 hover:text-red-700 font-bold ml-4"
-                onClick={() => removeCourse("67001dc00f968533a71ee9e7")} // ID estático para testeo
+                onClick={() => removeCourse("6719253b67cdbc9b425922d5")} // ID estático para testeo
               >
                 Remove
               </button>
