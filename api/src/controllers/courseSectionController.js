@@ -1,6 +1,35 @@
 const Course = require("../models/Course");
 const cloudinary = require("../config/cloudinaryConfig");
 const fs = require("fs");
+const path = require("path");
+
+// Función para extraer el publicId de Cloudinary desde la URL
+const extractPublicId = (url) => {
+  const parts = url.split("/");
+  const fileNameWithExtension = parts.pop(); // Obtén la última parte (el nombre del archivo con extensión)
+  const publicId = fileNameWithExtension.split(".")[0]; // Remueve la extensión
+  return publicId;
+};
+
+// Función para eliminar imagen de Cloudinary
+const deleteImageFromCloudinary = async (imageUrl, folder) => {
+  if (imageUrl) {
+    const publicId = extractPublicId(imageUrl);
+    try {
+      await cloudinary.uploader.destroy(`${folder}/${publicId}`);
+    } catch (err) {}
+  }
+};
+
+// Función para eliminar el archivo local tras la subida a Cloudinary
+const deleteLocalFile = (filePath) => {
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error("Error eliminando el archivo local:", err);
+    } else {
+    }
+  });
+};
 
 // Obtener secciones de un curso
 const getCourseSections = async (req, res) => {
@@ -23,20 +52,27 @@ const addCourseSection = async (req, res) => {
   const { title, description, videoUrl } = req.body;
 
   try {
+    // Validaciones
+    if (!title || !description) {
+      return res.status(400).json({
+        message: "Title and description are required",
+      });
+    }
+
     const course = await Course.findById(courseId);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
     let sectionImage = null;
     if (req.file) {
       try {
-        console.log("Subiendo imagen a Cloudinary...");
-
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "sections",
           transformation: { width: 300, height: 200, crop: "limit" },
         });
         sectionImage = result.secure_url;
-        console.log("Imagen subida con URL:", result.secure_url);
+
+        // Eliminar el archivo local tras la subida a Cloudinary
+        deleteLocalFile(req.file.path);
       } catch (error) {
         console.error("Error uploading image to Cloudinary:", error);
         return res.status(500).json({ message: "Error uploading image" });
@@ -63,6 +99,13 @@ const updateCourseSection = async (req, res) => {
   const { title, description, videoUrl } = req.body;
 
   try {
+    // Validaciones
+    if (!title || !description) {
+      return res.status(400).json({
+        message: "Title and description are required",
+      });
+    }
+
     const course = await Course.findById(courseId);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
@@ -76,9 +119,9 @@ const updateCourseSection = async (req, res) => {
 
     if (req.file) {
       try {
+        // Eliminar la imagen anterior si existe
         if (section.sectionImage) {
-          const publicId = section.sectionImage.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
-          await cloudinary.uploader.destroy(`sections/${publicId}`); // Eliminar la imagen anterior
+          await deleteImageFromCloudinary(section.sectionImage, "sections");
         }
 
         // Subir la nueva imagen
@@ -87,6 +130,9 @@ const updateCourseSection = async (req, res) => {
           transformation: { width: 300, height: 200, crop: "limit" },
         });
         section.sectionImage = result.secure_url; // Actualizar con la nueva URL
+
+        // Eliminar el archivo local tras la subida
+        deleteLocalFile(req.file.path);
       } catch (error) {
         console.error("Error uploading image to Cloudinary:", error);
         return res.status(500).json({ message: "Error uploading image" });
@@ -115,6 +161,12 @@ const deleteCourseSection = async (req, res) => {
     const section = course.sections.id(sectionId);
     if (!section) return res.status(404).json({ message: "Section not found" });
 
+    // Eliminar la imagen de Cloudinary si existe
+    if (section.sectionImage) {
+      await deleteImageFromCloudinary(section.sectionImage, "sections");
+    }
+
+    // Eliminar la sección del curso
     course.sections.pull({ _id: sectionId });
     await course.save();
 

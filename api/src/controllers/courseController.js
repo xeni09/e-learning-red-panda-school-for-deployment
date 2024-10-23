@@ -34,7 +34,6 @@ const getCourses = async (req, res) => {
 const createCourse = async (req, res) => {
   try {
     const { name, description, price, category, teacher } = req.body;
-    console.log("Request to create course received with file:", req.file);
 
     // Validate required fields
     if (!name || !description || !price || !category || !teacher) {
@@ -59,11 +58,9 @@ const createCourse = async (req, res) => {
     }
 
     // Upload image to Cloudinary and obtain URL
-    console.log("Image file received:", req.file);
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "courses",
     });
-    console.log("Image successfully uploaded:", result.secure_url);
     const imageUrl = result.secure_url;
 
     // Get the last course to determine the next `customId`

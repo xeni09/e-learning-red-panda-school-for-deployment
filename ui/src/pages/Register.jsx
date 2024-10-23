@@ -52,7 +52,6 @@ export default function Register() {
       return;
     }
 
-    console.log('Executing fetch');
     await execute({ body: { name, email, password } });
   };
 

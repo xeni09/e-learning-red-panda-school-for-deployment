@@ -12,8 +12,6 @@ export const loginUser = async (setIsAuthenticated, setUser) => {
       const data = await response.json();
       const fetchedUser = data.user;
 
-      console.log("Fetched User:", fetchedUser); // Log para verificar los datos obtenidos
-
       setIsAuthenticated(true);
       setUser(fetchedUser); // Actualiza el estado global con los datos del usuario
       return true;

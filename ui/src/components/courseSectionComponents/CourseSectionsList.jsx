@@ -4,15 +4,12 @@ import SectionItem from './SectionItem';
 import axios from '../../services/axiosConfig';
 import { useParams } from 'react-router-dom';
 
-
-
-const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
+const CourseSectionsList = ({ sections, onEditSection, onDeleteSection, currentSectionId }) => {
   const { courseId } = useParams(); 
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
 
   const handleSaveClick = async (updatedSection, index) => {
-    console.log("Saving section with sectionImage:", updatedSection.sectionImage); // <-- Verifica el sectionImage
     const formData = new FormData();
   
     formData.append('title', updatedSection.title);
@@ -21,29 +18,23 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
   
     if (updatedSection.sectionImage instanceof File) {
       formData.append('sectionImage', updatedSection.sectionImage);
-      console.log("Appending sectionImage to FormData:", updatedSection.sectionImage); // <-- Verifica si el sectionImage se está añadiendo
-
+    } else if (updatedSection.sectionImage) {
+      formData.append('sectionImage', updatedSection.sectionImage); // Mantener la URL de la imagen existente
+    } else {
+      formData.append('sectionImage', 'remove'); // Marcar la imagen como eliminada
     }
   
     try {
-      // Guardamos la respuesta en una variable
       const response = await axios.put(
         `/api/courses/${courseId}/sections/${updatedSection._id}`,
         formData
       );
-      console.log("Response after saving section:", response.data);
   
-      // Aquí podrías llamar a una función para actualizar el estado global si es necesario
-      onEditSection(response.data, index);  // Asegúrate de pasar la sección actualizada de vuelta al padre
-  
+      onEditSection(response.data, index);  // Actualizar la sección en el estado global
     } catch (error) {
       console.error('Error updating section:', error);
     }
   };
-  
-  
-  
-  
 
   const handleWatchVideoClick = (videoUrl) => {
     setCurrentVideoUrl(videoUrl);
@@ -63,6 +54,7 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection }) => {
         <SectionItem
           key={index}
           section={section}
+          isActive={section._id === currentSectionId} // Comparar la sección actual con la que está seleccionada
           onDeleteClick={() => onDeleteSection(index)}
           onSaveClick={(updatedSection) => handleSaveClick(updatedSection, index)}
         />

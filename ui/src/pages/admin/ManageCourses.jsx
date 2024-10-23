@@ -35,7 +35,6 @@ const ManageCourses = () => {
 
   const handleCreateCourse = async (formData) => { // Recibimos formData directamente
     try {
-      console.log([...formData.entries()]); // Verifica el contenido de FormData antes de enviarlo
   
       if (selectedCourse) {
         const response = await axios.put(`/api/courses/${selectedCourse._id}`, formData);
@@ -108,7 +107,6 @@ const ManageCourses = () => {
   const handleSaveChanges = async (courseId) => {
     try {
       const updatedCourse = { ...editFormData };
-      console.log("Saving course with ID:", courseId); // <-- Log para verificar el courseId
       await axios.put(`/api/courses/${courseId}`, updatedCourse, {
         withCredentials: true,  // <-- Añadir esta opción
       });

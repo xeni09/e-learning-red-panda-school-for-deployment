@@ -50,7 +50,6 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
   
     if (isSubmitting) return; // Prevent multiple submissions
   
-    console.log("Form submitted with values:", newCourse, temporaryImage); // Add logging here
   
     setIsSubmitting(true); // Set submitting to true before proceeding
     setIsSubmitted(true);
@@ -90,7 +89,6 @@ const CreateCourseForm = ({ onSubmit, courseToEdit, onCancel }) => {
     }
   
     try {
-      console.log("FormData about to be submitted:", [...formData.entries()]); // Log the FormData content
   
       await onSubmit(formData, { withCredentials: true });
     } catch (error) {
