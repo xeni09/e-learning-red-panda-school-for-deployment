@@ -51,11 +51,11 @@ const EnrolledCourseCard = ({ id }) => {
 
   return (
     <div className="border rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 flex flex-col bg-[var(--color-white)]">
-      <img
-          src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}${course.imageSrc}`}
-          alt={course.name || 'Course image'}
-          className="w-full h-64 object-cover rounded-t-lg"
-        />
+        <img
+        src={course.imageSrc} 
+        alt={course.name || 'Course image'}
+        className="w-full h-64 object-cover rounded-t-lg"
+      />
 
 
       <div className="p-6 flex flex-col flex-grow">
