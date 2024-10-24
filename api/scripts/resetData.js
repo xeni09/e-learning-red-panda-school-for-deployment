@@ -84,7 +84,7 @@ const exampleCourseData = {
 };
 
 // Function to reset the database
-const resetDatabase = async () => {
+const resetData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
 
@@ -131,4 +131,4 @@ const extractPublicId = (url) => {
 };
 
 // Call the reset function
-resetDatabase();
+resetData();
