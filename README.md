@@ -1,6 +1,6 @@
 ## Aplicación en vivo
 
-Puedes ver la aplicación desplegada en <a href="https://e-learning-red-panda-school.vercel.app/" target="_blank">Vercel</a>.
+Puedes ver la aplicación de prueba desplegada en [Vercel](https://e-learning-red-panda-school.vercel.app/).
 
 ## Instalación
 
