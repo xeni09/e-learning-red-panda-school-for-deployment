@@ -38,9 +38,10 @@ const EnrolledCoursePage = () => {
       <SubMenu />
       <div className="container my-16 p-4">
         <h1>{course.name}</h1>
+        <div className="my-6">
         <p>A course from <span className="font-bold">{course.teacher}</span></p>
-        <p>Participants: {course.students.length}</p>
-
+        <p>Participants: <span className="font-bold">{course.students.length}</span></p>
+      </div>
         {/* Pass the course object to EnrolledCourseTabs */}
         <EnrolledCourseTabs course={course} />
       </div>
