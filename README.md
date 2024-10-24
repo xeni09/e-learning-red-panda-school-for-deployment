@@ -1,6 +1,7 @@
 ## Aplicación en vivo
 
 Puedes ver la aplicación de prueba desplegada en [Vercel](https://e-learning-red-panda-school.vercel.app/).
+Por favor utiliza Chrome o Firefox, pero evita Safari ya que puede dar problemas. 
 
 ## Instalación
 
