@@ -1,19 +1,23 @@
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const Course = require("./models/Course");
 const cloudinary = require("./config/cloudinaryConfig");
 
 // IDs of items to preserve
-const adminId = "67169536773e03dca5ec30aa"; // Test Admin ID
-const exampleCourseId = "6719253b67cdbc9b425922d5"; // Example Course ID
+const adminId = process.env.ADMIN_ID; // Test Admin ID from env variables
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPassword = process.env.ADMIN_PASSWORD; // Admin password from env variables
+const exampleCourseId = process.env.EXAMPLE_COURSE_ID;
 
 // Data to restore
 const testAdminData = {
   _id: mongoose.Types.ObjectId(adminId),
   customId: 1,
   name: "Test Admin",
-  email: "testadmin@example.com",
-  password: "$2b$10$zhEg8lztwIrfYBKEGygnz.zOrpF1IQJtreSkxSTnkFzzPkrHw/CO2", // Hashed password
+  email: adminEmail,
+  password: adminPassword,
   role: "admin",
   courses: [
     mongoose.Types.ObjectId("67001dc00f968533a71ee9e7"),
