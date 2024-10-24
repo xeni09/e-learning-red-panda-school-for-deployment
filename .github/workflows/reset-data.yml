@@ -19,12 +19,7 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Navigate to API directory and install dependencies
-        run: |
-          cd api
-          npm install
-
-      - name: Run reset script
+      - name: Navigate to API directory, install dependencies, and run reset script
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
@@ -35,4 +30,6 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           EXAMPLE_COURSE_ID: ${{ secrets.EXAMPLE_COURSE_ID }}
         run: |
+          cd api
+          npm install
           node scripts/resetData.js
