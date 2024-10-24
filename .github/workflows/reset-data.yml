@@ -34,5 +34,5 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           EXAMPLE_COURSE_ID: ${{ secrets.EXAMPLE_COURSE_ID }}
-        run: 
+        run: |
           node scripts/resetData.js
