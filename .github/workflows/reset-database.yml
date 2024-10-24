@@ -3,6 +3,8 @@ name: Reset Database and Cloudinary
 on:
   schedule:
     - cron: '0 * * * *'  # Every hour
+  workflow_dispatch: 
+    
 
 jobs:
   reset-db:
