@@ -35,5 +35,4 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           EXAMPLE_COURSE_ID: ${{ secrets.EXAMPLE_COURSE_ID }}
         run: 
-          cd api
           node scripts/resetData.js
