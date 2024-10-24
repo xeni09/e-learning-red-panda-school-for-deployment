@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Navigate to API directory and install dependencies
+        run: |
+          cd api
+          npm install
 
       - name: Run reset script
         env:
@@ -32,4 +34,6 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           EXAMPLE_COURSE_ID: ${{ secrets.EXAMPLE_COURSE_ID }}
-        run: node scripts/resetData.js
+        run: 
+          cd api
+          node scripts/resetData.js
