@@ -21,12 +21,25 @@ const deleteImageFromCloudinary = async (imageUrl, folder) => {
   }
 };
 
-// Función para eliminar el archivo local tras la subida a Cloudinary
+// Secure function to delete the local file after Cloudinary upload
 const deleteLocalFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
+  // Ensure the file path is only within the designated upload folder
+  const uploadDir = path.resolve(__dirname, "../../public/uploads");
+
+  // Resolve the file path and check if it’s within the upload directory
+  const resolvedPath = path.resolve(uploadDir, filePath);
+
+  if (!resolvedPath.startsWith(uploadDir)) {
+    console.error("Unauthorized path detected. Aborting file deletion.");
+    return;
+  }
+
+  // Safe deletion if validation passes
+  fs.unlink(resolvedPath, (err) => {
     if (err) {
-      console.error("Error eliminando el archivo local:", err);
+      console.error("Error deleting the local file:", err);
     } else {
+      console.log("File deleted successfully:", resolvedPath);
     }
   });
 };
