@@ -1,4 +1,6 @@
 const express = require("express");
+ç;
+const helmet = require("helmet");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -7,6 +9,7 @@ const path = require("path");
 const MongoStore = require("connect-mongo");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
+const csurf = require("csurf");
 
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -27,6 +30,10 @@ if (
 ) {
   throw new Error("Faltan variables de entorno requeridas");
 }
+
+// Configuración de Helmet para mejorar la seguridad de headers HTTP
+app.use(helmet()); // Activa el middleware Helmet para proteger los headers
+app.disable("X-Powered-By"); // Desactiva explícitamente X-Powered-By para ocultar Express
 
 // Servir archivos estáticos
 app.use("/assets", express.static(path.join(__dirname, "../../ui/src/assets")));
@@ -91,6 +98,16 @@ app.use(
     },
   })
 );
+
+// Configuración de CSRF
+const csrfProtection = csurf({ cookie: true }); // Utiliza cookie para almacenar el token CSRF
+app.use(csrfProtection); // Aplica la protección CSRF después de configurar sesiones y cookies
+
+// Middleware para enviar el token CSRF en las respuestas
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken(); // Genera y almacena el token CSRF para uso en el frontend
+  next();
+});
 
 // Inicializar rutas desde initRoutes.js
 initRoutes(app);
