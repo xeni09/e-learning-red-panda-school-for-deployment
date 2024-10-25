@@ -1,5 +1,4 @@
 const express = require("express");
-ç;
 const helmet = require("helmet");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
@@ -35,8 +34,17 @@ if (
 app.use(helmet()); // Activa el middleware Helmet para proteger los headers
 app.disable("X-Powered-By"); // Desactiva explícitamente X-Powered-By para ocultar Express
 
-// Servir archivos estáticos
-app.use("/assets", express.static(path.join(__dirname, "../../ui/src/assets")));
+// Servir archivos estáticos con Content Security Policy
+app.use(
+  "/assets",
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "https://res.cloudinary.com"], // Cloudinary para imágenes
+    },
+  }),
+  express.static(path.join(__dirname, "../../ui/src/assets"))
+);
 
 // Conectar a MongoDB
 connectDB();
@@ -48,35 +56,33 @@ configure(app);
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "uploads", // Nombre de la carpeta en Cloudinary donde se almacenarán las imágenes
+    folder: "uploads",
     allowed_formats: ["jpg", "png", "jpeg"],
-    transformation: [{ width: 800, height: 600, crop: "limit" }], // Puedes ajustar esta transformación según tu caso
+    transformation: [{ width: 800, height: 600, crop: "limit" }],
   },
 });
-
 const upload = multer({ storage });
 
 // Middleware para manejar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuración de CORS para permitir cookies
+// Configuración de CORS
+const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "X-CSRF-TOKEN"],
   })
 );
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
-
-// Habilitar preflight (solicitudes OPTIONS) para todas las rutas
-app.options("*", cors());
 
 // Middleware para analizar cookies
 app.use(cookieParser());
@@ -99,14 +105,24 @@ app.use(
   })
 );
 
-// Configuración de CSRF
-const csrfProtection = csurf({ cookie: true }); // Utiliza cookie para almacenar el token CSRF
-app.use(csrfProtection); // Aplica la protección CSRF después de configurar sesiones y cookies
+// Configuración de CSRF usando cookies
+const csrfProtection = csurf({
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  },
+});
+app.use(csrfProtection);
 
-// Middleware para enviar el token CSRF en las respuestas
-app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken(); // Genera y almacena el token CSRF para uso en el frontend
-  next();
+// Ruta para enviar el token CSRF en una cookie accesible desde el frontend
+app.get("/csrf-token", (req, res) => {
+  res.cookie("XSRF-TOKEN", req.csrfToken(), {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
+  res.status(200).json({ csrfToken: req.csrfToken() });
 });
 
 // Inicializar rutas desde initRoutes.js
