@@ -9,6 +9,7 @@ const MongoStore = require("connect-mongo");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
 const csurf = require("csurf");
+const crypto = require("crypto");
 
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -34,12 +35,20 @@ if (
 app.use(helmet()); // Activa el middleware Helmet para proteger los headers
 app.disable("X-Powered-By"); // Desactiva explícitamente X-Powered-By para ocultar Express
 
+app.use((req, res, next) => {
+  res.locals.cspNonce = crypto.randomBytes(16).toString("hex");
+  next();
+});
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      styleSrc: [
+        "'self'",
+        `'nonce-${res.locals.cspNonce}'`,
+        "https://fonts.googleapis.com",
+      ],
+      scriptSrc: ["'self'", `'nonce-${res.locals.cspNonce}'`],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "https://res.cloudinary.com"],
     },
