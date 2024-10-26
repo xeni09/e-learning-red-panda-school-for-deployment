@@ -19,12 +19,13 @@ const app = express();
 
 // Verificar variables de entorno requeridas
 if (
-  !process.env.SESSION_SECRET ||
-  !process.env.JWT_SECRET ||
-  !process.env.MONGODB_URI ||
-  !process.env.CLOUDINARY_CLOUD_NAME ||
-  !process.env.CLOUDINARY_API_KEY ||
-  !process.env.CLOUDINARY_API_SECRET
+  process.env.NODE_ENV !== 'test' &&  // Omitir chequeo en modo test
+  (!process.env.SESSION_SECRET ||
+   !process.env.JWT_SECRET ||
+   !process.env.MONGODB_URI ||
+   !process.env.CLOUDINARY_CLOUD_NAME ||
+   !process.env.CLOUDINARY_API_KEY ||
+   !process.env.CLOUDINARY_API_SECRET)
 ) {
   throw new Error("Faltan variables de entorno requeridas");
 }
