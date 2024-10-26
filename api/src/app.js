@@ -7,8 +7,6 @@ const path = require("path");
 const MongoStore = require("connect-mongo");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
-const csurf = require("csurf");
-const helmet = require("helmet");
 
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -30,10 +28,6 @@ if (
   throw new Error("Faltan variables de entorno requeridas");
 }
 
-// Configuración de Helmet para mejorar la seguridad de headers HTTP
-app.use(helmet()); // Aplica configuraciones de seguridad con Helmet
-app.disable("X-Powered-By"); // Oculta el header "X-Powered-By" para evitar revelar el framework
-
 // Servir archivos estáticos
 app.use("/assets", express.static(path.join(__dirname, "../../ui/src/assets")));
 
@@ -49,7 +43,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "uploads", // Nombre de la carpeta en Cloudinary donde se almacenarán las imágenes
     allowed_formats: ["jpg", "png", "jpeg"],
-    transformation: [{ width: 800, height: 600, crop: "limit" }],
+    transformation: [{ width: 800, height: 600, crop: "limit" }], // Puedes ajustar esta transformación según tu caso
   },
 });
 
@@ -65,9 +59,17 @@ app.use(
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "X-CSRF-TOKEN"],
+    allowedHeaders: ["Content-Type"],
   })
 );
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+// Habilitar preflight (solicitudes OPTIONS) para todas las rutas
+app.options("*", cors());
 
 // Middleware para analizar cookies
 app.use(cookieParser());
@@ -89,26 +91,6 @@ app.use(
     },
   })
 );
-
-// Configuración de CSRF con cookies HttpOnly
-const csrfProtection = csurf({
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  },
-});
-app.use(csrfProtection);
-
-// Ruta para enviar el token CSRF en una cookie accesible desde el frontend
-app.get("/csrf-token", (req, res) => {
-  res.cookie("XSRF-TOKEN", req.csrfToken(), {
-    httpOnly: false, // Permite que el frontend acceda al token
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  });
-  res.status(200).json({ csrfToken: req.csrfToken() });
-});
 
 // Inicializar rutas desde initRoutes.js
 initRoutes(app);
