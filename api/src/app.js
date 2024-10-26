@@ -21,10 +21,7 @@ const app = express();
 if (
   !process.env.SESSION_SECRET ||
   !process.env.JWT_SECRET ||
-  !process.env.MONGODB_URI ||
-  !process.env.CLOUDINARY_CLOUD_NAME ||
-  !process.env.CLOUDINARY_API_KEY ||
-  !process.env.CLOUDINARY_API_SECRET
+  !process.env.MONGODB_URI 
 ) {
   throw new Error("Faltan variables de entorno requeridas");
 }
