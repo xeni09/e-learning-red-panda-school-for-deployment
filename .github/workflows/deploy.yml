@@ -38,8 +38,8 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           
       - name: Security scan with Snyk
-        run: |
-          cd api
-          snyk test
+        uses: snyk/actions/node@master
+        with:
+          args: "test --file=api/package.json"  # Especifica el archivo package.json dentro del directorio api
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
