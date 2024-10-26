@@ -33,6 +33,7 @@ jobs:
         env:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD2: ${{ secrets.ADMIN_PASSWORD2 }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           
       - name: Security scan with Snyk
         uses: snyk/actions/node@master
