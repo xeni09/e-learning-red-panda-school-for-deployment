@@ -23,8 +23,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-        cd api
-        npm install
+          cd api
+          npm install
       
       - name: Set environment variables for tests
         env:
