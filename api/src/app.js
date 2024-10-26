@@ -34,17 +34,20 @@ if (
 app.use(helmet()); // Activa el middleware Helmet para proteger los headers
 app.disable("X-Powered-By"); // Desactiva explícitamente X-Powered-By para ocultar Express
 
-// Servir archivos estáticos con Content Security Policy
 app.use(
-  "/assets",
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "https://res.cloudinary.com"], // Cloudinary para imágenes
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "https://res.cloudinary.com"],
     },
-  }),
-  express.static(path.join(__dirname, "../../ui/src/assets"))
+  })
 );
+
+// Sirve archivos estáticos desde /assets
+app.use(express.static(path.join(__dirname, "../../ui/src/assets")));
 
 // Conectar a MongoDB
 connectDB();
@@ -101,6 +104,7 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana de expiración
     },
   })
 );
