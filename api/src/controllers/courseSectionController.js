@@ -23,12 +23,18 @@ const deleteImageFromCloudinary = async (imageUrl, folder) => {
 
 // Función para eliminar el archivo local tras la subida a Cloudinary
 const deleteLocalFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error("Error eliminando el archivo local:", err);
-    } else {
-    }
-  });
+  const uploadsDir = path.resolve(__dirname, "../uploads"); // Define a safe uploads directory
+
+  // Ensure the file path is within the uploads directory to prevent path traversal
+  if (filePath.startsWith(uploadsDir)) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting local file:", err);
+      }
+    });
+  } else {
+    console.error("Unsafe file path detected:", filePath);
+  }
 };
 
 // Obtener secciones de un curso

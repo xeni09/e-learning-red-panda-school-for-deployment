@@ -47,7 +47,8 @@ const updateUser = async (req, res) => {
     if (name && user.name !== name) user.name = name;
 
     // Update password only if provided and different
-    if (password && password.trim() !== "") {
+
+    if (typeof password === "string" && password.trim() !== "") {
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (!isSamePassword) {
         const salt = await bcrypt.genSalt(10);
