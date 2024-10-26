@@ -23,11 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-      
-      - name: Set environment variables for tests
-        env:
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD2 }}
 
       - name: Run unit tests
         run: npm run test
