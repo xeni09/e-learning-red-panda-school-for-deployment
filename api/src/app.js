@@ -7,6 +7,7 @@ const path = require("path");
 const MongoStore = require("connect-mongo");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
+const helmet = require("helmet");
 
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
@@ -27,6 +28,9 @@ if (
 ) {
   throw new Error("Faltan variables de entorno requeridas");
 }
+
+app.use(helmet()); // Activa varias configuraciones de seguridad
+app.disable("X-Powered-By"); // Desactiva explícitamente el encabezado X-Powered-By
 
 // Servir archivos estáticos
 app.use("/assets", express.static(path.join(__dirname, "../../ui/src/assets")));
