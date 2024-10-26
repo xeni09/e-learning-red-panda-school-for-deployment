@@ -35,6 +35,7 @@ jobs:
           ADMIN_PASSWORD2: ${{ secrets.ADMIN_PASSWORD2 }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           
       - name: Security scan with Snyk
         uses: snyk/actions/node@master
