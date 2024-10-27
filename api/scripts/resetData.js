@@ -102,6 +102,7 @@ const resetData = async () => {
     await Course.findByIdAndUpdate(exampleCourseId, exampleCourseData, {
       upsert: true,
       new: true,
+      overwrite: true,
     });
 
     // Clean up Cloudinary images for non-example courses and sections
