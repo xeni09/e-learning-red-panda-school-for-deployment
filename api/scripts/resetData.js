@@ -21,6 +21,23 @@ const extractPublicId = (url) => {
   return publicId;
 };
 
+// URLs de las imágenes a conservar
+const urlsToKeep = [
+  "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1730065726/courses/avi8cgbpt2mgvd7lru1y.jpg",
+  "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1730066691/sections/e4ovjpmi9pk9ormsqzwm.jpg",
+];
+
+const imagePublicIdsToKeep = urlsToKeep.map((url) => {
+  const publicId = extractPublicId(url);
+  // Agregar prefijo basado en la carpeta de origen
+  if (url.includes("/courses/")) {
+    return `courses/${publicId}`;
+  } else if (url.includes("/sections/")) {
+    return `sections/${publicId}`;
+  }
+  return publicId;
+});
+
 // Data to restore
 const testAdminData = {
   _id: new mongoose.Types.ObjectId(adminId),
@@ -41,7 +58,7 @@ const exampleCourseData = {
   description: `Welcome to the wonderful world of Python programming! Join Python Pete as he guides you through coding essentials with adventure-packed lessons designed to unlock your coding powers. Whether you're learning the basics or mastering advanced tricks, this course will turn programming into an unforgettable journey.`,
   price: 49.99,
   imageSrc:
-    "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729701503/courses/obmay0z52doekyam2q6v.jpg",
+    "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1730065726/courses/avi8cgbpt2mgvd7lru1y.jpg",
   students: [new mongoose.Types.ObjectId(adminId)],
   sections: [
     {
@@ -51,7 +68,7 @@ const exampleCourseData = {
         "Hold on to your keyboards as Python Pete embarks on his Super Variable Adventure! In this unit, Pete discovers the magical world of variables, where names hold the power to transform data. From capturing secret numbers to storing strings of wisdom, join Pete as he unlocks the hidden power of variables and learns to command data like a true coding hero! Will he be able to name them all before they vanish into the digital ether? Only one way to find out!",
       videoUrl: "",
       sectionImage:
-        "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729707411/sections/qltaqukldzwe3mikwdvc.jpg",
+        "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1730066691/sections/e4ovjpmi9pk9ormsqzwm.jpg",
     },
     {
       _id: new mongoose.Types.ObjectId("671926ba98e9fa193411eafc"),
@@ -83,11 +100,63 @@ const exampleCourseData = {
   ],
 };
 
+const getCloudinaryImages = async (folderPath) => {
+  const resources = [];
+  let nextCursor = null;
+
+  do {
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      prefix: folderPath,
+      max_results: 500,
+      next_cursor: nextCursor,
+    });
+
+    resources.push(...result.resources);
+    nextCursor = result.next_cursor;
+  } while (nextCursor);
+
+  return resources.map((resource) => resource.public_id);
+};
+
+// Limpiar las carpetas de imágenes en Cloudinary
+const cleanCloudinaryFolder = async () => {
+  try {
+    const courseImageFolder = "courses";
+    const sectionImageFolder = "sections";
+
+    // Obtener todos los publicIds actuales en las carpetas de cursos y secciones
+    const courseImages = await getCloudinaryImages(courseImageFolder);
+    const sectionImages = await getCloudinaryImages(sectionImageFolder);
+
+    // Combinar todos los publicIds de ambas carpetas
+    const allImagesInFolders = [...courseImages, ...sectionImages];
+
+    // Identificar las imágenes que no están en la lista de conservación
+    const imagesToDelete = allImagesInFolders.filter(
+      (publicId) => !imagePublicIdsToKeep.includes(publicId)
+    );
+
+    // Eliminar las imágenes no vinculadas
+    for (const publicId of imagesToDelete) {
+      await cloudinary.uploader.destroy(publicId);
+      console.log(`Deleted Cloudinary image: ${publicId}`);
+    }
+
+    console.log("Cloudinary cleanup complete. Only linked images remain.");
+  } catch (error) {
+    console.error("Error during Cloudinary cleanup:", error);
+  }
+};
+
 // Function to reset the database
 const resetData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("Connected to MongoDB successfully");
+
+    // Llama a la función de limpieza de Cloudinary primero
+    await cleanCloudinaryFolder();
 
     // **Step 1**: Find all courses except the example course to delete Cloudinary images
     const coursesToDelete = await Course.find({

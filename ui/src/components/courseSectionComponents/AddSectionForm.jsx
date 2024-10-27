@@ -6,13 +6,10 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
     title: '',
     description: '',
     videoUrl: '',
-    sectionImage: null,
   });
-
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [croppingImage, setCroppingImage] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(null);
+  const [temporaryImage, setTemporaryImage] = useState(null);
 
   useEffect(() => {
     if (sectionToEdit) {
@@ -20,8 +17,8 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
         title: sectionToEdit.title || '',
         description: sectionToEdit.description || '',
         videoUrl: sectionToEdit.videoUrl || '',
-        sectionImage: sectionToEdit.sectionImage || null,
       });
+      setTemporaryImage(sectionToEdit.sectionImage || null);
     }
   }, [sectionToEdit]);
 
@@ -31,21 +28,6 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
     if (isSubmitted) {
       setErrors({ ...errors, [name]: '' });
     }
-  };
-
-  const handleFileChange = (file) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCroppingImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleCropComplete = (croppedImageDataUrl) => {
-    setCroppedImage(croppedImageDataUrl);
-    setCroppingImage(null);  // Oculta el cropper después de recortar pero mantiene el preview
   };
 
   const handleSubmit = (e) => {
@@ -67,24 +49,11 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
     formData.append("description", newSection.description);
     formData.append("videoUrl", newSection.videoUrl);
 
-    if (croppedImage) {
-      const blob = dataURLtoBlob(croppedImage);
-      formData.append("sectionImage", blob, 'sectionImage.jpeg');
+    if (temporaryImage) {
+      formData.append("sectionImage", temporaryImage);
     }
 
     handleAddSection(formData);
-  };
-
-  const dataURLtoBlob = (dataurl) => {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
   };
 
   return (
@@ -126,13 +95,8 @@ const AddSectionForm = ({ handleAddSection, sectionToEdit }) => {
       </div>
 
       <SectionImageUploadAndCrop
-        handleFileChange={handleFileChange}
-        handleCropComplete={handleCropComplete}
-        croppingImage={croppingImage}
-        croppedImage={croppedImage}
+        setTemporaryImage={setTemporaryImage} // Actualizar la imagen seleccionada
         errors={errors}
-        setTemporaryImage={(file) => setNewSection({ ...newSection, sectionImage: file })} 
-
       />
 
       <button 

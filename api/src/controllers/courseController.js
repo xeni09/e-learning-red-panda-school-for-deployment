@@ -1,7 +1,6 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
 const cloudinary = require("../config/cloudinaryConfig");
-const fs = require("fs"); // Importamos para manejar la eliminación de archivos locales
 
 // Obtener todos los cursos
 const getCourses = async (req, res) => {
@@ -137,26 +136,31 @@ const updateCourse = async (req, res) => {
     // Verificar si hay una nueva imagen cargada
     if (req.file) {
       // Eliminar la imagen anterior en Cloudinary si existe
-      if (course.imageSrc) {
-        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
-        try {
-          await cloudinary.uploader.destroy(publicId);
-        } catch (err) {
-          console.error("Error deleting image from Cloudinary:", err.message);
-          if (err.http_code !== 404) {
-            return res.status(500).json({
-              message: "Error deleting image from Cloudinary",
-              error: err.message,
-            });
-          }
-        }
-      }
-
-      // Subir nueva imagen a Cloudinary
+      // if (course.imageSrc) {
+      //   const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extraer el publicId de Cloudinary
+      //   try {
+      //     await cloudinary.uploader.destroy(publicId);
+      //   } catch (err) {
+      //     console.error("Error deleting image from Cloudinary:", err.message);
+      //     if (err.http_code !== 404) {
+      //       return res.status(500).json({
+      //         message: "Error deleting image from Cloudinary",
+      //         error: err.message,
+      //       });
+      //     }
+      //   }
+      // }
+      // Subir nueva imagen a Cloudinary sin borrar la anterior (para que funcione bien el resetData.js)
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "courses",
       });
       course.imageSrc = result.secure_url; // Actualizar con la nueva URL
+
+      // // Subir nueva imagen a Cloudinary
+      // const result = await cloudinary.uploader.upload(req.file.path, {
+      //   folder: "courses",
+      // });
+      // course.imageSrc = result.secure_url; // Actualizar con la nueva URL
     }
 
     // Guardar los cambios
@@ -181,25 +185,25 @@ const deleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Check if the course has an associated image
-    if (course.imageSrc) {
-      try {
-        const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extract the publicId from Cloudinary URL
-        await cloudinary.uploader.destroy(`courses/${publicId}`); // Delete the image from Cloudinary
-        console.log(
-          "Image successfully deleted from Cloudinary:",
-          course.imageSrc
-        );
-      } catch (err) {
-        console.error("Error deleting image from Cloudinary:", err.message);
-        if (err.http_code !== 404) {
-          return res.status(500).json({
-            message: "Error deleting image from Cloudinary",
-            error: err.message,
-          });
-        }
-      }
-    }
+    // Check if the course has an associated image (para eliminarla junto con el curso, pero lo quito para que funcione bien el script resetData.js)
+    // if (course.imageSrc) {
+    //   try {
+    //     const publicId = course.imageSrc.split("/").pop().split(".")[0]; // Extract the publicId from Cloudinary URL
+    //     await cloudinary.uploader.destroy(`courses/${publicId}`); // Delete the image from Cloudinary
+    //     console.log(
+    //       "Image successfully deleted from Cloudinary:",
+    //       course.imageSrc
+    //     );
+    //   } catch (err) {
+    //     console.error("Error deleting image from Cloudinary:", err.message);
+    //     if (err.http_code !== 404) {
+    //       return res.status(500).json({
+    //         message: "Error deleting image from Cloudinary",
+    //         error: err.message,
+    //       });
+    //     }
+    //   }
+    // }
 
     // Delete the course from the database
     await course.deleteOne();
