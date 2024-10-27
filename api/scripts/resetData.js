@@ -64,18 +64,25 @@ const exampleCourseData = {
 const resetData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
+    console.log("Connected to MongoDB successfully");
 
     // Reset admin user (update existing or create new)
     await User.findByIdAndUpdate(adminId, testAdminData, {
       upsert: true,
       new: true,
-    }); // This will update if exists, otherwise create
+    });
 
     // Reset example course (update existing or create new)
     await Course.findByIdAndUpdate(exampleCourseId, exampleCourseData, {
       upsert: true,
       new: true,
     });
+
+    // **Delete other users** (only keep the specified admin)
+    await User.deleteMany({ _id: { $ne: adminId } });
+
+    // **Delete other courses** (only keep the specified example course)
+    await Course.deleteMany({ _id: { $ne: exampleCourseId } });
 
     // Clean up Cloudinary images that are not needed
     const courses = await Course.find({ _id: { $ne: exampleCourseId } });
@@ -84,8 +91,16 @@ const resetData = async () => {
         const publicId = extractPublicId(course.imageSrc);
         await cloudinary.uploader.destroy(publicId);
       }
+      // Delete section images if they exist
+      if (course.sections) {
+        for (const section of course.sections) {
+          if (section.sectionImage) {
+            const sectionPublicId = extractPublicId(section.sectionImage);
+            await cloudinary.uploader.destroy(sectionPublicId);
+          }
+        }
+      }
     }
-
     console.log("Database and Cloudinary reset complete");
   } catch (error) {
     console.error("Error during reset:", error);
