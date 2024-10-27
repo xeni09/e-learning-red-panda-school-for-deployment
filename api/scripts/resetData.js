@@ -6,10 +6,20 @@ const Course = require("../src/models/Course");
 const cloudinary = require("../src/config/cloudinaryConfig");
 
 // IDs of items to preserve
-const adminId = process.env.ADMIN_ID; // Test Admin ID from env variables
-const adminEmail = process.env.ADMIN_EMAIL;
-const adminPassword = process.env.ADMIN_PASSWORD; // Admin password from env variables
+const adminId = process.env.ADMIN_ID;
 const exampleCourseId = process.env.EXAMPLE_COURSE_ID;
+
+// Admin credentials
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPassword = process.env.ADMIN_PASSWORD;
+
+// Function to extract Cloudinary public ID from URL
+const extractPublicId = (url) => {
+  const parts = url.split("/");
+  const fileNameWithExtension = parts.pop().split("?")[0];
+  const publicId = fileNameWithExtension.split(".")[0];
+  return publicId;
+};
 
 // Data to restore
 const testAdminData = {
@@ -19,11 +29,7 @@ const testAdminData = {
   email: adminEmail,
   password: adminPassword,
   role: "admin",
-  courses: [
-    new mongoose.Types.ObjectId("67001dc00f968533a71ee9e7"),
-    new mongoose.Types.ObjectId("6719148235e3da83b8604cbe"),
-    new mongoose.Types.ObjectId(exampleCourseId),
-  ],
+  courses: [new mongoose.Types.ObjectId(exampleCourseId)],
 };
 
 const exampleCourseData = {
@@ -33,13 +39,10 @@ const exampleCourseData = {
   category: "Programming",
   teacher: "Python Pete",
   description: `Welcome to the wonderful world of Python programming...`,
-  price: 133,
+  price: 49.99,
   imageSrc:
     "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729701504/courses/w7gtcus4i4s2ion0jxjx.jpg",
-  students: [
-    new mongoose.Types.ObjectId(adminId),
-    new mongoose.Types.ObjectId("67195e6ceb53edcb66acf378"),
-  ],
+  students: [new mongoose.Types.ObjectId(adminId)],
   sections: [
     {
       _id: new mongoose.Types.ObjectId("671926a198e9fa193411eaf8"),
@@ -56,7 +59,24 @@ const exampleCourseData = {
       videoUrl: "https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s",
       sectionImage: null,
     },
-    // Add other sections...
+    {
+      _id: new mongoose.Types.ObjectId("671e851a53aa31b42f97657f"),
+      title:
+        "Unit 3: Python Pete’s Epic Battle with the Fearsome If-Else Monster",
+      description:
+        "Join Python Pete as he faces off against the legendary If-Else Monster! Can he make the right decisions to conquer this conditional foe?",
+      videoUrl: "",
+      sectionImage: null,
+    },
+    {
+      _id: new mongoose.Types.ObjectId("671e857b53aa31b42f9765b9"),
+      title: "Unit 4: Python Pete and the Lists of Lost Loops",
+      description:
+        "Pete’s found a mysterious cave filled with looping lists. He’ll need all his skills to navigate through each element without getting lost!",
+      videoUrl:
+        "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdown.mp4",
+      sectionImage: null,
+    },
   ],
 };
 
@@ -65,6 +85,12 @@ const resetData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("Connected to MongoDB successfully");
+
+    // Delete all users except the specified admin
+    await User.deleteMany({ _id: { $ne: adminId } });
+
+    // Delete all courses except the example course
+    await Course.deleteMany({ _id: { $ne: exampleCourseId } });
 
     // Reset admin user (update existing or create new)
     await User.findByIdAndUpdate(adminId, testAdminData, {
@@ -78,15 +104,11 @@ const resetData = async () => {
       new: true,
     });
 
-    // **Delete other users** (only keep the specified admin)
-    await User.deleteMany({ _id: { $ne: adminId } });
-
-    // **Delete other courses** (only keep the specified example course)
-    await Course.deleteMany({ _id: { $ne: exampleCourseId } });
-
-    // Clean up Cloudinary images that are not needed
-    const courses = await Course.find({ _id: { $ne: exampleCourseId } });
-    for (const course of courses) {
+    // Clean up Cloudinary images for non-example courses and sections
+    const coursesToDelete = await Course.find({
+      _id: { $ne: exampleCourseId },
+    });
+    for (const course of coursesToDelete) {
       if (course.imageSrc) {
         const publicId = extractPublicId(course.imageSrc);
         await cloudinary.uploader.destroy(publicId);
@@ -107,14 +129,6 @@ const resetData = async () => {
   } finally {
     mongoose.disconnect();
   }
-};
-
-// Function to extract Cloudinary public ID from URL
-const extractPublicId = (url) => {
-  const parts = url.split("/");
-  const fileNameWithExtension = parts.pop();
-  const publicId = fileNameWithExtension.split(".")[0];
-  return publicId;
 };
 
 // Call the reset function
