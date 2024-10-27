@@ -1,9 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EnrolledCourseContent from './EnrolledCourseContent';
 import EnrolledOverviewFixedInfo from './EnrolledOverviewFixedInfo'; // Import the new component
 
 const EnrolledCourseTabs = ({ course }) => {
   const [activeTab, setActiveTab] = useState('Overview');
+
+  // Set up useEffect to retrieve the last active tab from local storage
+  useEffect(() => {
+    const savedTab = localStorage.getItem('activeTab');
+    if (savedTab) {
+      setActiveTab(savedTab);
+    }
+  }, []);
+
+  // Update local storage whenever the active tab changes
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    localStorage.setItem('activeTab', tab);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -53,7 +67,7 @@ const EnrolledCourseTabs = ({ course }) => {
           <button
             key={tab}
             className={`relative px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-lg whitespace-nowrap ${activeTab === tab ? 'font-bold text-[var(--color-orange)]' : ''}`}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleTabClick(tab)}
           >
             {tab}
             <span className={`absolute bottom-0 left-0 right-0 ${activeTab === tab ? 'bg-[var(--color-orange)] h-1' : ''}`}></span>

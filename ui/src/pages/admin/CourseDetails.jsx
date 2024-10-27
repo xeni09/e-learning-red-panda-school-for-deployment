@@ -96,7 +96,7 @@ const handleAddSection = async (formData) => {
   };
 
   if (isLoading) {
-    return <p>Loading course details...</p>;
+    return <p></p>;
   }
 
   return (

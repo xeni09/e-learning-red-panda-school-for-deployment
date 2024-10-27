@@ -63,7 +63,7 @@ const CourseInfo = ({ courseId }) => {
   };
 
   if (!courseData) {
-    return <p>Loading course details...</p>;
+    return <p></p>;
   }
 
   return (

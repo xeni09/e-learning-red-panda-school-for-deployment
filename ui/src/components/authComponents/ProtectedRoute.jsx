@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <p></p>;
   }
 
   // Si no está autenticado, redirige al login
