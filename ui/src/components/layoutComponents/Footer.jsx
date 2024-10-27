@@ -124,7 +124,7 @@ const Footer = () => {
             <Link to="/privacy-policy">Privacy Policy</Link>
           </li>
         </ul>
-        <p>&copy; 2024 RedPandaSchool. Inesdi</p>
+        <p>&copy; 2024 RedPandaSchool - Inés Fuentes. Final Master Proyect for Inesdi Business Techschool</p>
       </div>
     </footer>
   );

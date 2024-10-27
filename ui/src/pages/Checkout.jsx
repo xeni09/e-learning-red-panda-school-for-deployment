@@ -34,7 +34,7 @@ const Checkout = () => {
 
   // Mostrar un mensaje de carga mientras se obtienen los datos
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   // Si el carrito está vacío, mostrar `CheckoutEmpty`

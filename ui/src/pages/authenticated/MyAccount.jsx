@@ -9,7 +9,7 @@ const MyAccount = () => {
   const navigate = useNavigate();
 
   if (isLoading || !user) {
-    return <p>Loading...</p>;
+    return <p></p>;
   }
 
   if (!isAuthenticated || !user) {
