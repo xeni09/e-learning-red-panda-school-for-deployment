@@ -48,7 +48,7 @@ const LoginForm = ({ onSubmit, loading, error }) => {
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
-      {loading && <p>Loading...</p>}
+      {loading && <p>Almost there...</p>}
 
       <div>
         <button type="submit" className="btn-fullwidth" disabled={loading}>

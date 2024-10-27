@@ -8,7 +8,7 @@ const MyCourses = () => {
 
   // Show loading state while fetching user data
   if (isLoading || !user) {
-    return <p>Loading...</p>;
+    return <p></p>;
   }
 
   // Show a message if the user is not authenticated
