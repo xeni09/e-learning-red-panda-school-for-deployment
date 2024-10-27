@@ -13,7 +13,7 @@ const CourseSummary = ({ courseName, price, teacherName, description, posterUrl 
   };
 
   if (!courseName || !price || !teacherName) {
-    return <p>Loading course details...</p>;
+    return <p></p>;
   }
 
   return (

@@ -41,9 +41,10 @@ export default function Login() {
             src={logo}
             className="mx-auto mt-6 h-28 w-auto"
           />
-          <h2 className="text-center font-bold my-8">
+          <h2 className="text-center font-bold mt-8">
             Log in to your account
           </h2>
+          <p className="text-center text-[var(--color-black)] mb-8">Please use Google Chrome </p>
         </div>
 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">

@@ -38,43 +38,46 @@ const exampleCourseData = {
   name: "Python Programming",
   category: "Programming",
   teacher: "Python Pete",
-  description: `Welcome to the wonderful world of Python programming...`,
+  description: `Welcome to the wonderful world of Python programming! Join Python Pete as he guides you through coding essentials with adventure-packed lessons designed to unlock your coding powers. Whether you're learning the basics or mastering advanced tricks, this course will turn programming into an unforgettable journey.`,
   price: 49.99,
   imageSrc:
-    "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729701504/courses/w7gtcus4i4s2ion0jxjx.jpg",
+    "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729701503/courses/obmay0z52doekyam2q6v.jpg",
   students: [new mongoose.Types.ObjectId(adminId)],
   sections: [
     {
       _id: new mongoose.Types.ObjectId("671926a198e9fa193411eaf8"),
       title: "Unit 1: Python Pete's Super Variable Adventure",
-      description: "Hold on to your keyboards as Python Pete takes you on...",
+      description:
+        "Hold on to your keyboards as Python Pete embarks on his Super Variable Adventure! In this unit, Pete discovers the magical world of variables, where names hold the power to transform data. From capturing secret numbers to storing strings of wisdom, join Pete as he unlocks the hidden power of variables and learns to command data like a true coding hero! Will he be able to name them all before they vanish into the digital ether? Only one way to find out!",
       videoUrl: "",
       sectionImage:
-        "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729715111/sections/fnf8w8m6mgexlnfcztfw.jpg",
+        "https://res.cloudinary.com/dgsp4dfbt/image/upload/v1729707411/sections/qltaqukldzwe3mikwdvc.jpg",
     },
     {
       _id: new mongoose.Types.ObjectId("671926ba98e9fa193411eafc"),
       title: "Unit 2: Python Pete and the Mystery of the Endless Loop",
-      description: "Ever wondered how to make your computer repeat things...",
+      description:
+        "Ever wondered how to make your computer repeat things over and over without stopping? Python Pete sure does, and in this unit, he stumbles upon the mystical powers of loops. But beware! Not all loops are friendly—some can go on forever if you’re not careful. Follow Pete as he braves the twists and turns of the Endless Loop Forest, mastering for and while loops to navigate his way through with clever escapes. Will Pete find his way out, or will he be trapped forever? Join him to learn the secret exit strategy!",
       videoUrl: "https://www.youtube.com/watch?v=RK1RRVR9A2g&t=9s",
       sectionImage: null,
     },
     {
       _id: new mongoose.Types.ObjectId("671e851a53aa31b42f97657f"),
       title:
-        "Unit 3: Python Pete’s Epic Battle with the Fearsome If-Else Monster",
+        "Unit 3: Python Pete’s Epic Battle with the Fearsome If-Else Monster (no picture added)",
       description:
-        "Join Python Pete as he faces off against the legendary If-Else Monster! Can he make the right decisions to conquer this conditional foe?",
+        "In this thrilling unit, Python Pete confronts the legendary If-Else Monster, a creature known for guarding the gateway to Conditional Land! Only those who can make the right decisions may pass, but one wrong answer, and the If-Else Monster will send you back to the start! Help Pete make wise choices using if, else, and elif, unlocking pathways based on truth and lies. Can you and Pete defeat this monster with the power of conditions, or will the If-Else Monster’s riddles prove too tricky?",
       videoUrl: "",
       sectionImage: null,
     },
     {
       _id: new mongoose.Types.ObjectId("671e857b53aa31b42f9765b9"),
-      title: "Unit 4: Python Pete and the Lists of Lost Loops",
+      title:
+        "Unit 4: Python Pete and the Lists of Lost Loops (non-youtube video added)",
       description:
-        "Pete’s found a mysterious cave filled with looping lists. He’ll need all his skills to navigate through each element without getting lost!",
+        "Our adventure takes Pete to the Cave of Lists, where countless looping lists are said to hold great treasures (and a few traps)! With his trusty knowledge of loops, Pete must navigate through each element in these lists, retrieving valuable items and uncovering secrets. Along the way, he’ll learn the magic of list.append(), pop(), and indexing, helping him solve each list’s mysteries. But watch out for the Ghost of Infinite Loops—one wrong step, and you could be stuck forever! Will Pete’s bravery and skill be enough to conquer the Lists of Lost Loops?",
       videoUrl:
-        "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdown.mp4",
+        "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
       sectionImage: null,
     },
   ],
@@ -86,34 +89,17 @@ const resetData = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("Connected to MongoDB successfully");
 
-    // Delete all users except the specified admin
-    await User.deleteMany({ _id: { $ne: adminId } });
-
-    // Delete all courses except the example course
-    await Course.deleteMany({ _id: { $ne: exampleCourseId } });
-
-    // Reset admin user (update existing or create new)
-    await User.findByIdAndUpdate(adminId, testAdminData, {
-      upsert: true,
-      new: true,
-    });
-
-    // Reset example course (update existing or create new)
-    await Course.findByIdAndUpdate(exampleCourseId, exampleCourseData, {
-      upsert: true,
-      new: true,
-      overwrite: true,
-    });
-
-    // Clean up Cloudinary images for non-example courses and sections
+    // **Step 1**: Find all courses except the example course to delete Cloudinary images
     const coursesToDelete = await Course.find({
       _id: { $ne: exampleCourseId },
     });
+
     for (const course of coursesToDelete) {
       if (course.imageSrc) {
         const publicId = extractPublicId(course.imageSrc);
         await cloudinary.uploader.destroy(publicId);
       }
+
       // Delete section images if they exist
       if (course.sections) {
         for (const section of course.sections) {
@@ -124,6 +110,27 @@ const resetData = async () => {
         }
       }
     }
+
+    // **Step 2**: Delete all users except the specified admin
+    await User.deleteMany({ _id: { $ne: adminId } });
+
+    // **Step 3**: Delete all courses except the example course
+    await Course.deleteMany({ _id: { $ne: exampleCourseId } });
+
+    // **Step 4**: Reset admin user (update existing or create new)
+    await User.findByIdAndUpdate(adminId, testAdminData, {
+      upsert: true,
+      new: true,
+      overwrite: true,
+    });
+
+    // **Step 5**: Reset example course (update existing or create new)
+    await Course.findByIdAndUpdate(exampleCourseId, exampleCourseData, {
+      upsert: true,
+      new: true,
+      overwrite: true,
+    });
+
     console.log("Database and Cloudinary reset complete");
   } catch (error) {
     console.error("Error during reset:", error);
