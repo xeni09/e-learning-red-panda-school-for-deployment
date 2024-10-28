@@ -47,6 +47,23 @@ const CourseSectionDetails = () => {
     }
   };
 
+// Función para eliminar una sección específica
+const handleDeleteSection = async (sectionIdToDelete) => {
+  try {
+    await axios.delete(`/api/courses/${courseId}/sections/${sectionIdToDelete}`);
+    const updatedSections = sections.filter(section => section._id !== sectionIdToDelete);
+    setSections(updatedSections);
+
+    // Si la sección actual es la que se eliminó, actualizamos el estado de la sección actual
+    if (sectionIdToDelete === sectionId) {
+      setCurrentSection(null);
+    }
+  } catch (error) {
+    console.error('Error deleting section:', error);
+  }
+};
+
+
   if (loading) {
     return <p>Loading section details...</p>;
   }
@@ -81,8 +98,9 @@ const CourseSectionDetails = () => {
             {sections.length > 0 && (
               <CourseSectionsList 
                 sections={sections}
-                currentSectionId={sectionId}  // Pasamos el ID de la sección actual
-                onEditSection={handleSectionUpdate} // Pasamos la función para actualizar la lista de secciones
+                currentSectionId={sectionId} 
+                onEditSection={handleSectionUpdate} 
+                onDeleteSection={handleDeleteSection}
               />
             )}
           </div>

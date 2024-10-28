@@ -52,10 +52,10 @@ const CourseSectionsList = ({ sections, onEditSection, onDeleteSection, currentS
 
       {sections.map((section, index) => (
         <SectionItem
-          key={index}
+        key={section._id}
           section={section}
           isActive={section._id === currentSectionId} // Comparar la sección actual con la que está seleccionada
-          onDeleteClick={() => onDeleteSection(index)}
+          onDeleteClick={() => onDeleteSection(section._id)}
           onSaveClick={(updatedSection) => handleSaveClick(updatedSection, index)}
         />
       ))}
