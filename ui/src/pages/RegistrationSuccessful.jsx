@@ -95,7 +95,7 @@ export default function RegistrationSuccessful() {
 
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
-            {loading && <p>Loading...</p>}
+            {loading && <p>Almost there...</p>}
 
             <div>
               <button type="submit" className="btn-fullwidth">
